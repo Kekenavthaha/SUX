@@ -880,7 +880,9 @@ function setTab(tab){
         }
     });
 
-    /* HOME */
+    /* =========================
+       HOME
+    ========================= */
 
     if(tab === 'home'){
 
@@ -903,30 +905,93 @@ function setTab(tab){
         return;
     }
 
+    /* =========================
+       OTHER TABS
+    ========================= */
+
     logo.classList.add('hidden');
     slogan.classList.add('hidden');
 
     topBar.classList.remove('hidden');
     content.classList.remove('hidden');
-const userRect =
-document.querySelector('.user')
-.getBoundingClientRect();
 
-/* фиксированная позиция глаз */
+    /* =========================
+       FIXED EYES POSITION
+    ========================= */
 
-eyeState.targetX =
-userRect.left + 62;
+    const userRect =
+    document.querySelector('.user')
+    .getBoundingClientRect();
 
-eyeState.targetY =
-userRect.top + 17;
+    eyeState.targetX =
+    userRect.left + 62;
 
-/* размер */
+    eyeState.targetY =
+    userRect.top + 17;
 
-eyeState.targetScale = 0.07;
+    /* маленькие глаза */
 
-/* расстояние между глазами */
+    eyeState.targetScale = 0.07;
 
-eyeState.targetSpacing = 7;
+    /* расстояние между ними */
+
+    eyeState.targetSpacing = 7;
+
+    /* =========================
+       CONTENT
+    ========================= */
+
+    if(tab === 'profile'){
+
+        content.innerHTML = `
+        <div class="card">
+            <h2>👤 ПРОФИЛЬ</h2>
+            <br>
+            <div>Социальный рейтинг: 12 500</div>
+            <div>Статус: Достойный гражданин</div>
+        </div>`;
+    }
+
+    else if(tab === 'bank'){
+
+        content.innerHTML = `
+        <div class="card">
+            <h2>🏦 К-БАНК</h2>
+            <br>
+            <div>Доступный кредит: 4 000 кр.</div>
+        </div>`;
+    }
+
+    else if(tab === 'darknet'){
+
+        content.innerHTML = `
+        <div class="card">
+            <h2>🕶️ DARKNET</h2>
+            <br>
+            <div>Теневой рынок активен</div>
+        </div>`;
+    }
+
+    else if(tab === 'court'){
+
+        content.innerHTML = `
+        <div class="card">
+            <h2>⚖️ СУД</h2>
+            <br>
+            <div>Активных исков: 4</div>
+        </div>`;
+    }
+
+    else if(tab === 'housing'){
+
+        content.innerHTML = `
+        <div class="card">
+            <h2>🏙️ ЖИЛЬЁ</h2>
+            <br>
+            <div>Крабхэттен • сектор A</div>
+        </div>`;
+    }
+}
 
 /* =========================
    TAB EVENTS
@@ -939,6 +1004,8 @@ tabs.forEach(btn=>{
         setTab(btn.dataset.tab);
     });
 });
+
+/* старт */
 
 setTab('home');
 
