@@ -2,10 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>SUX — eyes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUX — Detroit Android Eye</title>
 
 <style>
 
@@ -13,335 +11,171 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
     margin:0;
     padding:0;
     box-sizing:border-box;
-    user-select:none;
 }
 
 body{
-    min-height:100vh;
     overflow:hidden;
-    background:#0a0c12;
+    background:#06090f;
     font-family:Segoe UI,sans-serif;
-    color:white;
 }
 
-/* фон */
+/* =========================
+   BACKGROUND
+========================= */
 
-.animated-bg{
+.bg{
+
     position:fixed;
     inset:0;
 
     background:
+    radial-gradient(circle at top left,
+    rgba(40,90,160,.18),
+    transparent 35%),
+
+    radial-gradient(circle at bottom right,
+    rgba(120,20,30,.18),
+    transparent 35%),
+
     linear-gradient(
     135deg,
-    #0a0f1a,
-    #0d161f,
-    #140c12,
-    #0b1118);
+    #05070b,
+    #0a0f17,
+    #070b11);
 
-    background-size:300% 300%;
-
-    animation:bgFlow 12s ease infinite;
-
-    z-index:0;
+    animation:bgPulse 10s ease infinite alternate;
 }
 
-@keyframes bgFlow{
-    0%{background-position:0% 0%;}
-    50%{background-position:100% 100%;}
-    100%{background-position:0% 0%;}
+@keyframes bgPulse{
+
+    from{
+        filter:hue-rotate(0deg);
+        transform:scale(1);
+    }
+
+    to{
+        filter:hue-rotate(15deg);
+        transform:scale(1.03);
+    }
 }
 
-/* сетка */
+/* =========================
+   GRID
+========================= */
 
 .grid{
+
     position:fixed;
     inset:0;
 
     background-image:
-    linear-gradient(rgba(255,50,50,.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,50,50,.05) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
 
-    background-size:40px 40px;
+    background-size:42px 42px;
 
-    z-index:1;
+    opacity:.5;
 }
 
-/* шум */
+/* =========================
+   CANVAS
+========================= */
 
-.noise{
+canvas{
     position:fixed;
     inset:0;
-
-    opacity:.12;
-
-    background-image:
-    url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjgiIG51bU9jdGF2ZXM9IjIiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjbikiLz48L3N2Zz4=');
-
-    z-index:1;
-}
-
-/* ---------- ГЛАЗА ---------- */
-
-.eyes-wrapper{
-    position:fixed;
-
-    inset:0;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    gap:7vw;
-
-    transform:translateY(-10%);
-
-    z-index:3;
-
-    pointer-events:none;
-}
-
-.eye{
-    position:relative;
-
-    width:clamp(80px,6vw,120px);
-    height:clamp(40px,3vw,62px);
-
-    border-radius:100px / 70px;
-
-    overflow:hidden;
-
-    background:
-    radial-gradient(circle at 50% 50%,
-    #ffffff 0%,
-    #f2f2f2 75%,
-    #d2d2d2 100%);
-
-    box-shadow:
-    0 0 22px rgba(0,0,0,.45),
-    inset 0 -3px 8px rgba(0,0,0,.2),
-    inset 0 3px 5px rgba(255,255,255,.3);
-}
-
-/* верхнее веко */
-
-.eye::before{
-    content:"";
-
-    position:absolute;
-
-    top:-24%;
-    left:-5%;
-
-    width:110%;
-    height:58%;
-
-    background:#0a0c12;
-
-    border-bottom-left-radius:100px;
-    border-bottom-right-radius:100px;
-
-    z-index:6;
-}
-
-/* нижнее веко */
-
-.eye::after{
-    content:"";
-
-    position:absolute;
-
-    bottom:-20%;
-    left:-5%;
-
-    width:110%;
-    height:35%;
-
-    background:#0a0c12;
-
-    border-top-left-radius:100px;
-    border-top-right-radius:100px;
-
-    opacity:.8;
-
-    z-index:6;
-}
-
-/* радужка */
-
-.pupil{
-    position:absolute;
-
-    width:34%;
-    height:62%;
-
-    top:50%;
-    left:50%;
-
-    transform:translate(-50%, -50%);
-
-    border-radius:50%;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    background:
-    radial-gradient(circle at 40% 40%,
-    #79e8ff 0%,
-    #3aa8ca 35%,
-    #183848 75%,
-    #000 100%);
-
-    box-shadow:
-    0 0 12px rgba(0,0,0,.5),
-    inset 0 0 8px rgba(255,255,255,.25);
-
-    transition:
-    transform .09s cubic-bezier(.2,.9,.3,1.2);
-}
-
-/* зрачок */
-
-.pupil::before{
-    content:"";
-
-    position:absolute;
-
-    width:38%;
-    height:38%;
-
-    background:#000;
-
-    border-radius:50%;
-}
-
-/* блик */
-
-.pupil::after{
-    content:"";
-
-    position:absolute;
-
-    width:16%;
-    height:16%;
-
-    top:22%;
-    left:28%;
-
-    border-radius:50%;
-
-    background:white;
-
-    filter:blur(1px);
-}
-
-/* веки */
-
-.lid{
-    position:absolute;
-
-    inset:0;
-
-    height:0%;
-
-    background:
-    linear-gradient(
-    to bottom,
-    #151b24,
-    #06080d);
-
-    border-radius:100px / 70px;
-
-    z-index:20;
-
-    transition:
-    height .11s ease;
-}
-
-.eye.blink .lid{
+    width:100%;
     height:100%;
 }
 
-/* логотип */
+/* =========================
+   LOGO
+========================= */
 
-.sux-brand{
+.logo{
+
     position:fixed;
 
-    bottom:16%;
-    left:0;
-    right:0;
+    bottom:14%;
+    width:100%;
 
     text-align:center;
 
-    font-size:clamp(40px,10vw,90px);
-
+    font-size:88px;
     font-weight:900;
 
-    letter-spacing:10px;
+    letter-spacing:12px;
 
-    color:rgba(255,70,70,.7);
+    color:rgba(255,70,70,.75);
 
     text-shadow:
-    0 0 20px rgba(255,0,0,.5);
+    0 0 24px rgba(255,0,0,.35);
 
     font-family:monospace;
 
-    z-index:5;
+    z-index:10;
 }
 
-/* слоган */
-
 .slogan{
+
     position:fixed;
 
-    bottom:9%;
-
-    left:0;
-    right:0;
+    bottom:8%;
+    width:100%;
 
     text-align:center;
+
+    color:rgba(255,255,255,.4);
 
     font-size:12px;
 
-    color:rgba(255,220,220,.5);
+    letter-spacing:3px;
 
-    font-family:monospace;
-
-    z-index:5;
+    z-index:10;
 }
 
-/* кнопка */
+/* =========================
+   BUTTON
+========================= */
 
-.demo-button{
+.btn{
+
     position:fixed;
 
-    right:20px;
-    bottom:20px;
+    right:24px;
+    bottom:24px;
+
+    z-index:20;
 
     border:none;
 
+    border-radius:999px;
+
     padding:14px 24px;
 
-    border-radius:40px;
-
-    background:#b93333;
+    background:#cf3a3a;
 
     color:white;
 
-    font-weight:bold;
+    font-weight:700;
 
     cursor:pointer;
 
-    z-index:10;
+    box-shadow:
+    0 6px 24px rgba(0,0,0,.4);
 
     transition:.12s;
-
-    box-shadow:
-    0 4px 18px rgba(0,0,0,.35);
 }
 
-.demo-button:active{
+.btn:active{
     transform:scale(.95);
+}
+
+@media(max-width:700px){
+
+    .logo{
+        font-size:52px;
+    }
 }
 
 </style>
@@ -349,143 +183,387 @@ body{
 
 <body>
 
-<div class="animated-bg"></div>
+<div class="bg"></div>
 <div class="grid"></div>
-<div class="noise"></div>
 
-<div class="eyes-wrapper">
+<canvas id="canvas"></canvas>
 
-    <div class="eye" id="leftEye">
-        <div class="pupil" id="leftPupil"></div>
-        <div class="lid"></div>
-    </div>
+<div class="logo">SUX</div>
 
-    <div class="eye" id="rightEye">
-        <div class="pupil" id="rightPupil"></div>
-        <div class="lid"></div>
-    </div>
-
-</div>
-
-<div class="sux-brand">SUX</div>
 <div class="slogan">
-и смотрит, и слушает, и помнит
+ANDROID SURVEILLANCE ACTIVE
 </div>
 
-<button class="demo-button" id="demoBtn">
-👁 Нажми
+<button class="btn" id="scanBtn">
+👁 SCAN
 </button>
 
 <script>
 
-(function(){
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-const leftEye = document.getElementById('leftEye');
-const rightEye = document.getElementById('rightEye');
+let w,h;
 
-const leftPupil = document.getElementById('leftPupil');
-const rightPupil = document.getElementById('rightPupil');
+function resize(){
 
-function getMaxOffset(eye){
-
-    const eyeSize = eye.offsetWidth;
-
-    const pupilRadius = eyeSize * 0.12;
-    const eyeRadius = eyeSize * 0.5;
-
-    return eyeRadius - pupilRadius - 3;
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
 }
 
-function calculateOffset(rect, x, y, max){
+resize();
 
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+addEventListener("resize",resize);
 
-    const dx = x - centerX;
-    const dy = y - centerY;
+/* =========================
+   EYE OBJECT
+========================= */
 
-    const distance = Math.hypot(dx, dy);
+class Eye{
 
-    const angle = Math.atan2(dy, dx);
+    constructor(x,y){
 
-    const offset = Math.min(distance, max);
+        this.x = x;
+        this.y = y;
 
-    return {
-        x: Math.cos(angle) * offset,
-        y: Math.sin(angle) * offset
-    };
+        this.radius = Math.min(w,h)*0.12;
+
+        this.irisX = 0;
+        this.irisY = 0;
+
+        this.targetX = 0;
+        this.targetY = 0;
+
+        this.blink = 0;
+
+        this.autoMoveTime = 0;
+    }
+
+    update(mx,my){
+
+        const dx = mx - this.x;
+        const dy = my - this.y;
+
+        const angle = Math.atan2(dy,dx);
+
+        const dist = Math.min(18,Math.hypot(dx,dy)*0.03);
+
+        this.targetX = Math.cos(angle)*dist;
+        this.targetY = Math.sin(angle)*dist;
+
+        this.irisX += (this.targetX - this.irisX)*0.12;
+        this.irisY += (this.targetY - this.irisY)*0.12;
+    }
+
+    draw(){
+
+        ctx.save();
+
+        ctx.translate(this.x,this.y);
+
+        /* eye shape */
+
+        ctx.beginPath();
+
+        ctx.moveTo(-this.radius,0);
+
+        ctx.quadraticCurveTo(
+            0,
+            -this.radius*0.72,
+            this.radius,
+            0
+        );
+
+        ctx.quadraticCurveTo(
+            0,
+            this.radius*0.72,
+            -this.radius,
+            0
+        );
+
+        ctx.closePath();
+
+        ctx.clip();
+
+        /* sclera */
+
+        const sclera =
+        ctx.createRadialGradient(
+            0,
+            0,
+            10,
+            0,
+            0,
+            this.radius
+        );
+
+        sclera.addColorStop(0,"#ffffff");
+        sclera.addColorStop(.7,"#ececec");
+        sclera.addColorStop(1,"#bcbcbc");
+
+        ctx.fillStyle = sclera;
+
+        ctx.fillRect(
+            -this.radius,
+            -this.radius,
+            this.radius*2,
+            this.radius*2
+        );
+
+        /* iris */
+
+        const irisR = this.radius*0.42;
+
+        const iris =
+        ctx.createRadialGradient(
+            this.irisX,
+            this.irisY,
+            5,
+            this.irisX,
+            this.irisY,
+            irisR
+        );
+
+        iris.addColorStop(0,"#c8ffff");
+        iris.addColorStop(.2,"#77e7ff");
+        iris.addColorStop(.45,"#2ea7ff");
+        iris.addColorStop(.7,"#0a507c");
+        iris.addColorStop(1,"#000");
+
+        ctx.beginPath();
+
+        ctx.arc(
+            this.irisX,
+            this.irisY,
+            irisR,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle = iris;
+        ctx.fill();
+
+        /* iris lines */
+
+        for(let i=0;i<70;i++){
+
+            const a = (Math.PI*2/70)*i;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                this.irisX,
+                this.irisY
+            );
+
+            ctx.lineTo(
+                this.irisX + Math.cos(a)*irisR,
+                this.irisY + Math.sin(a)*irisR
+            );
+
+            ctx.strokeStyle =
+            "rgba(255,255,255,.06)";
+
+            ctx.lineWidth = 1;
+
+            ctx.stroke();
+        }
+
+        /* pupil */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            this.irisX,
+            this.irisY,
+            irisR*0.28,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle = "#000";
+        ctx.fill();
+
+        /* glossy cornea */
+
+        const gloss =
+        ctx.createRadialGradient(
+            this.irisX - irisR*0.2,
+            this.irisY - irisR*0.2,
+            1,
+            this.irisX - irisR*0.2,
+            this.irisY - irisR*0.2,
+            irisR*0.8
+        );
+
+        gloss.addColorStop(0,
+        "rgba(255,255,255,.75)");
+
+        gloss.addColorStop(.4,
+        "rgba(255,255,255,.18)");
+
+        gloss.addColorStop(1,
+        "rgba(255,255,255,0)");
+
+        ctx.beginPath();
+
+        ctx.arc(
+            this.irisX,
+            this.irisY,
+            irisR,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle = gloss;
+        ctx.fill();
+
+        /* upper shadow */
+
+        const shadow =
+        ctx.createLinearGradient(
+            0,
+            -this.radius,
+            0,
+            0
+        );
+
+        shadow.addColorStop(0,
+        "rgba(0,0,0,.45)");
+
+        shadow.addColorStop(1,
+        "rgba(0,0,0,0)");
+
+        ctx.fillStyle = shadow;
+
+        ctx.fillRect(
+            -this.radius,
+            -this.radius,
+            this.radius*2,
+            this.radius
+        );
+
+        /* eyelid */
+
+        if(this.blink > 0){
+
+            ctx.fillStyle = "#06090f";
+
+            const close =
+            this.radius*1.5*this.blink;
+
+            ctx.fillRect(
+                -this.radius*1.2,
+                -this.radius,
+                this.radius*2.4,
+                close
+            );
+
+            ctx.fillRect(
+                -this.radius*1.2,
+                this.radius-close,
+                this.radius*2.4,
+                close
+            );
+        }
+
+        ctx.restore();
+    }
 }
 
-function updateEyes(x, y){
+/* =========================
+   CREATE EYES
+========================= */
 
-    const leftRect = leftEye.getBoundingClientRect();
-    const rightRect = rightEye.getBoundingClientRect();
+const leftEye =
+new Eye(
+    innerWidth/2 - 170,
+    innerHeight/2 - 40
+);
 
-    const leftOffset =
-    calculateOffset(
-    leftRect,
-    x,
-    y,
-    getMaxOffset(leftEye));
+const rightEye =
+new Eye(
+    innerWidth/2 + 170,
+    innerHeight/2 - 40
+);
 
-    const rightOffset =
-    calculateOffset(
-    rightRect,
-    x,
-    y,
-    getMaxOffset(rightEye));
+let mouseX = innerWidth/2;
+let mouseY = innerHeight/2;
 
-    leftPupil.style.transform =
-    `translate(calc(-50% + ${leftOffset.x}px),
-    calc(-50% + ${leftOffset.y}px))`;
+window.addEventListener("mousemove",e=>{
 
-    rightPupil.style.transform =
-    `translate(calc(-50% + ${rightOffset.x}px),
-    calc(-50% + ${rightOffset.y}px))`;
-}
-
-/* моргание */
-
-function blink(){
-
-    leftEye.classList.add('blink');
-    rightEye.classList.add('blink');
-
-    setTimeout(()=>{
-        leftEye.classList.remove('blink');
-        rightEye.classList.remove('blink');
-    },140);
-}
-
-/* авто-моргание */
-
-setInterval(()=>{
-    blink();
-}, 4000 + Math.random() * 3000);
-
-/* мышка */
-
-window.addEventListener('mousemove', e=>{
-    updateEyes(e.clientX, e.clientY);
+    mouseX = e.clientX;
+    mouseY = e.clientY;
 });
 
-/* touch */
-
-window.addEventListener('touchmove', e=>{
+window.addEventListener("touchmove",e=>{
 
     if(e.touches.length){
 
-        updateEyes(
-        e.touches[0].clientX,
-        e.touches[0].clientY);
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
     }
 });
 
-/* кнопка */
+/* =========================
+   BLINK
+========================= */
 
-const btn = document.getElementById('demoBtn');
+function blink(){
 
-btn.addEventListener('click', ()=>{
+    let t = 0;
+
+    const anim = setInterval(()=>{
+
+        t += 0.16;
+
+        const v =
+        Math.sin(t*Math.PI);
+
+        leftEye.blink = v;
+        rightEye.blink = v;
+
+        if(t >= 1){
+
+            leftEye.blink = 0;
+            rightEye.blink = 0;
+
+            clearInterval(anim);
+        }
+
+    },16);
+}
+
+setInterval(()=>{
+
+    blink();
+
+},3500 + Math.random()*2500);
+
+/* =========================
+   IDLE MOTION
+========================= */
+
+setInterval(()=>{
+
+    mouseX =
+    innerWidth/2 +
+    (Math.random()*260 - 130);
+
+    mouseY =
+    innerHeight/2 +
+    (Math.random()*140 - 70);
+
+},2600);
+
+/* =========================
+   BUTTON
+========================= */
+
+const btn =
+document.getElementById("scanBtn");
+
+btn.addEventListener("click",()=>{
 
     blink();
 
@@ -495,16 +573,33 @@ btn.addEventListener('click', ()=>{
 
     const old = btn.innerText;
 
-    btn.innerText = '👁 зафиксировано';
+    btn.innerText = "SCANNED";
 
     setTimeout(()=>{
+
         btn.innerText = old;
-    },800);
+
+    },900);
 });
 
-console.log('SUX eyes active');
+/* =========================
+   RENDER
+========================= */
 
-})();
+function render(){
+
+    ctx.clearRect(0,0,w,h);
+
+    leftEye.update(mouseX,mouseY);
+    rightEye.update(mouseX,mouseY);
+
+    leftEye.draw();
+    rightEye.draw();
+
+    requestAnimationFrame(render);
+}
+
+render();
 
 </script>
 
