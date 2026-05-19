@@ -1,607 +1,544 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUX — Detroit Android Eye</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SUX — гиперреалистичные глаза</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
 
-<style>
+        body {
+            min-height: 100vh;
+            background: #06090f;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        .bg {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(40, 90, 160, .18), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(120, 20, 30, .18), transparent 35%),
+                linear-gradient(135deg, #05070b, #0a0f17, #070b11);
+            animation: bgPulse 10s ease infinite alternate;
+            z-index: 0;
+        }
 
-body{
-    overflow:hidden;
-    background:#06090f;
-    font-family:Segoe UI,sans-serif;
-}
+        @keyframes bgPulse {
+            from {
+                filter: hue-rotate(0deg);
+                transform: scale(1);
+            }
+            to {
+                filter: hue-rotate(15deg);
+                transform: scale(1.03);
+            }
+        }
 
-/* =========================
-   BACKGROUND
-========================= */
+        .grid {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+            background-size: 42px 42px;
+            opacity: .5;
+            z-index: 1;
+        }
 
-.bg{
+        canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
 
-    position:fixed;
-    inset:0;
+        .logo {
+            position: fixed;
+            bottom: 14%;
+            width: 100%;
+            text-align: center;
+            font-size: 88px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: rgba(255, 70, 70, .75);
+            text-shadow: 0 0 24px rgba(255, 0, 0, .35);
+            font-family: monospace;
+            z-index: 10;
+            pointer-events: none;
+        }
 
-    background:
-    radial-gradient(circle at top left,
-    rgba(40,90,160,.18),
-    transparent 35%),
+        .slogan {
+            position: fixed;
+            bottom: 8%;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, .4);
+            font-size: 12px;
+            letter-spacing: 3px;
+            z-index: 10;
+            pointer-events: none;
+        }
 
-    radial-gradient(circle at bottom right,
-    rgba(120,20,30,.18),
-    transparent 35%),
+        .btn {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 20;
+            border: none;
+            border-radius: 999px;
+            padding: 14px 24px;
+            background: #cf3a3a;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, .4);
+            transition: .12s;
+        }
 
-    linear-gradient(
-    135deg,
-    #05070b,
-    #0a0f17,
-    #070b11);
+        .btn:active {
+            transform: scale(.95);
+        }
 
-    animation:bgPulse 10s ease infinite alternate;
-}
-
-@keyframes bgPulse{
-
-    from{
-        filter:hue-rotate(0deg);
-        transform:scale(1);
-    }
-
-    to{
-        filter:hue-rotate(15deg);
-        transform:scale(1.03);
-    }
-}
-
-/* =========================
-   GRID
-========================= */
-
-.grid{
-
-    position:fixed;
-    inset:0;
-
-    background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-
-    background-size:42px 42px;
-
-    opacity:.5;
-}
-
-/* =========================
-   CANVAS
-========================= */
-
-canvas{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100%;
-}
-
-/* =========================
-   LOGO
-========================= */
-
-.logo{
-
-    position:fixed;
-
-    bottom:14%;
-    width:100%;
-
-    text-align:center;
-
-    font-size:88px;
-    font-weight:900;
-
-    letter-spacing:12px;
-
-    color:rgba(255,70,70,.75);
-
-    text-shadow:
-    0 0 24px rgba(255,0,0,.35);
-
-    font-family:monospace;
-
-    z-index:10;
-}
-
-.slogan{
-
-    position:fixed;
-
-    bottom:8%;
-    width:100%;
-
-    text-align:center;
-
-    color:rgba(255,255,255,.4);
-
-    font-size:12px;
-
-    letter-spacing:3px;
-
-    z-index:10;
-}
-
-/* =========================
-   BUTTON
-========================= */
-
-.btn{
-
-    position:fixed;
-
-    right:24px;
-    bottom:24px;
-
-    z-index:20;
-
-    border:none;
-
-    border-radius:999px;
-
-    padding:14px 24px;
-
-    background:#cf3a3a;
-
-    color:white;
-
-    font-weight:700;
-
-    cursor:pointer;
-
-    box-shadow:
-    0 6px 24px rgba(0,0,0,.4);
-
-    transition:.12s;
-}
-
-.btn:active{
-    transform:scale(.95);
-}
-
-@media(max-width:700px){
-
-    .logo{
-        font-size:52px;
-    }
-}
-
-</style>
+        @media (max-width: 700px) {
+            .logo {
+                font-size: 52px;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="bg"></div>
+    <div class="grid"></div>
+    <canvas id="canvas"></canvas>
+    <div class="logo">SUX</div>
+    <div class="slogan">ANDROID SURVEILLANCE ACTIVE</div>
+    <button class="btn" id="scanBtn">👁 SCAN</button>
 
-<div class="bg"></div>
-<div class="grid"></div>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let w, h;
 
-<canvas id="canvas"></canvas>
+        function resize() {
+            w = canvas.width = innerWidth;
+            h = canvas.height = innerHeight;
+        }
+        resize();
+        addEventListener("resize", resize);
 
-<div class="logo">SUX</div>
+        /* =========================
+           EYE CLASS
+        ========================= */
+        class Eye {
+            constructor(x, y, noseDir) {
+                this.x = x;
+                this.y = y;
+                this.noseDir = noseDir; // 1 для левого (внутренний угол справа), -1 для правого
+                this.size = Math.min(w, h) * 0.16; // базовый размер глаза
+                this.irisOffset = { x: 0, y: 0 };   // текущее смещение радужки
+                this.targetIris = { x: 0, y: 0 };
+                this.blink = 0;                     // 0 открыт, 1 закрыт
+                this.blinkSpeed = 0;
+                this.microSaccade = { x: 0, y: 0 }; // мелкие саккады
+                this.lastSaccadeTime = 0;
+                this.saccadeInterval = 800 + Math.random() * 2000;
+            }
 
-<div class="slogan">
-ANDROID SURVEILLANCE ACTIVE
-</div>
+            // Обновление целевого положения радужки (следит за мышью + микро-саккады)
+            update(mx, my, time) {
+                const dx = mx - this.x;
+                const dy = my - this.y;
+                const angle = Math.atan2(dy, dx);
+                const dist = Math.min(20, Math.hypot(dx, dy) * 0.04);
+                const baseX = Math.cos(angle) * dist;
+                const baseY = Math.sin(angle) * dist;
 
-<button class="btn" id="scanBtn">
-👁 SCAN
-</button>
+                // Микро-саккады
+                if (time - this.lastSaccadeTime > this.saccadeInterval) {
+                    this.microSaccade = {
+                        x: (Math.random() - 0.5) * 8,
+                        y: (Math.random() - 0.5) * 6
+                    };
+                    this.lastSaccadeTime = time;
+                    this.saccadeInterval = 600 + Math.random() * 1800;
+                }
 
-<script>
+                this.targetIris.x = baseX + this.microSaccade.x;
+                this.targetIris.y = baseY + this.microSaccade.y;
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+                // Плавное слежение
+                this.irisOffset.x += (this.targetIris.x - this.irisOffset.x) * 0.14;
+                this.irisOffset.y += (this.targetIris.y - this.irisOffset.y) * 0.14;
 
-let w,h;
+                // Автоматическое моргание с плавной анимацией
+                if (this.blink > 0.01) {
+                    this.blink += this.blinkSpeed;
+                    if (this.blink >= 1.0) {
+                        this.blink = 1.0;
+                        this.blinkSpeed = -0.06;
+                    } else if (this.blink <= 0.0) {
+                        this.blink = 0.0;
+                        this.blinkSpeed = 0;
+                    }
+                }
+            }
 
-function resize(){
+            // Запуск моргания
+            triggerBlink() {
+                if (this.blink > 0.1) return;
+                this.blinkSpeed = 0.06;
+                this.blink = 0.001;
+            }
 
-    w = canvas.width = innerWidth;
-    h = canvas.height = innerHeight;
-}
+            // Рисование глаза
+            draw(ctx) {
+                const { x, y, size, noseDir } = this;
+                const blink = this.blink;
+                const irisX = this.irisOffset.x;
+                const irisY = this.irisOffset.y;
 
-resize();
+                ctx.save();
+                ctx.translate(x, y);
 
-addEventListener("resize",resize);
+                // --- 1. Построение динамической формы глазной щели (зависит от моргания) ---
+                const innerX = noseDir * size * 0.7;
+                const outerX = -noseDir * size * 0.9;
+                const innerY = size * 0.05;
+                const outerY = -size * 0.15;
 
-/* =========================
-   EYE OBJECT
-========================= */
+                // Контрольные точки для верхнего и нижнего века (открытое состояние)
+                const upperCPx = -noseDir * size * 0.1;
+                const upperCPy = -size * 0.68;
+                const lowerCPx = -noseDir * size * 0.1;
+                const lowerCPy = size * 0.48;
 
-class Eye{
+                // Интерполяция к центру при моргании
+                const lerp = (a, b, t) => a + (b - a) * t;
+                const cy = 0; // вертикальный центр
 
-    constructor(x,y){
+                const iY = lerp(innerY, cy, blink);
+                const oY = lerp(outerY, cy, blink);
+                const ucpY = lerp(upperCPy, cy, blink);
+                const lcpY = lerp(lowerCPy, cy, blink);
 
-        this.x = x;
-        this.y = y;
+                // Формируем путь глазной щели
+                ctx.beginPath();
+                ctx.moveTo(innerX, iY);
+                ctx.quadraticCurveTo(upperCPx, ucpY, outerX, oY);
+                ctx.quadraticCurveTo(lowerCPx, lcpY, innerX, iY);
+                ctx.closePath();
+                ctx.clip(); // Всё содержимое глаза будет обрезано по этой форме
 
-        this.radius = Math.min(w,h)*0.12;
+                // --- 2. Склера с градиентом и тенями ---
+                const scleraGrad = ctx.createRadialGradient(0, 0, size * 0.2, 0, 0, size * 1.2);
+                scleraGrad.addColorStop(0, "#fefefe");
+                scleraGrad.addColorStop(0.5, "#f2f0eb");
+                scleraGrad.addColorStop(0.8, "#dbd7d2");
+                scleraGrad.addColorStop(1, "#b0a8a0");
+                ctx.fillStyle = scleraGrad;
+                ctx.fillRect(-size * 1.5, -size * 1.5, size * 3, size * 3);
 
-        this.irisX = 0;
-        this.irisY = 0;
+                // Тень от верхнего века (на склере)
+                const upperShadow = ctx.createLinearGradient(0, -size * 1.2, 0, size * 0.2);
+                upperShadow.addColorStop(0, "rgba(0,0,0,0.35)");
+                upperShadow.addColorStop(0.4, "rgba(0,0,0,0.1)");
+                upperShadow.addColorStop(1, "rgba(0,0,0,0)");
+                ctx.fillStyle = upperShadow;
+                ctx.fillRect(-size * 1.5, -size * 1.5, size * 3, size * 2.5);
 
-        this.targetX = 0;
-        this.targetY = 0;
+                // Тень от нижнего века
+                const lowerShadow = ctx.createLinearGradient(0, size * 0.8, 0, -size * 0.1);
+                lowerShadow.addColorStop(0, "rgba(0,0,0,0.25)");
+                lowerShadow.addColorStop(1, "rgba(0,0,0,0)");
+                ctx.fillStyle = lowerShadow;
+                ctx.fillRect(-size * 1.5, -size * 0.5, size * 3, size * 2);
 
-        this.blink = 0;
+                // Кровеносные сосуды
+                ctx.globalAlpha = 0.2;
+                for (let i = 0; i < 18; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const rad = size * 0.55;
+                    const sx = Math.cos(angle) * rad;
+                    const sy = Math.sin(angle) * rad;
+                    const ex = Math.cos(angle + (Math.random() - 0.5) * 0.5) * (rad + size * 0.15);
+                    const ey = Math.sin(angle + (Math.random() - 0.5) * 0.5) * (rad + size * 0.15);
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(ex, ey);
+                    ctx.strokeStyle = `rgba(180,70,70,${Math.random() * 0.3 + 0.05})`;
+                    ctx.lineWidth = 1.3;
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1.0;
 
-        this.autoMoveTime = 0;
-    }
+                // --- 3. Радужка и зрачок ---
+                const irisRadius = size * 0.46;
+                const pupilRadius = size * 0.18;
 
-    update(mx,my){
+                // Лимбальное кольцо (тёмная кайма)
+                ctx.beginPath();
+                ctx.arc(irisX, irisY, irisRadius, 0, Math.PI * 2);
+                const limbalGrad = ctx.createRadialGradient(irisX, irisY, irisRadius * 0.85, irisX, irisY, irisRadius);
+                limbalGrad.addColorStop(0, "rgba(0,0,0,0)");
+                limbalGrad.addColorStop(0.7, "rgba(0,0,0,0.15)");
+                limbalGrad.addColorStop(1, "rgba(0,0,0,0.55)");
+                ctx.fillStyle = limbalGrad;
+                ctx.fill();
 
-        const dx = mx - this.x;
-        const dy = my - this.y;
+                // Основная радужка (голубой/серый сложный градиент)
+                const irisBase = ctx.createRadialGradient(irisX - 2, irisY - 2, pupilRadius * 0.5, irisX, irisY, irisRadius);
+                irisBase.addColorStop(0  , "#c8e0ff");
+                irisBase.addColorStop(0.2, "#8ac4f0");
+                irisBase.addColorStop(0.45, "#4a8fcc");
+                irisBase.addColorStop(0.7 , "#1e5078");
+                irisBase.addColorStop(0.85, "#0a2a44");
+                irisBase.addColorStop(1   , "#020810");
+                ctx.beginPath();
+                ctx.arc(irisX, irisY, irisRadius, 0, Math.PI * 2);
+                ctx.fillStyle = irisBase;
+                ctx.fill();
 
-        const angle = Math.atan2(dy,dx);
+                // Радиальные волокна (строма)
+                ctx.save();
+                ctx.translate(irisX, irisY);
+                ctx.globalAlpha = 0.3;
+                for (let i = 0; i < 120; i++) {
+                    const angle = (i / 120) * Math.PI * 2;
+                    const startR = pupilRadius * 1.2;
+                    const endR = irisRadius * (0.75 + Math.random() * 0.2);
+                    ctx.beginPath();
+                    ctx.moveTo(Math.cos(angle) * startR, Math.sin(angle) * startR);
+                    ctx.lineTo(Math.cos(angle) * endR, Math.sin(angle) * endR);
+                    ctx.strokeStyle = `rgba(20,30,50,${0.15 + Math.random() * 0.2})`;
+                    ctx.lineWidth = 1.0 + Math.random() * 0.6;
+                    ctx.stroke();
+                }
+                // Мелкие вкрапления
+                for (let i = 0; i < 80; i++) {
+                    const a = Math.random() * Math.PI * 2;
+                    const r = pupilRadius * 1.1 + Math.random() * (irisRadius - pupilRadius * 1.1);
+                    ctx.beginPath();
+                    ctx.arc(Math.cos(a) * r, Math.sin(a) * r, Math.random() * 2 + 0.5, 0, 2 * Math.PI);
+                    ctx.fillStyle = `rgba(70,50,30,${Math.random() * 0.3})`;
+                    ctx.fill();
+                }
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.globalAlpha = 1.0;
 
-        const dist = Math.min(18,Math.hypot(dx,dy)*0.03);
+                // Зрачок
+                const pupilGrad = ctx.createRadialGradient(irisX, irisY, pupilRadius * 0.6, irisX, irisY, pupilRadius);
+                pupilGrad.addColorStop(0, "#000000");
+                pupilGrad.addColorStop(0.8, "#020202");
+                pupilGrad.addColorStop(1, "#0a0a0a");
+                ctx.beginPath();
+                ctx.arc(irisX, irisY, pupilRadius, 0, Math.PI * 2);
+                ctx.fillStyle = pupilGrad;
+                ctx.fill();
 
-        this.targetX = Math.cos(angle)*dist;
-        this.targetY = Math.sin(angle)*dist;
+                // --- 4. Роговичные блики (хрусталик) ---
+                // Главный блик (отражение окна/источника)
+                const glare1 = ctx.createRadialGradient(
+                    irisX - pupilRadius * 0.6, irisY - pupilRadius * 0.7,
+                    pupilRadius * 0.1,
+                    irisX - pupilRadius * 0.6, irisY - pupilRadius * 0.7,
+                    irisRadius * 0.7
+                );
+                glare1.addColorStop(0, "rgba(255,255,255,0.95)");
+                glare1.addColorStop(0.3, "rgba(255,255,255,0.6)");
+                glare1.addColorStop(0.6, "rgba(255,255,255,0.15)");
+                glare1.addColorStop(1, "rgba(255,255,255,0)");
+                ctx.beginPath();
+                ctx.arc(irisX, irisY, irisRadius, 0, Math.PI * 2);
+                ctx.fillStyle = glare1;
+                ctx.fill();
 
-        this.irisX += (this.targetX - this.irisX)*0.12;
-        this.irisY += (this.targetY - this.irisY)*0.12;
-    }
+                // Второй блик (маленький, сбоку)
+                const glare2 = ctx.createRadialGradient(
+                    irisX + irisRadius * 0.5, irisY - irisRadius * 0.4,
+                    0.5,
+                    irisX + irisRadius * 0.5, irisY - irisRadius * 0.4,
+                    irisRadius * 0.35
+                );
+                glare2.addColorStop(0, "rgba(255,255,255,0.75)");
+                glare2.addColorStop(0.5, "rgba(255,255,255,0.3)");
+                glare2.addColorStop(1, "rgba(255,255,255,0)");
+                ctx.beginPath();
+                ctx.arc(irisX, irisY, irisRadius, 0, Math.PI * 2);
+                ctx.fillStyle = glare2;
+                ctx.fill();
 
-    draw(){
+                // Снимаем клип, чтобы рисовать ресницы и влажные блики вне его
+                ctx.restore(); // сбрасывает clip и трансформацию
 
-        ctx.save();
+                // --- 5. Ресницы (вдоль края глазной щели) ---
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.strokeStyle = "#1a1510";
+                // Верхние ресницы
+                const upperEdgePath = new Path2D();
+                upperEdgePath.moveTo(innerX, iY);
+                upperEdgePath.quadraticCurveTo(upperCPx, ucpY, outerX, oY);
+                // Используем точки на кривой для позиционирования ресниц
+                const steps = 28;
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / steps;
+                    // Вычисляем точку на квадратичной кривой Безье
+                    const p0x = innerX, p0y = iY;
+                    const p1x = upperCPx, p1y = ucpY;
+                    const p2x = outerX, p2y = oY;
+                    const mt = 1 - t;
+                    const qx = mt * mt * p0x + 2 * mt * t * p1x + t * t * p2x;
+                    const qy = mt * mt * p0y + 2 * mt * t * p1y + t * t * p2y;
+                    // Угол касательной
+                    const tx = 2 * mt * (p1x - p0x) + 2 * t * (p2x - p1x);
+                    const ty = 2 * mt * (p1y - p0y) + 2 * t * (p2y - p1y);
+                    const angle = Math.atan2(ty, tx) + Math.PI / 2 + (Math.random() - 0.5) * 0.3;
+                    const len = size * 0.13 + Math.random() * size * 0.08;
+                    ctx.beginPath();
+                    ctx.moveTo(qx, qy);
+                    ctx.lineTo(qx + Math.cos(angle) * len, qy + Math.sin(angle) * len);
+                    ctx.lineWidth = 1.8 + Math.random() * 0.7;
+                    ctx.stroke();
+                }
+                // Нижние ресницы
+                const lowerEdgePath = new Path2D();
+                lowerEdgePath.moveTo(innerX, iY);
+                lowerEdgePath.quadraticCurveTo(lowerCPx, lcpY, outerX, oY);
+                for (let i = 0; i <= 20; i++) {
+                    const t = i / 20;
+                    const p0x = innerX, p0y = iY;
+                    const p1x = lowerCPx, p1y = lcpY;
+                    const p2x = outerX, p2y = oY;
+                    const mt = 1 - t;
+                    const qx = mt * mt * p0x + 2 * mt * t * p1x + t * t * p2x;
+                    const qy = mt * mt * p0y + 2 * mt * t * p1y + t * t * p2y;
+                    const tx = 2 * mt * (p1x - p0x) + 2 * t * (p2x - p1x);
+                    const ty = 2 * mt * (p1y - p0y) + 2 * t * (p2y - p1y);
+                    const angle = Math.atan2(ty, tx) - Math.PI / 2 + (Math.random() - 0.5) * 0.3;
+                    const len = size * 0.07 + Math.random() * size * 0.05;
+                    ctx.beginPath();
+                    ctx.moveTo(qx, qy);
+                    ctx.lineTo(qx + Math.cos(angle) * len, qy + Math.sin(angle) * len);
+                    ctx.lineWidth = 1.4 + Math.random() * 0.5;
+                    ctx.stroke();
+                }
+                ctx.restore();
 
-        ctx.translate(this.x,this.y);
-
-        /* eye shape */
-
-        ctx.beginPath();
-
-        ctx.moveTo(-this.radius,0);
-
-        ctx.quadraticCurveTo(
-            0,
-            -this.radius*0.72,
-            this.radius,
-            0
-        );
-
-        ctx.quadraticCurveTo(
-            0,
-            this.radius*0.72,
-            -this.radius,
-            0
-        );
-
-        ctx.closePath();
-
-        ctx.clip();
-
-        /* sclera */
-
-        const sclera =
-        ctx.createRadialGradient(
-            0,
-            0,
-            10,
-            0,
-            0,
-            this.radius
-        );
-
-        sclera.addColorStop(0,"#ffffff");
-        sclera.addColorStop(.7,"#ececec");
-        sclera.addColorStop(1,"#bcbcbc");
-
-        ctx.fillStyle = sclera;
-
-        ctx.fillRect(
-            -this.radius,
-            -this.radius,
-            this.radius*2,
-            this.radius*2
-        );
-
-        /* iris */
-
-        const irisR = this.radius*0.42;
-
-        const iris =
-        ctx.createRadialGradient(
-            this.irisX,
-            this.irisY,
-            5,
-            this.irisX,
-            this.irisY,
-            irisR
-        );
-
-        iris.addColorStop(0,"#c8ffff");
-        iris.addColorStop(.2,"#77e7ff");
-        iris.addColorStop(.45,"#2ea7ff");
-        iris.addColorStop(.7,"#0a507c");
-        iris.addColorStop(1,"#000");
-
-        ctx.beginPath();
-
-        ctx.arc(
-            this.irisX,
-            this.irisY,
-            irisR,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fillStyle = iris;
-        ctx.fill();
-
-        /* iris lines */
-
-        for(let i=0;i<70;i++){
-
-            const a = (Math.PI*2/70)*i;
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                this.irisX,
-                this.irisY
-            );
-
-            ctx.lineTo(
-                this.irisX + Math.cos(a)*irisR,
-                this.irisY + Math.sin(a)*irisR
-            );
-
-            ctx.strokeStyle =
-            "rgba(255,255,255,.06)";
-
-            ctx.lineWidth = 1;
-
-            ctx.stroke();
+                // --- 6. Слёзная жидкость (влажные блики на нижнем веке) ---
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.globalAlpha = 0.2;
+                for (let i = 0; i < 10; i++) {
+                    const t = Math.random();
+                    const p0x = innerX, p0y = iY;
+                    const p1x = lowerCPx, p1y = lcpY;
+                    const p2x = outerX, p2y = oY;
+                    const mt = 1 - t;
+                    const qx = mt * mt * p0x + 2 * mt * t * p1x + t * t * p2x;
+                    const qy = mt * mt * p0y + 2 * mt * t * p1y + t * t * p2y;
+                    ctx.beginPath();
+                    ctx.arc(qx, qy - 1, size * 0.02, 0, 2 * Math.PI);
+                    ctx.fillStyle = "white";
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+                ctx.restore();
+            }
         }
 
-        /* pupil */
-
-        ctx.beginPath();
-
-        ctx.arc(
-            this.irisX,
-            this.irisY,
-            irisR*0.28,
-            0,
-            Math.PI*2
+        /* =========================
+           INITIALIZATION
+        ========================= */
+        const leftEye = new Eye(
+            w / 2 - Math.min(w, h) * 0.22,
+            h * 0.44,
+            1
+        );
+        const rightEye = new Eye(
+            w / 2 + Math.min(w, h) * 0.22,
+            h * 0.44,
+            -1
         );
 
-        ctx.fillStyle = "#000";
-        ctx.fill();
+        let mouseX = w / 2;
+        let mouseY = h / 2;
 
-        /* glossy cornea */
+        window.addEventListener("mousemove", e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        window.addEventListener("touchmove", e => {
+            if (e.touches.length) {
+                mouseX = e.touches[0].clientX;
+                mouseY = e.touches[0].clientY;
+            }
+        }, { passive: true });
 
-        const gloss =
-        ctx.createRadialGradient(
-            this.irisX - irisR*0.2,
-            this.irisY - irisR*0.2,
-            1,
-            this.irisX - irisR*0.2,
-            this.irisY - irisR*0.2,
-            irisR*0.8
-        );
+        // Автоматическое блуждание взгляда (если мышь не двигается долго)
+        let autoMoveTimer = 0;
+        const autoMoveInterval = 2800;
 
-        gloss.addColorStop(0,
-        "rgba(255,255,255,.75)");
-
-        gloss.addColorStop(.4,
-        "rgba(255,255,255,.18)");
-
-        gloss.addColorStop(1,
-        "rgba(255,255,255,0)");
-
-        ctx.beginPath();
-
-        ctx.arc(
-            this.irisX,
-            this.irisY,
-            irisR,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fillStyle = gloss;
-        ctx.fill();
-
-        /* upper shadow */
-
-        const shadow =
-        ctx.createLinearGradient(
-            0,
-            -this.radius,
-            0,
-            0
-        );
-
-        shadow.addColorStop(0,
-        "rgba(0,0,0,.45)");
-
-        shadow.addColorStop(1,
-        "rgba(0,0,0,0)");
-
-        ctx.fillStyle = shadow;
-
-        ctx.fillRect(
-            -this.radius,
-            -this.radius,
-            this.radius*2,
-            this.radius
-        );
-
-        /* eyelid */
-
-        if(this.blink > 0){
-
-            ctx.fillStyle = "#06090f";
-
-            const close =
-            this.radius*1.5*this.blink;
-
-            ctx.fillRect(
-                -this.radius*1.2,
-                -this.radius,
-                this.radius*2.4,
-                close
-            );
-
-            ctx.fillRect(
-                -this.radius*1.2,
-                this.radius-close,
-                this.radius*2.4,
-                close
-            );
+        function autoMove() {
+            const now = performance.now();
+            if (now - autoMoveTimer > autoMoveInterval) {
+                mouseX = w / 2 + (Math.random() * 300 - 150);
+                mouseY = h / 2 + (Math.random() * 160 - 80);
+                autoMoveTimer = now;
+            }
         }
 
-        ctx.restore();
-    }
-}
+        // Периодическое моргание
+        setInterval(() => {
+            leftEye.triggerBlink();
+            rightEye.triggerBlink();
+        }, 3500 + Math.random() * 2500);
 
-/* =========================
-   CREATE EYES
-========================= */
+        // Кнопка SCAN
+        document.getElementById("scanBtn").addEventListener("click", () => {
+            leftEye.triggerBlink();
+            rightEye.triggerBlink();
+            if (navigator.vibrate) navigator.vibrate(50);
+            const btn = document.getElementById("scanBtn");
+            const oldText = btn.innerText;
+            btn.innerText = "SCANNED";
+            setTimeout(() => { btn.innerText = oldText; }, 900);
+        });
 
-const leftEye =
-new Eye(
-    innerWidth/2 - 170,
-    innerHeight/2 - 40
-);
+        // Обработка ресайза
+        window.addEventListener("resize", () => {
+            resize();
+            leftEye.size = Math.min(w, h) * 0.16;
+            rightEye.size = Math.min(w, h) * 0.16;
+            leftEye.x = w / 2 - Math.min(w, h) * 0.22;
+            rightEye.x = w / 2 + Math.min(w, h) * 0.22;
+            leftEye.y = rightEye.y = h * 0.44;
+        });
 
-const rightEye =
-new Eye(
-    innerWidth/2 + 170,
-    innerHeight/2 - 40
-);
+        /* =========================
+           RENDER LOOP
+        ========================= */
+        function render(timestamp) {
+            ctx.clearRect(0, 0, w, h);
 
-let mouseX = innerWidth/2;
-let mouseY = innerHeight/2;
+            autoMove();
 
-window.addEventListener("mousemove",e=>{
+            leftEye.update(mouseX, mouseY, timestamp);
+            rightEye.update(mouseX, mouseY, timestamp);
 
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
+            leftEye.draw(ctx);
+            rightEye.draw(ctx);
 
-window.addEventListener("touchmove",e=>{
-
-    if(e.touches.length){
-
-        mouseX = e.touches[0].clientX;
-        mouseY = e.touches[0].clientY;
-    }
-});
-
-/* =========================
-   BLINK
-========================= */
-
-function blink(){
-
-    let t = 0;
-
-    const anim = setInterval(()=>{
-
-        t += 0.16;
-
-        const v =
-        Math.sin(t*Math.PI);
-
-        leftEye.blink = v;
-        rightEye.blink = v;
-
-        if(t >= 1){
-
-            leftEye.blink = 0;
-            rightEye.blink = 0;
-
-            clearInterval(anim);
+            requestAnimationFrame(render);
         }
 
-    },16);
-}
-
-setInterval(()=>{
-
-    blink();
-
-},3500 + Math.random()*2500);
-
-/* =========================
-   IDLE MOTION
-========================= */
-
-setInterval(()=>{
-
-    mouseX =
-    innerWidth/2 +
-    (Math.random()*260 - 130);
-
-    mouseY =
-    innerHeight/2 +
-    (Math.random()*140 - 70);
-
-},2600);
-
-/* =========================
-   BUTTON
-========================= */
-
-const btn =
-document.getElementById("scanBtn");
-
-btn.addEventListener("click",()=>{
-
-    blink();
-
-    if(navigator.vibrate){
-        navigator.vibrate(50);
-    }
-
-    const old = btn.innerText;
-
-    btn.innerText = "SCANNED";
-
-    setTimeout(()=>{
-
-        btn.innerText = old;
-
-    },900);
-});
-
-/* =========================
-   RENDER
-========================= */
-
-function render(){
-
-    ctx.clearRect(0,0,w,h);
-
-    leftEye.update(mouseX,mouseY);
-    rightEye.update(mouseX,mouseY);
-
-    leftEye.draw();
-    rightEye.draw();
-
-    requestAnimationFrame(render);
-}
-
-render();
-
-</script>
-
+        requestAnimationFrame(render);
+    </script>
 </body>
 </html>
