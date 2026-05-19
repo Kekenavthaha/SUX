@@ -20,7 +20,6 @@
             position: relative;
         }
 
-        /* Анимированный градиентный фон */
         .bg-gradient {
             position: fixed;
             top: 0;
@@ -36,7 +35,6 @@
             100% { background-position: 100% 20%; }
         }
 
-        /* Шум и сетка */
         .noise {
             position: fixed;
             top: 0;
@@ -62,7 +60,6 @@
             z-index: 1;
         }
 
-        /* Контейнер для canvas-глаз */
         .eyes-container {
             position: fixed;
             top: 0;
@@ -74,13 +71,13 @@
             align-items: center;
             gap: 8vw;
             z-index: 2;
-            pointer-events: none; /* чтобы не мешать кнопкам */
+            pointer-events: none;
         }
 
         canvas {
             width: min(280px, 35vw);
             height: min(280px, 35vw);
-            pointer-events: auto;   /* нужно для отслеживания координат внутри canvas? нет, курсор ловим на window */
+            pointer-events: auto;
             border-radius: 50%;
             box-shadow: 0 0 40px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,200,150,0.2);
             transition: box-shadow 0.2s;
@@ -89,7 +86,6 @@
             box-shadow: 0 0 60px rgba(255,80,80,0.3);
         }
 
-        /* Брендинг и кнопка */
         .sux-brand {
             position: fixed;
             bottom: 12%;
@@ -158,196 +154,31 @@
 
     <script>
         (function() {
-            // Размер canvas (физический 800x800)
             const SIZE = 800;
             const leftCanvas = document.getElementById('leftEyeCanvas');
             const rightCanvas = document.getElementById('rightEyeCanvas');
             const ctxLeft = leftCanvas.getContext('2d');
             const ctxRight = rightCanvas.getContext('2d');
-            
-            // Параметры глаз (общие для обоих, но рисуются отдельно)
+
+            // Параметры смещения радужки
             let leftIrisOffset = { x: 0, y: 0 };
             let rightIrisOffset = { x: 0, y: 0 };
-            
-            // Максимальное смещение радужки (в пикселях canvas)
-            const MAX_OFFSET = 45; 
-            
-            // Позиция взгляда (в нормализованных координатах экрана)
-            let targetX = 0, targetY = 0;
-            
-            // Флаг моргания (0 - открыт, 1 - закрыт)
-            let blinkProgress = 0; // 0..1, где 1 - закрыт
+            const MAX_OFFSET = 45;
+
+            // Моргание
+            let blinkProgress = 0;            // 0..1 (0 – открыт, 1 – закрыт)
             let isBlinking = false;
             let blinkStartTime = 0;
-            const BLINK_DURATION = 120; // ms
-            
-            // Ресницы и детали рисуются через функции
-            
-            // ---------- РИСОВАНИЕ РЕАЛИСТИЧНОГО ГЛАЗА ----------
-            function drawRealisticEye(ctx, irisOffsetX, irisOffsetY, isLeft = true) {
-                const cx = SIZE/2, cy = SIZE/2;
-                const eyeRadius = SIZE * 0.42;  // внешний радиус глаза
-                const irisRadius = SIZE * 0.22;
-                const pupilRadius = SIZE * 0.09;
-                
-                // 1. Склера (белок) с мягкой тенью и венозным рисунком
-                ctx.save();
-                ctx.shadowColor = "rgba(0,0,0,0.3)";
-                ctx.shadowBlur = 12;
-                ctx.beginPath();
-                ctx.ellipse(cx, cy, eyeRadius, eyeRadius*0.85, 0, 0, Math.PI*2);
-                ctx.fillStyle = "#f5f2ed";
-                ctx.fill();
-                ctx.shadowBlur = 0;
-                
-                // Рисуем прожилки на склере (тонкие красные линии)
-                ctx.globalAlpha = 0.25;
-                ctx.beginPath();
-                for (let i = 0; i < 18; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const rad = eyeRadius * 0.6;
-                    const x1 = cx + Math.cos(angle) * rad;
-                    const y1 = cy + Math.sin(angle) * rad;
-                    const x2 = cx + Math.cos(angle + (Math.random()-0.5)*0.5) * (rad + 20);
-                    const y2 = cy + Math.sin(angle + (Math.random()-0.5)*0.5) * (rad + 20);
-                    ctx.beginPath();
-                    ctx.moveTo(x1, y1);
-                    ctx.lineTo(x2, y2);
-                    ctx.strokeStyle = `rgba(180, 70, 70, ${Math.random() * 0.3})`;
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
-                }
-                ctx.globalAlpha = 1;
-                
-                // 2. Верхнее и нижнее веко (с тенью)
-                ctx.beginPath();
-                ctx.ellipse(cx, cy - eyeRadius*0.12, eyeRadius*1.02, eyeRadius*0.45, 0, 0, Math.PI*2);
-                ctx.fillStyle = "#d9c8b0";
-                ctx.fill();
-                ctx.beginPath();
-                ctx.ellipse(cx, cy + eyeRadius*0.1, eyeRadius*1.02, eyeRadius*0.4, 0, 0, Math.PI*2);
-                ctx.fillStyle = "#cbb99b";
-                ctx.fill();
-                
-                // 3. Радужка (сдвигается)
-                const irisCenterX = cx + irisOffsetX;
-                const irisCenterY = cy + irisOffsetY;
-                // Градиент радужки
-                const grad = ctx.createRadialGradient(irisCenterX-8, irisCenterY-8, 5, irisCenterX, irisCenterY, irisRadius);
-                grad.addColorStop(0, "#4a2e1e");
-                grad.addColorStop(0.4, "#7a5a3a");
-                grad.addColorStop(0.7, "#2a3a4a");
-                grad.addColorStop(1, "#1a2a3a");
-                ctx.beginPath();
-                ctx.arc(irisCenterX, irisCenterY, irisRadius, 0, Math.PI*2);
-                ctx.fillStyle = grad;
-                ctx.fill();
-                
-                // Детализация радужки: лучики, крапинки
-                ctx.globalAlpha = 0.6;
-                for (let i=0; i<60; i++) {
-                    const angle = Math.random() * Math.PI*2;
-                    const rad = irisRadius * (0.3 + Math.random()*0.6);
-                    const x = irisCenterX + Math.cos(angle) * rad;
-                    const y = irisCenterY + Math.sin(angle) * rad;
-                    ctx.beginPath();
-                    ctx.arc(x, y, Math.random()*3+1, 0, Math.PI*2);
-                    ctx.fillStyle = `rgba(80, 50, 30, ${Math.random()*0.5})`;
-                    ctx.fill();
-                }
-                ctx.globalAlpha = 1;
-                
-                // 4. Зрачок
-                ctx.beginPath();
-                ctx.arc(irisCenterX, irisCenterY, pupilRadius, 0, Math.PI*2);
-                ctx.fillStyle = "#0a0a12";
-                ctx.fill();
-                ctx.shadowBlur = 0;
-                
-                // 5. Блики (два ярких пятна)
-                ctx.beginPath();
-                ctx.arc(irisCenterX - pupilRadius*0.4, irisCenterY - pupilRadius*0.4, pupilRadius*0.35, 0, Math.PI*2);
-                ctx.fillStyle = "rgba(255,255,240,0.85)";
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(irisCenterX + pupilRadius*0.2, irisCenterY + pupilRadius*0.2, pupilRadius*0.18, 0, Math.PI*2);
-                ctx.fillStyle = "rgba(255,255,200,0.7)";
-                ctx.fill();
-                
-                // 6. Ресницы (верхние и нижние)
-                ctx.beginPath();
-                ctx.strokeStyle = "#2c2418";
-                ctx.lineWidth = 2.5;
-                for (let i=0; i<28; i++) {
-                    const angle = -Math.PI/2 + (i-14) * 0.12 + (isLeft ? 0 : 0.05);
-                    const baseX = cx + Math.cos(angle) * (eyeRadius - 2);
-                    const baseY = cy + Math.sin(angle) * (eyeRadius*0.85) - 3;
-                    const len = 12 + Math.random() * 8;
-                    const angleOut = angle - 0.5 + (Math.random() - 0.5)*0.4;
-                    const endX = baseX + Math.cos(angleOut) * len;
-                    const endY = baseY + Math.sin(angleOut) * len;
-                    ctx.beginPath();
-                    ctx.moveTo(baseX, baseY);
-                    ctx.lineTo(endX, endY);
-                    ctx.stroke();
-                }
-                // нижние ресницы (короче)
-                ctx.beginPath();
-                for (let i=0; i<18; i++) {
-                    const angle = Math.PI/2 + (i-9) * 0.12;
-                    const baseX = cx + Math.cos(angle) * (eyeRadius - 2);
-                    const baseY = cy + Math.sin(angle) * (eyeRadius*0.8) + 2;
-                    const len = 6 + Math.random() * 6;
-                    const angleOut = angle + 0.4 + (Math.random()-0.5)*0.3;
-                    const endX = baseX + Math.cos(angleOut) * len;
-                    const endY = baseY + Math.sin(angleOut) * len;
-                    ctx.beginPath();
-                    ctx.moveTo(baseX, baseY);
-                    ctx.lineTo(endX, endY);
-                    ctx.stroke();
-                }
-                
-                // 7. Эффект влажности (маленькие блики по краю века)
-                ctx.globalAlpha = 0.3;
-                for (let i=0;i<12;i++) {
-                    const angle = Math.random() * Math.PI*2;
-                    const r = eyeRadius - 5;
-                    const x = cx + Math.cos(angle) * r;
-                    const y = cy + Math.sin(angle) * r * 0.85;
-                    ctx.beginPath();
-                    ctx.arc(x, y, 2, 0, Math.PI*2);
-                    ctx.fillStyle = "white";
-                    ctx.fill();
-                }
-                ctx.globalAlpha = 1;
-                
-                // 8. Моргание (затемнение/перекрытие века)
-                if (blinkProgress > 0) {
-                    // Рисуем полупрозрачное веко, закрывающее глаз
-                    const blinkHeight = eyeRadius * 1.2 * blinkProgress;
-                    ctx.beginPath();
-                    ctx.ellipse(cx, cy - eyeRadius*0.2, eyeRadius*1.05, blinkHeight, 0, 0, Math.PI*2);
-                    ctx.fillStyle = `rgba(210, 180, 140, ${Math.min(1, blinkProgress*1.2)})`;
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.ellipse(cx, cy + eyeRadius*0.1, eyeRadius*1.05, blinkHeight*0.8, 0, 0, Math.PI*2);
-                    ctx.fill();
-                }
-                
-                ctx.restore();
-            }
-            
-            // Функция обновления позиции взгляда
+            const BLINK_DURATION = 200;       // мс, плавная анимация
+
+            // Обновление направления взгляда по координатам указателя
             function updateGaze(clientX, clientY) {
-                // Получаем центр экрана (условно, но лучше относительно canvas)
-                // Для простоты используем центр окна
                 const winW = window.innerWidth;
                 const winH = window.innerHeight;
-                const centerX = winW/2;
-                const centerY = winH/2;
-                let dx = (clientX - centerX) / (winW/2);
-                let dy = (clientY - centerY) / (winH/2);
-                // ограничим
+                const centerX = winW / 2;
+                const centerY = winH / 2;
+                let dx = (clientX - centerX) / (winW / 2);
+                let dy = (clientY - centerY) / (winH / 2);
                 dx = Math.min(0.8, Math.max(-0.8, dx));
                 dy = Math.min(0.6, Math.max(-0.6, dy));
                 const offsetX = dx * MAX_OFFSET;
@@ -355,31 +186,35 @@
                 leftIrisOffset = { x: offsetX, y: offsetY };
                 rightIrisOffset = { x: offsetX, y: offsetY };
             }
-            
-            // Моргание
+
+            // Плавное моргание с easing (ease-in-out) и максимальной непрозрачностью 0.3
             function startBlink() {
                 if (isBlinking) return;
                 isBlinking = true;
                 blinkStartTime = performance.now();
+
                 function animateBlink(now) {
                     const elapsed = now - blinkStartTime;
                     if (elapsed >= BLINK_DURATION) {
                         blinkProgress = 0;
                         isBlinking = false;
-                        cancelAnimationFrame(blinkFrame);
+                        drawEyes();
+                        return;
+                    }
+                    const t = elapsed / BLINK_DURATION;
+                    // easeInOutQuad
+                    if (t < 0.5) {
+                        blinkProgress = 2 * t * t;
                     } else {
-                        // плавное закрытие-открытие
-                        let t = elapsed / BLINK_DURATION;
-                        if (t < 0.5) blinkProgress = t * 2;
-                        else blinkProgress = 2 - t * 2;
-                        blinkFrame = requestAnimationFrame(animateBlink);
+                        blinkProgress = 1 - Math.pow(-2 * t + 2, 2) / 2;
                     }
                     drawEyes();
+                    requestAnimationFrame(animateBlink);
                 }
-                let blinkFrame = requestAnimationFrame(animateBlink);
+                requestAnimationFrame(animateBlink);
             }
-            
-            // Автоматическое моргание раз в 3-7 секунд
+
+            // Автоматическое моргание каждые 3–7 секунд
             function scheduleRandomBlink() {
                 const delay = 3000 + Math.random() * 4000;
                 setTimeout(() => {
@@ -387,14 +222,221 @@
                     scheduleRandomBlink();
                 }, delay);
             }
-            
-            // Рисуем оба глаза
+
+            // ---------- РИСОВАНИЕ ГЛАЗА (реалистичный порядок слоёв) ----------
+            function drawRealisticEye(ctx, irisOffsetX, irisOffsetY, isLeft) {
+                const cx = SIZE / 2;
+                const cy = SIZE / 2;
+                const eyeRadius = SIZE * 0.42;
+                const irisRadius = SIZE * 0.22;
+                const pupilRadius = SIZE * 0.09;
+
+                // --- 1. Склера (белок) ---
+                ctx.save();
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, eyeRadius, eyeRadius * 0.85, 0, 0, Math.PI * 2);
+                ctx.fillStyle = "#f5f2ed";
+                ctx.fill();
+                // Тень от верхнего века (постоянная)
+                ctx.beginPath();
+                ctx.ellipse(cx, cy - eyeRadius * 0.15, eyeRadius * 0.98, eyeRadius * 0.25, 0, Math.PI, 0, true);
+                ctx.fillStyle = "rgba(0,0,0,0.07)";
+                ctx.fill();
+                // Тень от нижнего века
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + eyeRadius * 0.1, eyeRadius * 0.98, eyeRadius * 0.2, 0, 0, Math.PI, false);
+                ctx.fillStyle = "rgba(0,0,0,0.04)";
+                ctx.fill();
+
+                // Прожилки (красноватые)
+                ctx.globalAlpha = 0.22;
+                for (let i = 0; i < 16; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const rad = eyeRadius * 0.55;
+                    const x1 = cx + Math.cos(angle) * rad;
+                    const y1 = cy + Math.sin(angle) * rad;
+                    const x2 = cx + Math.cos(angle + (Math.random() - 0.5) * 0.5) * (rad + 18);
+                    const y2 = cy + Math.sin(angle + (Math.random() - 0.5) * 0.5) * (rad + 18);
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.strokeStyle = `rgba(180,70,70,${Math.random() * 0.25 + 0.05})`;
+                    ctx.lineWidth = 1.4;
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1.0;
+                ctx.restore();
+
+                // --- 2. Радужка и зрачок (под веками, чтобы веки их перекрывали) ---
+                const irisX = cx + irisOffsetX;
+                const irisY = cy + irisOffsetY;
+
+                // Радужка с градиентом и деталями
+                ctx.save();
+                const gradIris = ctx.createRadialGradient(irisX - 6, irisY - 6, 2, irisX, irisY, irisRadius);
+                gradIris.addColorStop(0, '#5a3e2b');
+                gradIris.addColorStop(0.4, '#8b5e3c');
+                gradIris.addColorStop(0.75, '#3a4a5a');
+                gradIris.addColorStop(0.92, '#1a2a3a');
+                gradIris.addColorStop(1, '#0a0a12');      // тёмное лимбальное кольцо
+                ctx.beginPath();
+                ctx.arc(irisX, irisY, irisRadius, 0, Math.PI * 2);
+                ctx.fillStyle = gradIris;
+                ctx.fill();
+
+                // Радиальные волокна (текстура радужки)
+                ctx.globalAlpha = 0.25;
+                ctx.translate(irisX, irisY);
+                for (let i = 0; i < 100; i++) {
+                    const angle = (i / 100) * Math.PI * 2;
+                    const len1 = irisRadius * 0.35;
+                    const len2 = irisRadius * (0.65 + Math.random() * 0.2);
+                    ctx.beginPath();
+                    ctx.moveTo(Math.cos(angle) * len1, Math.sin(angle) * len1);
+                    ctx.lineTo(Math.cos(angle) * len2, Math.sin(angle) * len2);
+                    ctx.strokeStyle = `rgba(40,20,10,${0.15 + Math.random() * 0.25})`;
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+                }
+                // Мелкие крапинки
+                for (let i = 0; i < 70; i++) {
+                    const a = Math.random() * Math.PI * 2;
+                    const r = irisRadius * (0.25 + Math.random() * 0.65);
+                    ctx.beginPath();
+                    ctx.arc(Math.cos(a) * r, Math.sin(a) * r, Math.random() * 2 + 0.4, 0, 2 * Math.PI);
+                    ctx.fillStyle = `rgba(60,30,10,${Math.random() * 0.35})`;
+                    ctx.fill();
+                }
+                ctx.setTransform(1, 0, 0, 1, 0, 0); // сброс трансформации
+                ctx.globalAlpha = 1.0;
+
+                // Зрачок
+                ctx.beginPath();
+                ctx.arc(irisX, irisY, pupilRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#050508';
+                ctx.fill();
+
+                // Блики на роговице (отражения)
+                ctx.beginPath();
+                ctx.arc(irisX - pupilRadius * 0.5, irisY - pupilRadius * 0.5, pupilRadius * 0.32, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(255,255,250,0.92)";
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(irisX + pupilRadius * 0.25, irisY + pupilRadius * 0.2, pupilRadius * 0.15, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(255,255,220,0.8)";
+                ctx.fill();
+                ctx.restore();
+
+                // --- 3. Веки (рисуются поверх глазного яблока) ---
+                // Верхнее веко
+                ctx.save();
+                ctx.beginPath();
+                ctx.ellipse(cx, cy - eyeRadius * 0.15, eyeRadius * 1.02, eyeRadius * 0.45, 0, 0, Math.PI * 2);
+                const gradUpper = ctx.createLinearGradient(cx, cy - eyeRadius * 0.6, cx, cy + eyeRadius * 0.3);
+                gradUpper.addColorStop(0, '#c8b594');
+                gradUpper.addColorStop(0.7, '#a88b6c');
+                ctx.fillStyle = gradUpper;
+                ctx.fill();
+                // Тень под верхним веком на глазном яблоке (дополнительный объём)
+                ctx.beginPath();
+                ctx.ellipse(cx, cy - eyeRadius * 0.12, eyeRadius * 0.98, eyeRadius * 0.28, 0, Math.PI, 0, true);
+                ctx.fillStyle = "rgba(0,0,0,0.08)";
+                ctx.fill();
+                ctx.restore();
+
+                // Нижнее веко
+                ctx.save();
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + eyeRadius * 0.12, eyeRadius * 1.02, eyeRadius * 0.4, 0, 0, Math.PI * 2);
+                const gradLower = ctx.createLinearGradient(cx, cy + eyeRadius * 0.6, cx, cy - eyeRadius * 0.3);
+                gradLower.addColorStop(0, '#bca586');
+                gradLower.addColorStop(0.7, '#d9c8b0');
+                ctx.fillStyle = gradLower;
+                ctx.fill();
+                ctx.restore();
+
+                // --- 4. Ресницы (над веками) ---
+                ctx.save();
+                ctx.strokeStyle = "#1a1510";
+                // Верхние ресницы
+                ctx.lineWidth = 2.2;
+                for (let i = 0; i < 28; i++) {
+                    const baseAngle = -Math.PI / 2 + (i - 14) * 0.1;
+                    const baseX = cx + Math.cos(baseAngle) * (eyeRadius - 4);
+                    const baseY = cy + Math.sin(baseAngle) * (eyeRadius * 0.85) - 3;
+                    const tipAngle = baseAngle - 0.4 + (Math.random() - 0.5) * 0.3;
+                    const len = 10 + Math.random() * 8;
+                    const tipX = baseX + Math.cos(tipAngle) * len;
+                    const tipY = baseY + Math.sin(tipAngle) * len;
+                    ctx.beginPath();
+                    ctx.moveTo(baseX, baseY);
+                    ctx.lineTo(tipX, tipY);
+                    ctx.stroke();
+                }
+                // Нижние ресницы
+                ctx.lineWidth = 1.7;
+                for (let i = 0; i < 20; i++) {
+                    const baseAngle = Math.PI / 2 + (i - 10) * 0.1;
+                    const baseX = cx + Math.cos(baseAngle) * (eyeRadius - 3);
+                    const baseY = cy + Math.sin(baseAngle) * (eyeRadius * 0.8) + 2;
+                    const tipAngle = baseAngle + 0.4 + (Math.random() - 0.5) * 0.3;
+                    const len = 5 + Math.random() * 6;
+                    const tipX = baseX + Math.cos(tipAngle) * len;
+                    const tipY = baseY + Math.sin(tipAngle) * len;
+                    ctx.beginPath();
+                    ctx.moveTo(baseX, baseY);
+                    ctx.lineTo(tipX, tipY);
+                    ctx.stroke();
+                }
+                ctx.restore();
+
+                // --- 5. Влажные блики по краю век ---
+                ctx.save();
+                ctx.globalAlpha = 0.25;
+                for (let i = 0; i < 10; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const r = eyeRadius - 4;
+                    const x = cx + Math.cos(angle) * r;
+                    const y = cy + Math.sin(angle) * r * 0.85;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 1.5, 0, 2 * Math.PI);
+                    ctx.fillStyle = "white";
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+                ctx.restore();
+
+                // --- 6. Анимированное моргание (полупрозрачные веки) ---
+                if (blinkProgress > 0.005) {
+                    const alpha = Math.min(0.3, blinkProgress * 0.3); // максимальная непрозрачность 30%
+                    // Верхнее веко опускается
+                    const upperY = cy - eyeRadius * 0.85 + blinkProgress * eyeRadius * 1.7;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.ellipse(cx, upperY, eyeRadius * 1.05, eyeRadius * 0.8, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(200, 170, 130, ${alpha})`;
+                    ctx.fill();
+                    ctx.restore();
+                    // Нижнее веко поднимается
+                    const lowerY = cy + eyeRadius * 0.85 - blinkProgress * eyeRadius * 1.7;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.ellipse(cx, lowerY, eyeRadius * 1.05, eyeRadius * 0.8, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(190, 160, 120, ${alpha})`;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // Перерисовка обоих глаз
             function drawEyes() {
+                ctxLeft.clearRect(0, 0, SIZE, SIZE);
+                ctxRight.clearRect(0, 0, SIZE, SIZE);
                 drawRealisticEye(ctxLeft, leftIrisOffset.x, leftIrisOffset.y, true);
                 drawRealisticEye(ctxRight, rightIrisOffset.x, rightIrisOffset.y, false);
             }
-            
-            // Обработка движения мыши/пальца
+
+            // Обработка движения курсора / пальца
             function onPointerMove(e) {
                 let clientX, clientY;
                 if (e.touches) {
@@ -407,29 +449,29 @@
                 updateGaze(clientX, clientY);
                 drawEyes();
             }
-            
+
             // Инициализация
             function init() {
-                // Устанавливаем начальный взгляд в центр
-                updateGaze(window.innerWidth/2, window.innerHeight/2);
+                updateGaze(window.innerWidth / 2, window.innerHeight / 2);
                 drawEyes();
+
                 window.addEventListener('mousemove', onPointerMove);
-                window.addEventListener('touchmove', onPointerMove);
-                window.addEventListener('touchstart', onPointerMove);
+                window.addEventListener('touchmove', onPointerMove, { passive: true });
+                window.addEventListener('touchstart', onPointerMove, { passive: true });
+
                 scheduleRandomBlink();
-                // По клику на кнопку тоже моргаем
-                const btn = document.getElementById('actionBtn');
-                btn.addEventListener('click', () => {
+
+                document.getElementById('actionBtn').addEventListener('click', () => {
                     startBlink();
                     if (navigator.vibrate) navigator.vibrate(50);
                 });
-                // Адаптация при ресайзе — пересчёт взгляда по центру
+
                 window.addEventListener('resize', () => {
-                    updateGaze(window.innerWidth/2, window.innerHeight/2);
+                    updateGaze(window.innerWidth / 2, window.innerHeight / 2);
                     drawEyes();
                 });
             }
-            
+
             init();
         })();
     </script>
