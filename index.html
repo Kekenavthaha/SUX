@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SUX — мессенджер, который всегда смотрит</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* чтобы не выделялось */
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0c12;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            color: #eee;
+        }
+
+        /* ---------- АНИМИРОВАННЫЙ ГРАДИЕНТ (база) ---------- */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0f1a, #0c1a1a, #1a0f0a);
+            background-size: 300% 300%;
+            animation: gradientFlow 14s ease infinite;
+            z-index: 0;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* ---------- ШУМ (зерно) ---------- */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjciIG51bU9jdGF2ZXM9IjMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZikiIG9wYWNpdHk9IjAuMDYiLz48L3N2Zz4=');
+            background-repeat: repeat;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        /* ---------- СЕТКА (эффект наблюдения) ---------- */
+        .grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 50, 50, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 50, 50, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ---------- ГЛАЗА ---------- */
+        .eyes-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20vw;
+            pointer-events: none; /* чтобы глаза не мешали нажимать на кнопки */
+            z-index: 2;
+            transform: translateY(-15%);
+        }
+
+        .eye {
+            position: relative;
+            width: clamp(80px, 20vw, 180px);
+            height: clamp(80px, 20vw, 180px);
+            background: #f0f0f0;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.05s linear;
+        }
+
+        /* радужка/зрачок */
+        .pupil {
+            position: absolute;
+            width: 38%;
+            height: 38%;
+            background: radial-gradient(circle at 35% 35%, #111, #000);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: inset 0 0 4px #444, 0 0 8px rgba(0,0,0,0.5);
+        }
+
+        /* блик для живости */
+        .pupil::after {
+            content: "";
+            position: absolute;
+            width: 28%;
+            height: 28%;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            top: 20%;
+            left: 20%;
+        }
+
+        /* Веки для моргания (анимация) */
+        .eye .lid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f0f0f0;
+            border-radius: 50%;
+            transform: scaleY(1);
+            transition: transform 0.08s ease-in-out;
+            transform-origin: center;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .eye.blink .lid {
+            transform: scaleY(0);
+        }
+
+        /* текст в центре (временный) */
+        .sux-brand {
+            position: fixed;
+            bottom: 15%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: clamp(36px, 12vw, 80px);
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: rgba(255, 70, 70, 0.7);
+            text-shadow: 0 0 20px rgba(255,0,0,0.5);
+            font-family: monospace;
+            z-index: 3;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
+        .slogan {
+            position: fixed;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255,200,200,0.5);
+            font-family: monospace;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* кнопка-заглушка для демо (чтобы показать интерактив) */
+        .demo-button {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            background: #b33;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 24px;
+            font-weight: bold;
+            z-index: 10;
+            pointer-events: auto;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-family: inherit;
+            transition: 0.1s;
+        }
+        .demo-button:active {
+            transform: scale(0.96);
+        }
+
+        /* адаптация для тач-устройств */
+        @media (max-width: 600px) {
+            .eyes-wrapper {
+                gap: 12vw;
+                transform: translateY(-10%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="noise"></div>
+    <div class="grid"></div>
+
+    <div class="eyes-wrapper">
+        <div class="eye" id="leftEye">
+            <div class="pupil" id="leftPupil"></div>
+            <div class="lid" id="leftLid"></div>
+        </div>
+        <div class="eye" id="rightEye">
+            <div class="pupil" id="rightPupil"></div>
+            <div class="lid" id="rightLid"></div>
+        </div>
+    </div>
+
+    <div class="sux-brand">SUX</div>
+    <div class="slogan">и смотрит, и слушает, и помнит</div>
+
+    <button class="demo-button" id="demoBtn">👆 Нажми на меня</button>
+
+    <script>
+        (function() {
+            // --- элементы ---
+            const leftPupil = document.getElementById('leftPupil');
+            const rightPupil = document.getElementById('rightPupil');
+            const leftEye = document.getElementById('leftEye');
+            const rightEye = document.getElementById('rightEye');
+
+            // ограничитель смещения зрачка (в пикселях относительно центра глаза)
+            const maxOffset = 28; // максимальное смещение в px при 200px глазе, динамически пересчитаем под размер
+            
+            function getMaxOffset(eyeElement) {
+                const eyeSize = eyeElement.offsetWidth;
+                // зрачок 38% от глаза, его радиус ~19% от глаза
+                const pupilRadius = eyeSize * 0.19;
+                const eyeRadius = eyeSize * 0.5;
+                const limit = eyeRadius - pupilRadius - 2;
+                return Math.max(6, limit);
+            }
+
+            // обновление позиции зрачков по координатам курсора/пальца
+            function updatePupils(clientX, clientY) {
+                // размеры и позиции глаз
+                const leftRect = leftEye.getBoundingClientRect();
+                const rightRect = rightEye.getBoundingClientRect();
+                
+                const leftMax = getMaxOffset(leftEye);
+                const rightMax = getMaxOffset(rightEye);
+                
+                // функция для вычисления смещения для одного глаза
+                function getOffset(eyeRect, maxOff) {
+                    const eyeCenterX = eyeRect.left + eyeRect.width / 2;
+                    const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+                    let dx = clientX - eyeCenterX;
+                    let dy = clientY - eyeCenterY;
+                    const distance = Math.hypot(dx, dy);
+                    if (distance === 0) return { x: 0, y: 0 };
+                    const angle = Math.atan2(dy, dx);
+                    let offset = Math.min(maxOff, distance);
+                    // если курсор далеко, зрачок всё равно не выходит за лимит
+                    const moveX = Math.cos(angle) * offset;
+                    const moveY = Math.sin(angle) * offset;
+                    return { x: moveX, y: moveY };
+                }
+                
+                const leftOffset = getOffset(leftRect, leftMax);
+                const rightOffset = getOffset(rightRect, rightMax);
+                
+                leftPupil.style.transform = `translate(calc(-50% + ${leftOffset.x}px), calc(-50% + ${leftOffset.y}px))`;
+                rightPupil.style.transform = `translate(calc(-50% + ${rightOffset.x}px), calc(-50% + ${rightOffset.y}px))`;
+            }
+            
+            // ---------- МОРГАНИЕ ----------
+            function blinkEye(eyeElement, lidElement) {
+                if (!eyeElement || !lidElement) return;
+                eyeElement.classList.add('blink');
+                lidElement.style.transform = 'scaleY(0)';
+                setTimeout(() => {
+                    eyeElement.classList.remove('blink');
+                    lidElement.style.transform = '';
+                }, 120);
+            }
+            
+            function blinkBoth() {
+                blinkEye(leftEye, document.getElementById('leftLid'));
+                blinkEye(rightEye, document.getElementById('rightLid'));
+            }
+            
+            // регулярное моргание каждые 4-7 секунд
+            let blinkInterval = setInterval(() => {
+                blinkBoth();
+            }, Math.random() * 3000 + 4000);
+            
+            // демо-кнопка: по клику тоже моргаем + дополнительный эффект
+            const demoBtn = document.getElementById('demoBtn');
+            demoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                blinkBoth();
+                // маленькая вибро-имитация (если поддерживается)
+                if (navigator.vibrate) navigator.vibrate(50);
+                // меняем текст кнопки на секунду
+                const original = demoBtn.innerText;
+                demoBtn.innerText = '👁️ зафиксировано!';
+                setTimeout(() => { demoBtn.innerText = original; }, 800);
+            });
+            
+            // СЛЕЖЕНИЕ ЗА МЫШЬЮ
+            window.addEventListener('mousemove', (e) => {
+                updatePupils(e.clientX, e.clientY);
+            });
+            
+            // СЛЕЖЕНИЕ ЗА ПАЛЬЦЕМ (touchmove)
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches.length) {
+                    const touch = e.touches[0];
+                    updatePupils(touch.clientX, touch.clientY);
+                }
+            });
+            
+            // также при касании без движения (первое прикосновение)
+            window.addEventListener('touchstart', (e) => {
+                if (e.touches.length) {
+                    const touch = e.touches[0];
+                    updatePupils(touch.clientX, touch.clientY);
+                }
+            });
+            
+            // при изменении размера окна пересчитываем ограничения (зрачки могут чуть дернуться, но это нормально)
+            window.addEventListener('resize', () => {
+                // просто обновим позицию по последней известной (нет сохранённой, но можно ничего не делать)
+                // либо оставим как есть
+            });
+            
+            // Инициализация: ставим зрачки по центру
+            leftPupil.style.transform = `translate(-50%, -50%)`;
+            rightPupil.style.transform = `translate(-50%, -50%)`;
+            
+            // Дополнительный параноидальный эффект: при бездействии мыши долго - зрачки медленно вращаются?
+            // Но пока оставим просто слежение.
+            
+            console.log('SUX глаза активированы. Они смотрят на тебя.');
+        })();
+    </script>
+</body>
+</html>
