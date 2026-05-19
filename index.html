@@ -104,7 +104,7 @@ canvas{
     inset:0;
     width:100%;
     height:100%;
-    z-index:2;
+    z-index:50;
     pointer-events:none;
 }
 
@@ -204,6 +204,7 @@ canvas{
     align-items:center;
     gap:10px;
     position:relative;
+    padding-left:34px;
 }
 
 .avatar{
@@ -907,113 +908,25 @@ function setTab(tab){
 
     topBar.classList.remove('hidden');
     content.classList.remove('hidden');
+const userRect =
+document.querySelector('.user')
+.getBoundingClientRect();
 
-    /* PROFILE */
+/* фиксированная позиция глаз */
 
-    if(tab === 'profile'){
+eyeState.targetX =
+userRect.left + 62;
 
-        const userRect =
-        document.querySelector('.user')
-        .getBoundingClientRect();
+eyeState.targetY =
+userRect.top + 17;
 
-        eyeState.targetX =
-        userRect.left + 120;
+/* размер */
 
-        eyeState.targetY =
-        userRect.top + 18;
+eyeState.targetScale = 0.07;
 
-        eyeState.targetScale = 0.09;
+/* расстояние между глазами */
 
-        eyeState.targetSpacing = 10;
-
-        content.innerHTML = `
-        <div class="card">
-        👤 Профиль пользователя
-        </div>
-        `;
-    }
-
-    /* BANK */
-
-    if(tab === 'bank'){
-
-        eyeState.targetX =
-        innerWidth - 140;
-
-        eyeState.targetY = 90;
-
-        eyeState.targetScale = 0.08;
-
-        eyeState.targetSpacing = 8;
-
-        content.innerHTML = `
-        <div class="card">
-        🏦 Банковская система
-        </div>
-        `;
-    }
-
-    /* DARKNET */
-
-    if(tab === 'darknet'){
-
-        eyeState.targetX =
-        innerWidth/2;
-
-        eyeState.targetY = 90;
-
-        eyeState.targetScale = 0.07;
-
-        eyeState.targetSpacing = 7;
-
-        content.innerHTML = `
-        <div class="card">
-        🕶️ Darknet node connected
-        </div>
-        `;
-    }
-
-    /* COURT */
-
-    if(tab === 'court'){
-
-        eyeState.targetX =
-        innerWidth - 90;
-
-        eyeState.targetY = 70;
-
-        eyeState.targetScale = 0.06;
-
-        eyeState.targetSpacing = 6;
-
-        content.innerHTML = `
-        <div class="card">
-        ⚖️ Судебная система
-        </div>
-        `;
-    }
-
-    /* HOUSING */
-
-    if(tab === 'housing'){
-
-        eyeState.targetX =
-        innerWidth - 120;
-
-        eyeState.targetY =
-        innerHeight - 180;
-
-        eyeState.targetScale = 0.08;
-
-        eyeState.targetSpacing = 8;
-
-        content.innerHTML = `
-        <div class="card">
-        🏙️ Карта недвижимости
-        </div>
-        `;
-    }
-}
+eyeState.targetSpacing = 7;
 
 /* =========================
    TAB EVENTS
