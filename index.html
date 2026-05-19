@@ -924,18 +924,18 @@ function setTab(tab){
     .getBoundingClientRect();
 
     eyeState.targetX =
-    userRect.left + 62;
+    innerWidth / 2;
 
     eyeState.targetY =
-    userRect.top + 17;
+    innerHeight / 2 - 40;
 
     /* маленькие глаза */
 
-    eyeState.targetScale = 0.07;
+    eyeState.targetScale = 0.28;
 
     /* расстояние между ними */
 
-    eyeState.targetSpacing = 7;
+    eyeState.targetSpacing = 42;
 
     /* =========================
        CONTENT
