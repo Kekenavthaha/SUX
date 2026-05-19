@@ -5,7 +5,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>SUX — Cinematic Eyes</title>
+<title>SUX — AI Surveillance UI</title>
 
 <style>
 
@@ -109,7 +109,7 @@ canvas{
 }
 
 /* =========================
-   UI
+   LOGO
 ========================= */
 
 .logo{
@@ -162,6 +162,10 @@ canvas{
     pointer-events:none;
 }
 
+/* =========================
+   TOP BAR
+========================= */
+
 .top-bar{
     position:fixed;
 
@@ -186,6 +190,8 @@ canvas{
     z-index:10;
 
     transition:.25s;
+
+    overflow:hidden;
 }
 
 .balance{
@@ -197,6 +203,7 @@ canvas{
     display:flex;
     align-items:center;
     gap:10px;
+    position:relative;
 }
 
 .avatar{
@@ -211,6 +218,10 @@ canvas{
     align-items:center;
     justify-content:center;
 }
+
+/* =========================
+   CONTENT
+========================= */
 
 .content{
     position:fixed;
@@ -246,6 +257,10 @@ canvas{
 
     margin-bottom:14px;
 }
+
+/* =========================
+   BOTTOM MENU
+========================= */
 
 .bottom{
     position:fixed;
@@ -317,12 +332,19 @@ I SEE • I LISTEN • I REMEMBER
 <div class="top-bar hidden" id="topBar">
 
     <div class="user">
-        <div class="avatar">🦀</div>
-        <div>Краб Гражданин</div>
+
+        <div class="avatar">
+        🦀
+        </div>
+
+        <div>
+        Краб Гражданин
+        </div>
+
     </div>
 
     <div class="balance">
-        12 500 кр.
+    12 500 кр.
     </div>
 
 </div>
@@ -406,13 +428,13 @@ let eyeState = {
     y: innerHeight/2 - 40,
 
     scale:1,
-    spacing:220,
+    spacing:160,
 
     targetX:innerWidth/2,
     targetY:innerHeight/2 - 40,
 
     targetScale:1,
-    targetSpacing:220
+    targetSpacing:160
 };
 
 let mouseX = innerWidth/2;
@@ -451,7 +473,10 @@ class Eye{
     update(mx,my){
 
         this.radius =
-        this.baseRadius * this.scale;
+        Math.max(
+            6,
+            this.baseRadius * this.scale
+        );
 
         const dx = mx - this.x;
         const dy = my - this.y;
@@ -492,7 +517,7 @@ class Eye{
 
         ctx.translate(this.x,this.y);
 
-        /* shape */
+        /* EYE SHAPE */
 
         ctx.beginPath();
 
@@ -516,7 +541,7 @@ class Eye{
 
         ctx.clip();
 
-        /* sclera */
+        /* SCLERA */
 
         const sclera =
         ctx.createRadialGradient(
@@ -542,7 +567,7 @@ class Eye{
             this.radius*2
         );
 
-        /* iris */
+        /* IRIS */
 
         const irisR =
         this.radius*0.42;
@@ -576,12 +601,12 @@ class Eye{
         ctx.fillStyle = iris;
         ctx.fill();
 
-        /* iris lines */
+        /* IRIS DETAILS */
 
-        for(let i=0;i<120;i++){
+        for(let i=0;i<70;i++){
 
             const a =
-            (Math.PI*2/120)*i;
+            (Math.PI*2/70)*i;
 
             const len =
             irisR*(0.65+Math.random()*0.3);
@@ -609,7 +634,7 @@ class Eye{
             ctx.stroke();
         }
 
-        /* pupil */
+        /* PUPIL */
 
         ctx.beginPath();
 
@@ -630,7 +655,7 @@ class Eye{
 
         ctx.shadowBlur = 0;
 
-        /* gloss */
+        /* GLOSS */
 
         const gloss =
         ctx.createRadialGradient(
@@ -659,7 +684,7 @@ class Eye{
         ctx.fillStyle = gloss;
         ctx.fill();
 
-        /* highlight */
+        /* HIGHLIGHT */
 
         ctx.beginPath();
 
@@ -676,7 +701,7 @@ class Eye{
 
         ctx.fill();
 
-        /* blink */
+        /* BLINK */
 
         if(this.blink > 0){
 
@@ -710,13 +735,13 @@ class Eye{
 
 const leftEye =
 new Eye(
-    innerWidth/2 - 220,
+    innerWidth/2 - 160,
     innerHeight/2
 );
 
 const rightEye =
 new Eye(
-    innerWidth/2 + 220,
+    innerWidth/2 + 160,
     innerHeight/2
 );
 
@@ -824,7 +849,7 @@ function render(){
 render();
 
 /* =========================
-   UI TABS
+   UI
 ========================= */
 
 const tabs =
@@ -854,6 +879,8 @@ function setTab(tab){
         }
     });
 
+    /* HOME */
+
     if(tab === 'home'){
 
         logo.classList.remove('hidden');
@@ -870,7 +897,7 @@ function setTab(tab){
 
         eyeState.targetScale = 1;
 
-        eyeState.targetSpacing = 220;
+        eyeState.targetSpacing = 160;
 
         return;
     }
@@ -885,12 +912,19 @@ function setTab(tab){
 
     if(tab === 'profile'){
 
-        eyeState.targetX = 120;
-        eyeState.targetY = 80;
+        const userRect =
+        document.querySelector('.user')
+        .getBoundingClientRect();
 
-        eyeState.targetScale = 0.18;
+        eyeState.targetX =
+        userRect.left + 120;
 
-        eyeState.targetSpacing = 26;
+        eyeState.targetY =
+        userRect.top + 18;
+
+        eyeState.targetScale = 0.09;
+
+        eyeState.targetSpacing = 10;
 
         content.innerHTML = `
         <div class="card">
@@ -908,9 +942,9 @@ function setTab(tab){
 
         eyeState.targetY = 90;
 
-        eyeState.targetScale = 0.15;
+        eyeState.targetScale = 0.08;
 
-        eyeState.targetSpacing = 20;
+        eyeState.targetSpacing = 8;
 
         content.innerHTML = `
         <div class="card">
@@ -928,9 +962,9 @@ function setTab(tab){
 
         eyeState.targetY = 90;
 
-        eyeState.targetScale = 0.12;
+        eyeState.targetScale = 0.07;
 
-        eyeState.targetSpacing = 18;
+        eyeState.targetSpacing = 7;
 
         content.innerHTML = `
         <div class="card">
@@ -948,9 +982,9 @@ function setTab(tab){
 
         eyeState.targetY = 70;
 
-        eyeState.targetScale = 0.1;
+        eyeState.targetScale = 0.06;
 
-        eyeState.targetSpacing = 14;
+        eyeState.targetSpacing = 6;
 
         content.innerHTML = `
         <div class="card">
@@ -969,9 +1003,9 @@ function setTab(tab){
         eyeState.targetY =
         innerHeight - 180;
 
-        eyeState.targetScale = 0.16;
+        eyeState.targetScale = 0.08;
 
-        eyeState.targetSpacing = 20;
+        eyeState.targetSpacing = 8;
 
         content.innerHTML = `
         <div class="card">
