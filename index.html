@@ -20,7 +20,7 @@
         color: white;
     }
 
-    /* КИНО-ФОН */
+    /* Фоновые эффекты (не меняются) */
     .bg {
         position: fixed;
         inset: 0;
@@ -63,13 +63,22 @@
     canvas {
         position: fixed;
         z-index: 2;
-        pointer-events: none; /* глаза не мешают нажатию */
+        pointer-events: none;
+        transition: all 0.2s;
     }
 
-    /* Стили для маленьких глаз (правый нижний угол) */
+    /* Большие глаза (главная) */
+    canvas.big-eyes {
+        width: 100%;
+        height: 100%;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    /* Маленькие глаза (остальные вкладки) */
     canvas.small-eyes {
-        width: 70px;
-        height: 70px;
+        width: 80px;
+        height: 80px;
         bottom: 24px;
         right: 24px;
         top: auto;
@@ -79,73 +88,37 @@
         cursor: pointer;
         pointer-events: auto;
     }
-    canvas.big-eyes {
-        width: 100%;
-        height: 100%;
-        inset: 0;
-        pointer-events: none;
-    }
 
-    /* UI панели (скрыты на главной) */
-    .top-bar, .glass-panel {
+    /* Логотип и слоган (видны только на главной) */
+    .logo, .slogan {
+        position: fixed;
+        width: 100%;
+        text-align: center;
+        pointer-events: none;
+        z-index: 5;
         transition: opacity 0.2s;
     }
-    .hidden-ui {
+    .logo {
+        bottom: 14%;
+        font-size: 92px;
+        font-weight: 900;
+        font-family: monospace;
+        letter-spacing: 14px;
+        color: rgba(255,70,70,.75);
+        text-shadow: 0 0 12px rgba(255,0,0,.45), 0 0 32px rgba(255,0,0,.22);
+    }
+    .slogan {
+        bottom: 8%;
+        color: rgba(255,255,255,.4);
+        letter-spacing: 4px;
+        font-size: 12px;
+    }
+    .hidden-logo {
         opacity: 0;
         pointer-events: none;
     }
-    .visible-ui {
-        opacity: 1;
-        pointer-events: auto;
-    }
 
-    .glass-panel {
-        position: fixed;
-        bottom: 20px;
-        left: 16px;
-        right: 16px;
-        background: rgba(10, 15, 25, 0.65);
-        backdrop-filter: blur(16px);
-        border-radius: 36px;
-        border: 1px solid rgba(255, 70, 70, 0.3);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-        z-index: 10;
-        padding: 8px 12px;
-    }
-
-    .bottom-menu {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .menu-item {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: transparent;
-        border: none;
-        color: rgba(255,255,255,0.7);
-        font-size: 12px;
-        padding: 8px 0 6px;
-        border-radius: 28px;
-        transition: 0.1s;
-        cursor: pointer;
-        gap: 4px;
-    }
-
-    .menu-item.active {
-        background: rgba(255, 70, 70, 0.2);
-        color: #ff6a6a;
-        text-shadow: 0 0 6px rgba(255,0,0,0.5);
-    }
-
-    .menu-icon {
-        font-size: 22px;
-    }
-
+    /* Верхняя панель (баланс, аватар) — видна только не на главной */
     .top-bar {
         position: fixed;
         top: 16px;
@@ -160,6 +133,15 @@
         align-items: center;
         z-index: 10;
         border: 1px solid rgba(255,70,70,0.25);
+        transition: opacity 0.2s;
+    }
+    .hidden-ui {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .visible-ui {
+        opacity: 1;
+        pointer-events: auto;
     }
 
     .balance-box {
@@ -170,7 +152,6 @@
         font-size: 18px;
         color: #ffd966;
     }
-
     .user-name {
         font-size: 14px;
         font-weight: 500;
@@ -178,7 +159,6 @@
         align-items: center;
         gap: 8px;
     }
-
     .avatar {
         width: 32px;
         height: 32px;
@@ -190,6 +170,51 @@
         font-size: 18px;
     }
 
+    /* Нижнее меню — всегда видно */
+    .glass-panel {
+        position: fixed;
+        bottom: 20px;
+        left: 16px;
+        right: 16px;
+        background: rgba(10, 15, 25, 0.65);
+        backdrop-filter: blur(16px);
+        border-radius: 36px;
+        border: 1px solid rgba(255, 70, 70, 0.3);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        z-index: 10;
+        padding: 8px 12px;
+    }
+    .bottom-menu {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 4px;
+    }
+    .menu-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: transparent;
+        border: none;
+        color: rgba(255,255,255,0.7);
+        font-size: 11px;
+        padding: 8px 0 6px;
+        border-radius: 28px;
+        transition: 0.1s;
+        cursor: pointer;
+        gap: 4px;
+    }
+    .menu-item.active {
+        background: rgba(255, 70, 70, 0.2);
+        color: #ff6a6a;
+        text-shadow: 0 0 6px rgba(255,0,0,0.5);
+    }
+    .menu-icon {
+        font-size: 20px;
+    }
+
+    /* Область контента */
     .content-area {
         position: fixed;
         top: 90px;
@@ -205,8 +230,8 @@
         border: 1px solid rgba(255,255,255,0.1);
         color: #eee;
         scrollbar-width: thin;
+        transition: opacity 0.2s;
     }
-
     .demo-card {
         background: rgba(30,30,50,0.6);
         border-radius: 24px;
@@ -214,7 +239,6 @@
         margin-bottom: 12px;
         backdrop-filter: blur(4px);
     }
-
     .demo-button-sm {
         background: #b33;
         border: none;
@@ -226,57 +250,14 @@
         width: 100%;
         cursor: pointer;
     }
-
-    .logo {
-        position: fixed;
-        bottom: 14%;
-        width: 100%;
-        text-align: center;
-        font-size: 92px;
-        font-weight: 900;
-        font-family: monospace;
-        letter-spacing: 14px;
-        color: rgba(255,70,70,.75);
-        text-shadow: 0 0 12px rgba(255,0,0,.45), 0 0 32px rgba(255,0,0,.22);
-        z-index: 5;
-        pointer-events: none;
-    }
-
-    .slogan {
-        position: fixed;
-        width: 100%;
-        bottom: 8%;
-        text-align: center;
-        color: rgba(255,255,255,.4);
-        letter-spacing: 4px;
-        font-size: 12px;
-        z-index: 5;
-        pointer-events: none;
-    }
-
-    .scan-btn-fab {
-        position: fixed;
-        right: 24px;
-        bottom: 24px;
-        background: #cf3c3c;
-        border: none;
-        border-radius: 50px;
-        padding: 14px 28px;
-        color: white;
-        font-weight: bold;
-        z-index: 12;
-        cursor: pointer;
-        box-shadow: 0 4px 15px black;
-    }
-
     .corner-ui {
         position: fixed;
         top: 24px;
         left: 24px;
         color: rgba(120,220,255,.55);
         font-family: monospace;
-        font-size: 11px;
-        line-height: 1.6;
+        font-size: 10px;
+        line-height: 1.5;
         z-index: 11;
         pointer-events: none;
         background: rgba(0,0,0,0.3);
@@ -288,8 +269,9 @@
     @media (max-width: 600px) {
         .logo { font-size: 54px; letter-spacing: 8px; bottom: 18%; }
         .slogan { bottom: 12%; }
-        .scan-btn-fab { padding: 10px 20px; }
-        canvas.small-eyes { width: 60px; height: 60px; bottom: 20px; right: 20px; }
+        canvas.small-eyes { width: 70px; height: 70px; bottom: 20px; right: 20px; }
+        .menu-icon { font-size: 18px; }
+        .menu-item { font-size: 10px; }
     }
 </style>
 </head>
@@ -302,12 +284,11 @@
 
 <canvas id="eyeCanvas" class="big-eyes"></canvas>
 
-<div class="corner-ui">SUX • RETINA LINK ACTIVE<br>YOU ARE ONLINE</div>
-<div class="logo">SUX</div>
-<div class="slogan">I SEE • I LISTEN • I REMEMBER</div>
-<button class="scan-btn-fab" id="scanBtn">👁️ SCAN</button>
+<div class="corner-ui">SUX • RETINA LINK ACTIVE<br>SURVEILLANCE ONLINE</div>
+<div class="logo" id="logo">SUX</div>
+<div class="slogan" id="slogan">I SEE • I LISTEN • I REMEMBER</div>
 
-<!-- UI панели (скрыты на главной) -->
+<!-- Верхняя панель (баланс) скрыта на главной -->
 <div class="top-bar hidden-ui" id="topBar">
     <div class="user-name">
         <div class="avatar">🦀</div>
@@ -316,8 +297,10 @@
     <div class="balance-box" id="balanceDisplay">0 кр.</div>
 </div>
 
-<div class="glass-panel hidden-ui" id="bottomMenuPanel">
+<!-- Нижнее меню всегда видимо -->
+<div class="glass-panel">
     <div class="bottom-menu" id="bottomMenu">
+        <button class="menu-item active" data-tab="home"><span class="menu-icon">🏠</span><span>Главная</span></button>
         <button class="menu-item" data-tab="profile"><span class="menu-icon">👤</span><span>Профиль</span></button>
         <button class="menu-item" data-tab="shop"><span class="menu-icon">🛒</span><span>Магазин</span></button>
         <button class="menu-item" data-tab="bank"><span class="menu-icon">🏦</span><span>Банк</span></button>
@@ -327,19 +310,19 @@
     </div>
 </div>
 
-<div class="content-area hidden-ui" id="contentArea">
-    <!-- контент будет подставляться -->
+<div class="content-area" id="contentArea">
+    <!-- контент подгружается -->
 </div>
 
 <script>
-    // ========== УПРАВЛЕНИЕ ГЛАЗАМИ (кинематографичные) ==========
+    // ========== ГЛАЗА ==========
     const canvas = document.getElementById('eyeCanvas');
     let ctx = canvas.getContext('2d');
     let w, h;
     let leftEye, rightEye;
     let mouseX, mouseY;
     let currentMode = 'big'; // 'big' или 'small'
-    let animationFrame;
+    let animFrame;
 
     function resizeCanvas() {
         if (currentMode === 'big') {
@@ -348,29 +331,25 @@
             canvas.classList.remove('small-eyes');
             canvas.classList.add('big-eyes');
         } else {
-            // маленькие глаза — фиксированный размер 70x70 (CSS задаст)
-            w = 200; // физический размер canvas для маленьких глаз (удвоенный для чёткости)
+            w = 200;
             h = 200;
             canvas.width = w;
             canvas.height = h;
             canvas.classList.remove('big-eyes');
             canvas.classList.add('small-eyes');
         }
-        initEyesPosition();
+        initEyes();
     }
 
-    function initEyesPosition() {
+    function initEyes() {
         if (currentMode === 'big') {
             const centerX = window.innerWidth/2;
             const centerY = window.innerHeight/2;
             leftEye = new Eye(centerX - 220, centerY - 50);
             rightEye = new Eye(centerX + 220, centerY - 50);
         } else {
-            // маленькие глаза — один глаз в центре маленького canvas
-            // упростим: сделаем один глаз по центру (или два маленьких)
-            // но для простоты и эффекта сделаем один глаз в центре маленького квадрата
-            leftEye = new Eye(w/2, h/2);
-            rightEye = new Eye(w/2 + 30, h/2); // второй глаз рядом
+            leftEye = new Eye(w/2 - 15, h/2);
+            rightEye = new Eye(w/2 + 15, h/2);
         }
         mouseX = (currentMode === 'big') ? window.innerWidth/2 : w/2;
         mouseY = (currentMode === 'big') ? window.innerHeight/2 : h/2;
@@ -380,7 +359,7 @@
         constructor(x, y) {
             this.x = x;
             this.y = y;
-            this.radius = (currentMode === 'big') ? Math.min(w, h) * 0.12 : 35;
+            this.radius = (currentMode === 'big') ? Math.min(window.innerWidth, window.innerHeight) * 0.12 : 28;
             this.irisX = 0;
             this.irisY = 0;
             this.targetX = 0;
@@ -392,14 +371,15 @@
             const dx = mx - this.x;
             const dy = my - this.y;
             const angle = Math.atan2(dy, dx);
-            const dist = Math.min(currentMode === 'big' ? 28 : 12, Math.hypot(dx, dy) * (currentMode === 'big' ? 0.03 : 0.1));
+            const maxDist = currentMode === 'big' ? 28 : 12;
+            const dist = Math.min(maxDist, Math.hypot(dx, dy) * (currentMode === 'big' ? 0.03 : 0.1));
             this.targetX = Math.cos(angle) * dist;
             this.targetY = Math.sin(angle) * dist;
             this.micro += 0.04;
-            const mxJitter = Math.sin(this.micro * 3.2) * 0.5;
-            const myJitter = Math.cos(this.micro * 2.8) * 0.5;
-            this.irisX += ((this.targetX + mxJitter) - this.irisX) * 0.12;
-            this.irisY += ((this.targetY + myJitter) - this.irisY) * 0.12;
+            const jx = Math.sin(this.micro * 3.2) * 0.5;
+            const jy = Math.cos(this.micro * 2.8) * 0.5;
+            this.irisX += ((this.targetX + jx) - this.irisX) * 0.12;
+            this.irisY += ((this.targetY + jy) - this.irisY) * 0.12;
         }
         draw() {
             ctx.save();
@@ -410,7 +390,7 @@
             ctx.quadraticCurveTo(0, this.radius * 0.72, -this.radius, 0);
             ctx.closePath();
             ctx.clip();
-            // белок
+            // Склера
             const sclera = ctx.createRadialGradient(0, -this.radius*0.2, 5, 0, 0, this.radius);
             sclera.addColorStop(0, '#ffffff');
             sclera.addColorStop(0.45, '#f1f1f1');
@@ -418,8 +398,7 @@
             sclera.addColorStop(1, '#a8a8a8');
             ctx.fillStyle = sclera;
             ctx.fillRect(-this.radius, -this.radius, this.radius*2, this.radius*2);
-            // прожилки упростим для производительности
-            // радужка
+            // Радужка
             const irisR = this.radius * 0.42;
             const iris = ctx.createRadialGradient(this.irisX, this.irisY, 5, this.irisX, this.irisY, irisR);
             iris.addColorStop(0, '#d6ffff');
@@ -432,14 +411,14 @@
             ctx.arc(this.irisX, this.irisY, irisR, 0, Math.PI*2);
             ctx.fillStyle = iris;
             ctx.fill();
-            // детали радужки
+            // Детали
             for (let i = 0; i < 70; i++) {
                 const a = (Math.PI*2/70)*i;
                 const len = irisR * (0.65 + Math.random()*0.35);
                 ctx.beginPath();
                 ctx.moveTo(this.irisX, this.irisY);
                 ctx.lineTo(this.irisX + Math.cos(a)*len, this.irisY + Math.sin(a)*len);
-                ctx.strokeStyle = `rgba(255,255,255,${0.03+Math.random()*0.05})`;
+                ctx.strokeStyle = `rgba(255,255,255,0.05)`;
                 ctx.lineWidth = 1;
                 ctx.stroke();
             }
@@ -448,7 +427,7 @@
             ctx.lineWidth = 5;
             ctx.strokeStyle = 'rgba(0,0,0,.45)';
             ctx.stroke();
-            // зрачок
+            // Зрачок
             ctx.beginPath();
             ctx.arc(this.irisX, this.irisY, irisR*0.24, 0, Math.PI*2);
             ctx.fillStyle = '#000';
@@ -456,7 +435,7 @@
             ctx.shadowColor = 'rgba(0,0,0,.9)';
             ctx.fill();
             ctx.shadowBlur = 0;
-            // блик
+            // Блик
             const gloss = ctx.createRadialGradient(this.irisX-irisR*0.2, this.irisY-irisR*0.25, 2, this.irisX, this.irisY, irisR);
             gloss.addColorStop(0, 'rgba(255,255,255,.85)');
             gloss.addColorStop(0.25, 'rgba(255,255,255,.22)');
@@ -469,14 +448,14 @@
             ctx.arc(this.irisX - irisR*0.25, this.irisY - irisR*0.25, irisR*0.08, 0, Math.PI*2);
             ctx.fillStyle = 'rgba(255,255,255,.95)';
             ctx.fill();
-            // тени
+            // Тени
             const shadow = ctx.createLinearGradient(0, -this.radius, 0, this.radius);
             shadow.addColorStop(0, 'rgba(0,0,0,.55)');
             shadow.addColorStop(0.4, 'rgba(0,0,0,0)');
             shadow.addColorStop(1, 'rgba(0,0,0,.15)');
             ctx.fillStyle = shadow;
             ctx.fillRect(-this.radius, -this.radius, this.radius*2, this.radius*2);
-            // влажный край
+            // Влажный край
             ctx.beginPath();
             ctx.ellipse(0, this.radius*0.42, this.radius*0.6, this.radius*0.06, 0, 0, Math.PI*2);
             const wet = ctx.createLinearGradient(0, this.radius*0.35, 0, this.radius*0.5);
@@ -484,7 +463,7 @@
             wet.addColorStop(1, 'rgba(255,255,255,0)');
             ctx.fillStyle = wet;
             ctx.fill();
-            // моргание
+            // Моргание
             if (this.blink > 0) {
                 ctx.fillStyle = '#06090f';
                 const close = this.radius * 1.55 * this.blink;
@@ -508,7 +487,6 @@
             mouseX = cx;
             mouseY = cy;
         } else {
-            // для маленьких глаз координаты относительно canvas
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
@@ -535,8 +513,7 @@
             }
         }, 16);
     }
-
-    setInterval(() => { blink(); }, 3000 + Math.random() * 2500);
+    setInterval(() => blink(), 3500 + Math.random() * 2500);
     if (currentMode === 'big') {
         setInterval(() => {
             mouseX = window.innerWidth/2 + (Math.random() * 400 - 200);
@@ -551,29 +528,30 @@
         rightEye.update(mouseX, mouseY);
         leftEye.draw();
         rightEye.draw();
-        requestAnimationFrame(render);
+        animFrame = requestAnimationFrame(render);
     }
 
     function switchEyeMode(mode) {
         currentMode = mode;
         resizeCanvas();
-        initEyesPosition();
-        // переподписка на события мыши для маленьких глаз
         if (mode === 'small') {
             canvas.style.pointerEvents = 'auto';
-            canvas.addEventListener('click', () => blink());
+            canvas.onclick = () => blink();
         } else {
             canvas.style.pointerEvents = 'none';
+            canvas.onclick = null;
         }
     }
 
     // ========== UI ЛОГИКА ==========
     const topBar = document.getElementById('topBar');
-    const bottomMenuPanel = document.getElementById('bottomMenuPanel');
+    const logo = document.getElementById('logo');
+    const slogan = document.getElementById('slogan');
     const contentArea = document.getElementById('contentArea');
-    const scanBtn = document.getElementById('scanBtn');
     const menuBtns = document.querySelectorAll('.menu-item');
+    let currentTab = 'home';
 
+    // Демо-данные пользователя
     let userData = {
         balance: 12500,
         score: 12500,
@@ -586,135 +564,115 @@
         document.getElementById('balanceDisplay').innerText = userData.balance.toLocaleString() + ' кр.';
     }
 
-    function renderProfileTab() {
-        return `<h2>👤 Профиль</h2>
-                <div class="demo-card">
-                    <div>✅ Социальный рейтинг: <strong>${userData.score}</strong></div>
-                    <div>⭐ Ранг: <strong>${userData.rank}</strong></div>
-                    <div>📈 Сообщений: <strong>${userData.messages}</strong></div>
-                    <div>⚡ Эффекты: ${userData.effects}</div>
-                    <button class="demo-button-sm" id="refreshProfileBtn">Обновить</button>
-                </div>`;
-    }
-
-    function renderShopTab() {
-        return `<h2>🛒 Магазин партии</h2>
-                <div class="demo-card">🥫 Продуктовый набор — 100 кр. <button class="demo-button-sm" style="margin-top:0;">Купить</button></div>
-                <div class="demo-card">📡 Интернет — 50 кр. <button class="demo-button-sm">Купить</button></div>
-                <div class="demo-card">🍺 Пиво — 25 кр. <button class="demo-button-sm">Купить</button></div>`;
-    }
-
-    function renderBankTab() {
-        return `<h2>🏦 К-Банк</h2>
-                <div class="demo-card">💰 Кредиты: первый до 1000, второй 2000</div>
-                <div class="demo-card">📈 Инвестиции (Облигации 4%)</div>
-                <button class="demo-button-sm">Взять кредит</button>`;
-    }
-
-    function renderDarknetTab() {
-        return `<h2>🕶️ Даркнет (SUX Market)</h2>
-                <div class="demo-card">👝 Теневой кошелёк: 0 кр.</div>
-                <div class="demo-card">🍄 Лукошко грибов — 300 кр. (×1.35 дохода 2ч)</div>
-                <div class="demo-card">🧂 Крабедрон — 50 кр.</div>`;
-    }
-
-    function renderCourtTab() {
-        return `<h2>⚖️ Суд Крабовой Демократии</h2>
-                <div class="demo-card">📄 Подать иск (раз в день)</div>
-                <div class="demo-card">⚖️ Обжаловать приговор</div>
-                <button class="demo-button-sm">Новый иск</button>`;
-    }
-
-    function renderHousingTab() {
-        return `<h2>🏙️ Краб-Йорк</h2>
-                <div class="demo-card">Карта районов: Крабхэттен, Краблин, Куинз...</div>
-                <div class="demo-card">🏠 Студия от 3 млн кр., аренда от 700/день</div>
-                <button class="demo-button-sm">Выбрать жильё</button>`;
-    }
-
-    function loadTab(tabId) {
-        let html = '';
+    function renderTab(tabId) {
         switch(tabId) {
-            case 'profile': html = renderProfileTab(); break;
-            case 'shop': html = renderShopTab(); break;
-            case 'bank': html = renderBankTab(); break;
-            case 'darknet': html = renderDarknetTab(); break;
-            case 'court': html = renderCourtTab(); break;
-            case 'housing': html = renderHousingTab(); break;
-            default: html = '<h2>Ошибка</h2>';
-        }
-        contentArea.innerHTML = html;
-        if (tabId === 'profile') {
-            const btn = document.getElementById('refreshProfileBtn');
-            if (btn) btn.addEventListener('click', () => {
-                userData.balance = Math.floor(Math.random() * 500 + 12000);
-                userData.score = userData.balance;
-                updateTopBar();
-                loadTab('profile'); // перерисовываем
-            });
+            case 'home':
+                return ''; // на главной контент не нужен
+            case 'profile':
+                return `<h2>👤 Профиль</h2>
+                        <div class="demo-card">
+                            <div>✅ Социальный рейтинг: <strong>${userData.score}</strong></div>
+                            <div>⭐ Ранг: <strong>${userData.rank}</strong></div>
+                            <div>📈 Сообщений: <strong>${userData.messages}</strong></div>
+                            <div>⚡ Эффекты: ${userData.effects}</div>
+                            <button class="demo-button-sm" id="refreshProfileBtn">Обновить</button>
+                        </div>`;
+            case 'shop':
+                return `<h2>🛒 Магазин партии</h2>
+                        <div class="demo-card">🥫 Продуктовый набор — 100 кр. <button class="demo-button-sm" style="margin-top:0;">Купить</button></div>
+                        <div class="demo-card">📡 Интернет — 50 кр. <button class="demo-button-sm">Купить</button></div>
+                        <div class="demo-card">🍺 Пиво — 25 кр. <button class="demo-button-sm">Купить</button></div>`;
+            case 'bank':
+                return `<h2>🏦 К-Банк</h2>
+                        <div class="demo-card">💰 Кредиты: первый до 1000, второй 2000</div>
+                        <div class="demo-card">📈 Инвестиции (Облигации 4%)</div>
+                        <button class="demo-button-sm">Взять кредит</button>`;
+            case 'darknet':
+                return `<h2>🕶️ Даркнет (SUX Market)</h2>
+                        <div class="demo-card">👝 Теневой кошелёк: 0 кр.</div>
+                        <div class="demo-card">🍄 Лукошко грибов — 300 кр. (×1.35 дохода 2ч)</div>
+                        <div class="demo-card">🧂 Крабедрон — 50 кр.</div>`;
+            case 'court':
+                return `<h2>⚖️ Суд Крабовой Демократии</h2>
+                        <div class="demo-card">📄 Подать иск (раз в день)</div>
+                        <div class="demo-card">⚖️ Обжаловать приговор</div>
+                        <button class="demo-button-sm">Новый иск</button>`;
+            case 'housing':
+                return `<h2>🏙️ Краб-Йорк</h2>
+                        <div class="demo-card">Карта районов: Крабхэттен, Краблин, Куинз...</div>
+                        <div class="demo-card">🏠 Студия от 3 млн кр., аренда от 700/день</div>
+                        <button class="demo-button-sm">Выбрать жильё</button>`;
+            default: return '<h2>Ошибка</h2>';
         }
     }
 
-    // Переключение между главной и остальными вкладками
-    let isHome = true; // главная (только глаза + лого + сканер)
+    function setActiveTab(tabId) {
+        currentTab = tabId;
+        // Обновить активный класс в меню
+        menuBtns.forEach(btn => {
+            const btnTab = btn.dataset.tab;
+            if (btnTab === tabId) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
 
-    function setHomeMode(enable) {
-        if (enable) {
-            // Показываем элементы главной
+        if (tabId === 'home') {
+            // Главная: скрываем верхнюю панель и контент, показываем логотип
             topBar.classList.add('hidden-ui');
-            bottomMenuPanel.classList.add('hidden-ui');
             contentArea.classList.add('hidden-ui');
-            scanBtn.style.display = 'flex';
-            // Переключаем глаза в большой режим
+            logo.classList.remove('hidden-logo');
+            slogan.classList.remove('hidden-logo');
             switchEyeMode('big');
         } else {
-            // Показываем UI-панели
+            // Другие вкладки: верхняя панель и контент видны, логотип скрыт
             topBar.classList.remove('hidden-ui');
-            bottomMenuPanel.classList.remove('hidden-ui');
             contentArea.classList.remove('hidden-ui');
-            scanBtn.style.display = 'none';
-            // Переключаем глаза в маленький режим (правый нижний угол)
+            logo.classList.add('hidden-logo');
+            slogan.classList.add('hidden-logo');
             switchEyeMode('small');
+            contentArea.innerHTML = renderTab(tabId);
+            if (tabId === 'profile') {
+                const btn = document.getElementById('refreshProfileBtn');
+                if (btn) btn.addEventListener('click', () => {
+                    userData.balance = Math.floor(Math.random() * 500 + 12000);
+                    userData.score = userData.balance;
+                    updateTopBar();
+                    setActiveTab('profile'); // перерисовываем профиль
+                });
+            }
         }
-        isHome = enable;
     }
 
-    // Обработка нажатий на нижнее меню (любая кнопка, кроме несуществующей "главная")
+    // Обработчики меню
     menuBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            menuBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
             const tab = btn.dataset.tab;
-            if (tab) {
-                if (isHome) setHomeMode(false);
-                loadTab(tab);
-            }
+            if (tab) setActiveTab(tab);
         });
     });
 
-    // При старте — режим главной
-    setHomeMode(true);
-    updateTopBar();
-
-    // Кнопка SCAN вызывает моргание
-    scanBtn.addEventListener('click', () => {
-        blink();
-        if (navigator.vibrate) navigator.vibrate(50);
-        scanBtn.innerText = '🔒 LOCKED';
-        setTimeout(() => { scanBtn.innerText = '👁️ SCAN'; }, 800);
+    // Инициализация
+    window.addEventListener('resize', () => {
+        if (currentMode === 'big') {
+            const centerX = window.innerWidth/2;
+            const centerY = window.innerHeight/2;
+            if (leftEye && rightEye) {
+                leftEye.x = centerX - 220;
+                leftEye.y = centerY - 50;
+                rightEye.x = centerX + 220;
+                rightEye.y = centerY - 50;
+            }
+        } else {
+            // размер маленьких глаз фиксирован, позиция через CSS
+        }
     });
 
-    // Подписка на движение мыши для глаз
     window.addEventListener('mousemove', handlePointer);
     window.addEventListener('touchmove', handlePointer);
     window.addEventListener('touchstart', handlePointer);
 
-    // Запуск рендера
-    function start() {
-        resizeCanvas();
-        render();
-    }
-    start();
+    setActiveTab('home');  // стартуем с главной
+    updateTopBar();
+    render();
 </script>
 </body>
 </html>
