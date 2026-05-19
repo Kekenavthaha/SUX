@@ -1,769 +1,624 @@
-# Ultra Cinematic Android Eyes — Full HTML
-
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SUX — Ultra Cinematic Eye</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>SUX — следит всегда</title>
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    overflow:hidden;
-    background:#05070c;
-    font-family:Segoe UI,sans-serif;
-}
-
-canvas{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100%;
-}
-
-/* =========================
-   BACKGROUND
-========================= */
-
-.bg{
-    position:fixed;
-    inset:0;
-
-    background:
-    radial-gradient(circle at top left,
-    rgba(70,120,255,.15), transparent 30%),
-
-    radial-gradient(circle at bottom right,
-    rgba(255,40,40,.08), transparent 35%),
-
-    linear-gradient(
-    135deg,
-    #05070c,
-    #090f18,
-    #070b10);
-
-    animation:bgFlow 16s ease infinite alternate;
-}
-
-@keyframes bgFlow{
-
-    from{
-        filter:hue-rotate(0deg);
-        transform:scale(1);
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    to{
-        filter:hue-rotate(18deg);
-        transform:scale(1.05);
+    body {
+        overflow: hidden;
+        background: #05070c;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: white;
     }
-}
 
-/* =========================
-   GRID
-========================= */
-
-.grid{
-    position:fixed;
-    inset:0;
-
-    background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-
-    background-size:42px 42px;
-
-    opacity:.55;
-}
-
-/* =========================
-   SCANLINES
-========================= */
-
-.scanlines{
-
-    position:fixed;
-    inset:0;
-
-    pointer-events:none;
-
-    background:
-    repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,.02) 0px,
-    rgba(255,255,255,.02) 1px,
-    transparent 2px,
-    transparent 4px
-    );
-
-    mix-blend-mode:soft-light;
-
-    opacity:.25;
-}
-
-/* =========================
-   VIGNETTE
-========================= */
-
-.vignette{
-
-    position:fixed;
-    inset:0;
-
-    pointer-events:none;
-
-    background:
-    radial-gradient(circle,
-    transparent 45%,
-    rgba(0,0,0,.45) 100%);
-}
-
-/* =========================
-   UI
-========================= */
-
-.logo{
-
-    position:fixed;
-
-    bottom:14%;
-    width:100%;
-
-    text-align:center;
-
-    font-size:92px;
-    font-weight:900;
-
-    font-family:monospace;
-
-    letter-spacing:14px;
-
-    color:rgba(255,70,70,.75);
-
-    text-shadow:
-    0 0 12px rgba(255,0,0,.45),
-    0 0 32px rgba(255,0,0,.22);
-
-    z-index:5;
-}
-
-.slogan{
-
-    position:fixed;
-
-    width:100%;
-    bottom:8%;
-
-    text-align:center;
-
-    color:rgba(255,255,255,.4);
-
-    letter-spacing:4px;
-
-    font-size:12px;
-
-    z-index:5;
-}
-
-.corner-ui{
-
-    position:fixed;
-
-    top:24px;
-    left:24px;
-
-    color:rgba(120,220,255,.55);
-
-    font-family:monospace;
-
-    font-size:12px;
-
-    line-height:1.8;
-
-    z-index:5;
-}
-
-.btn{
-
-    position:fixed;
-
-    right:24px;
-    bottom:24px;
-
-    border:none;
-
-    border-radius:999px;
-
-    padding:14px 24px;
-
-    background:#cf3c3c;
-
-    color:white;
-
-    font-weight:700;
-
-    cursor:pointer;
-
-    z-index:10;
-
-    box-shadow:
-    0 6px 20px rgba(0,0,0,.4);
-
-    transition:.12s;
-}
-
-.btn:active{
-    transform:scale(.95);
-}
-
-@media(max-width:700px){
-
-    .logo{
-        font-size:54px;
+    /* ========== КИНО-ФОН (глаза + эффекты) ========== */
+    .bg {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top left, rgba(70,120,255,.15), transparent 30%),
+                    radial-gradient(circle at bottom right, rgba(255,40,40,.08), transparent 35%),
+                    linear-gradient(135deg, #05070c, #090f18, #070b10);
+        animation: bgFlow 16s ease infinite alternate;
     }
-}
+    @keyframes bgFlow {
+        from { filter: hue-rotate(0deg); transform: scale(1); }
+        to { filter: hue-rotate(18deg); transform: scale(1.05); }
+    }
 
+    .grid {
+        position: fixed;
+        inset: 0;
+        background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+        background-size: 42px 42px;
+        opacity: .55;
+        pointer-events: none;
+    }
+
+    .scanlines {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: repeating-linear-gradient(to bottom, rgba(255,255,255,.02) 0px, rgba(255,255,255,.02) 1px, transparent 2px, transparent 4px);
+        mix-blend-mode: soft-light;
+        opacity: .25;
+    }
+
+    .vignette {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(circle, transparent 45%, rgba(0,0,0,.45) 100%);
+    }
+
+    canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        pointer-events: none; /* чтобы глаза не мешали нажатию на UI */
+    }
+
+    /* ========== UI ПОВЕРХ (стеклянный слой) ========== */
+    .glass-panel {
+        position: fixed;
+        bottom: 20px;
+        left: 16px;
+        right: 16px;
+        background: rgba(10, 15, 25, 0.65);
+        backdrop-filter: blur(16px);
+        border-radius: 36px;
+        border: 1px solid rgba(255, 70, 70, 0.3);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        z-index: 10;
+        padding: 8px 12px;
+    }
+
+    .bottom-menu {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .menu-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: transparent;
+        border: none;
+        color: rgba(255,255,255,0.7);
+        font-size: 12px;
+        padding: 8px 0 6px;
+        border-radius: 28px;
+        transition: 0.1s;
+        cursor: pointer;
+        gap: 4px;
+    }
+
+    .menu-item.active {
+        background: rgba(255, 70, 70, 0.2);
+        color: #ff6a6a;
+        text-shadow: 0 0 6px rgba(255,0,0,0.5);
+    }
+
+    .menu-icon {
+        font-size: 22px;
+    }
+
+    .top-bar {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        background: rgba(10, 15, 25, 0.6);
+        backdrop-filter: blur(16px);
+        border-radius: 32px;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 10;
+        border: 1px solid rgba(255,70,70,0.25);
+    }
+
+    .balance-box {
+        background: rgba(0,0,0,0.5);
+        border-radius: 60px;
+        padding: 6px 16px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #ffd966;
+    }
+
+    .user-name {
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        background: #b33;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .content-area {
+        position: fixed;
+        top: 90px;
+        bottom: 90px;
+        left: 16px;
+        right: 16px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(12px);
+        border-radius: 32px;
+        padding: 20px;
+        overflow-y: auto;
+        z-index: 10;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #eee;
+        scrollbar-width: thin;
+    }
+
+    .content-area h2 {
+        font-size: 20px;
+        margin-bottom: 16px;
+        color: #ffaa88;
+    }
+
+    .demo-card {
+        background: rgba(30,30,50,0.6);
+        border-radius: 24px;
+        padding: 16px;
+        margin-bottom: 12px;
+        backdrop-filter: blur(4px);
+    }
+
+    .demo-button-sm {
+        background: #b33;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 40px;
+        color: white;
+        font-weight: bold;
+        margin-top: 10px;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .corner-ui {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        color: rgba(120,220,255,.55);
+        font-family: monospace;
+        font-size: 11px;
+        line-height: 1.6;
+        z-index: 11;
+        pointer-events: none;
+        background: rgba(0,0,0,0.3);
+        padding: 4px 12px;
+        border-radius: 20px;
+        backdrop-filter: blur(4px);
+    }
+
+    .scan-btn-fab {
+        position: fixed;
+        right: 20px;
+        bottom: 100px;
+        background: #cf3c3c;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: bold;
+        z-index: 12;
+        cursor: pointer;
+        box-shadow: 0 4px 15px black;
+        backdrop-filter: blur(4px);
+    }
+
+    @media (max-width: 600px) {
+        .menu-icon { font-size: 20px; }
+        .menu-item { font-size: 10px; }
+        .balance-box { font-size: 16px; padding: 4px 12px; }
+        .content-area { top: 80px; bottom: 80px; padding: 16px; }
+        .corner-ui { font-size: 8px; top: 12px; left: 12px; }
+    }
 </style>
 </head>
 <body>
 
+<!-- Фоновые слои (глаза будут на canvas) -->
 <div class="bg"></div>
 <div class="grid"></div>
 <div class="scanlines"></div>
 <div class="vignette"></div>
+<canvas id="eyeCanvas"></canvas>
 
-<canvas id="canvas"></canvas>
-
+<!-- Постоянные элементы UI -->
 <div class="corner-ui">
-ANDROID SURVEILLANCE ONLINE<br>
-RETINA LINK ACTIVE<br>
-TARGET LOCK: ENABLED
+    SUX • RETINA LINK ACTIVE<br>
+    SURVEILLANCE ONLINE
 </div>
 
-<div class="logo">SUX</div>
-<div class="slogan">
-I SEE • I LISTEN • I REMEMBER
+<div class="top-bar">
+    <div class="user-name">
+        <div class="avatar">🦀</div>
+        <span>Краб Гражданин</span>
+    </div>
+    <div class="balance-box" id="balanceDisplay">0 кр.</div>
 </div>
 
-<button class="btn" id="scanBtn">
-👁 SCAN
-</button>
+<div class="content-area" id="contentArea">
+    <!-- динамический контент -->
+    <h2>🏠 Главная</h2>
+    <div class="demo-card">
+        <div>✅ Ваш социальный рейтинг: <strong id="scoreValue">0</strong></div>
+        <div>⭐ Ранг: <strong id="rankValue">Под наблюдением</strong></div>
+        <div>📈 Сообщений: <strong id="msgCount">0</strong></div>
+        <button class="demo-button-sm" id="refreshProfileBtn">Обновить</button>
+    </div>
+    <div class="demo-card">
+        <div>⚡ Эффекты активны: <span id="effectsList">нет</span></div>
+    </div>
+</div>
+
+<div class="glass-panel">
+    <div class="bottom-menu" id="bottomMenu">
+        <button class="menu-item active" data-tab="home"><span class="menu-icon">🏠</span><span>Главная</span></button>
+        <button class="menu-item" data-tab="shop"><span class="menu-icon">🛒</span><span>Магазин</span></button>
+        <button class="menu-item" data-tab="bank"><span class="menu-icon">🏦</span><span>Банк</span></button>
+        <button class="menu-item" data-tab="darknet"><span class="menu-icon">🕶️</span><span>Даркнет</span></button>
+        <button class="menu-item" data-tab="court"><span class="menu-icon">⚖️</span><span>Суд</span></button>
+        <button class="menu-item" data-tab="housing"><span class="menu-icon">🏙️</span><span>Жильё</span></button>
+    </div>
+</div>
+
+<button class="scan-btn-fab" id="scanBtn">👁️ SCAN</button>
 
 <script>
+    // ========== КИНО-ГЛАЗА (оригинальный код, слегка адаптирован под фикс canvas) ==========
+    const canvas = document.getElementById('eyeCanvas');
+    const ctx = canvas.getContext('2d');
+    let w, h;
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-
-let w,h;
-
-function resize(){
-
-    w = canvas.width = innerWidth;
-    h = canvas.height = innerHeight;
-}
-
-resize();
-
-addEventListener('resize',resize);
-
-/* =========================
-   EYE CLASS
-========================= */
-
-class Eye{
-
-    constructor(x,y){
-
-        this.x = x;
-        this.y = y;
-
-        this.radius = Math.min(w,h)*0.14;
-
-        this.irisX = 0;
-        this.irisY = 0;
-
-        this.targetX = 0;
-        this.targetY = 0;
-
-        this.blink = 0;
-
-        this.micro = 0;
+    function resizeCanvas() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
     }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-    update(mx,my){
-
-        const dx = mx - this.x;
-        const dy = my - this.y;
-
-        const angle = Math.atan2(dy,dx);
-
-        const dist = Math.min(28, Math.hypot(dx,dy)*0.03);
-
-        this.targetX = Math.cos(angle)*dist;
-        this.targetY = Math.sin(angle)*dist;
-
-        this.micro += 0.04;
-
-        const mxJitter = Math.sin(this.micro*3.2)*0.5;
-        const myJitter = Math.cos(this.micro*2.8)*0.5;
-
-        this.irisX += ((this.targetX+mxJitter)-this.irisX)*0.12;
-        this.irisY += ((this.targetY+myJitter)-this.irisY)*0.12;
-    }
-
-    draw(){
-
-        ctx.save();
-
-        ctx.translate(this.x,this.y);
-
-        /* =========================
-           EYE SHAPE
-        ========================= */
-
-        ctx.beginPath();
-
-        ctx.moveTo(-this.radius,0);
-
-        ctx.quadraticCurveTo(
-            0,
-            -this.radius*0.72,
-            this.radius,
-            0
-        );
-
-        ctx.quadraticCurveTo(
-            0,
-            this.radius*0.72,
-            -this.radius,
-            0
-        );
-
-        ctx.closePath();
-
-        ctx.clip();
-
-        /* =========================
-           WHITE OF EYE
-        ========================= */
-
-        const sclera =
-        ctx.createRadialGradient(
-            0,
-            -this.radius*0.2,
-            5,
-            0,
-            0,
-            this.radius
-        );
-
-        sclera.addColorStop(0,'#ffffff');
-        sclera.addColorStop(.45,'#f1f1f1');
-        sclera.addColorStop(.75,'#d5d5d5');
-        sclera.addColorStop(1,'#a8a8a8');
-
-        ctx.fillStyle = sclera;
-
-        ctx.fillRect(
-            -this.radius,
-            -this.radius,
-            this.radius*2,
-            this.radius*2
-        );
-
-        /* veins */
-
-        for(let i=0;i<18;i++){
-
+    class Eye {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.radius = Math.min(w, h) * 0.12;
+            this.irisX = 0;
+            this.irisY = 0;
+            this.targetX = 0;
+            this.targetY = 0;
+            this.blink = 0;
+            this.micro = 0;
+        }
+        update(mx, my) {
+            const dx = mx - this.x;
+            const dy = my - this.y;
+            const angle = Math.atan2(dy, dx);
+            const dist = Math.min(28, Math.hypot(dx, dy) * 0.03);
+            this.targetX = Math.cos(angle) * dist;
+            this.targetY = Math.sin(angle) * dist;
+            this.micro += 0.04;
+            const mxJitter = Math.sin(this.micro * 3.2) * 0.5;
+            const myJitter = Math.cos(this.micro * 2.8) * 0.5;
+            this.irisX += ((this.targetX + mxJitter) - this.irisX) * 0.12;
+            this.irisY += ((this.targetY + myJitter) - this.irisY) * 0.12;
+        }
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            // форма глаза
             ctx.beginPath();
-
-            const vx = (Math.random()-0.5)*this.radius*1.6;
-            const vy = (Math.random()-0.5)*this.radius*1.1;
-
-            ctx.moveTo(vx,vy);
-
-            ctx.quadraticCurveTo(
-                vx+Math.random()*20,
-                vy+Math.random()*20,
-                vx+Math.random()*40,
-                vy+Math.random()*20
-            );
-
-            ctx.strokeStyle='rgba(255,80,80,.03)';
-            ctx.lineWidth=1;
-            ctx.stroke();
-        }
-
-        /* =========================
-           IRIS
-        ========================= */
-
-        const irisR = this.radius*0.42;
-
-        const iris =
-        ctx.createRadialGradient(
-            this.irisX,
-            this.irisY,
-            5,
-            this.irisX,
-            this.irisY,
-            irisR
-        );
-
-        iris.addColorStop(0,'#d6ffff');
-        iris.addColorStop(.15,'#8ef3ff');
-        iris.addColorStop(.32,'#48d2ff');
-        iris.addColorStop(.6,'#146da1');
-        iris.addColorStop(.85,'#07253d');
-        iris.addColorStop(1,'#000');
-
-        ctx.beginPath();
-
-        ctx.arc(
-            this.irisX,
-            this.irisY,
-            irisR,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fillStyle = iris;
-        ctx.fill();
-
-        /* iris detail lines */
-
-        for(let i=0;i<140;i++){
-
-            const a = (Math.PI*2/140)*i;
-
-            const len = irisR*(0.65 + Math.random()*0.35);
-
+            ctx.moveTo(-this.radius, 0);
+            ctx.quadraticCurveTo(0, -this.radius * 0.72, this.radius, 0);
+            ctx.quadraticCurveTo(0, this.radius * 0.72, -this.radius, 0);
+            ctx.closePath();
+            ctx.clip();
+            // белок
+            const sclera = ctx.createRadialGradient(0, -this.radius*0.2, 5, 0, 0, this.radius);
+            sclera.addColorStop(0, '#ffffff');
+            sclera.addColorStop(0.45, '#f1f1f1');
+            sclera.addColorStop(0.75, '#d5d5d5');
+            sclera.addColorStop(1, '#a8a8a8');
+            ctx.fillStyle = sclera;
+            ctx.fillRect(-this.radius, -this.radius, this.radius*2, this.radius*2);
+            // прожилки
+            for (let i = 0; i < 18; i++) {
+                ctx.beginPath();
+                const vx = (Math.random() - 0.5) * this.radius * 1.6;
+                const vy = (Math.random() - 0.5) * this.radius * 1.1;
+                ctx.moveTo(vx, vy);
+                ctx.quadraticCurveTo(vx + Math.random() * 20, vy + Math.random() * 20, vx + Math.random() * 40, vy + Math.random() * 20);
+                ctx.strokeStyle = 'rgba(255,80,80,.04)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            // радужка
+            const irisR = this.radius * 0.42;
+            const iris = ctx.createRadialGradient(this.irisX, this.irisY, 5, this.irisX, this.irisY, irisR);
+            iris.addColorStop(0, '#d6ffff');
+            iris.addColorStop(0.15, '#8ef3ff');
+            iris.addColorStop(0.32, '#48d2ff');
+            iris.addColorStop(0.6, '#146da1');
+            iris.addColorStop(0.85, '#07253d');
+            iris.addColorStop(1, '#000');
             ctx.beginPath();
-
-            ctx.moveTo(
-                this.irisX,
-                this.irisY
-            );
-
-            ctx.lineTo(
-                this.irisX + Math.cos(a)*len,
-                this.irisY + Math.sin(a)*len
-            );
-
-            ctx.strokeStyle =
-            `rgba(255,255,255,${0.03+Math.random()*0.05})`;
-
-            ctx.lineWidth = 1;
-
+            ctx.arc(this.irisX, this.irisY, irisR, 0, Math.PI*2);
+            ctx.fillStyle = iris;
+            ctx.fill();
+            // детали радужки
+            for (let i = 0; i < 140; i++) {
+                const a = (Math.PI*2/140)*i;
+                const len = irisR * (0.65 + Math.random()*0.35);
+                ctx.beginPath();
+                ctx.moveTo(this.irisX, this.irisY);
+                ctx.lineTo(this.irisX + Math.cos(a)*len, this.irisY + Math.sin(a)*len);
+                ctx.strokeStyle = `rgba(255,255,255,${0.03+Math.random()*0.05})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.arc(this.irisX, this.irisY, irisR, 0, Math.PI*2);
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = 'rgba(0,0,0,.45)';
             ctx.stroke();
+            // зрачок
+            ctx.beginPath();
+            ctx.arc(this.irisX, this.irisY, irisR*0.24, 0, Math.PI*2);
+            ctx.fillStyle = '#000';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = 'rgba(0,0,0,.9)';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            // блик
+            const gloss = ctx.createRadialGradient(this.irisX-irisR*0.2, this.irisY-irisR*0.25, 2, this.irisX, this.irisY, irisR);
+            gloss.addColorStop(0, 'rgba(255,255,255,.85)');
+            gloss.addColorStop(0.25, 'rgba(255,255,255,.22)');
+            gloss.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.beginPath();
+            ctx.arc(this.irisX, this.irisY, irisR, 0, Math.PI*2);
+            ctx.fillStyle = gloss;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(this.irisX - irisR*0.25, this.irisY - irisR*0.25, irisR*0.08, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(255,255,255,.95)';
+            ctx.fill();
+            // тени
+            const shadow = ctx.createLinearGradient(0, -this.radius, 0, this.radius);
+            shadow.addColorStop(0, 'rgba(0,0,0,.55)');
+            shadow.addColorStop(0.4, 'rgba(0,0,0,0)');
+            shadow.addColorStop(1, 'rgba(0,0,0,.15)');
+            ctx.fillStyle = shadow;
+            ctx.fillRect(-this.radius, -this.radius, this.radius*2, this.radius*2);
+            // влажный край
+            ctx.beginPath();
+            ctx.ellipse(0, this.radius*0.42, this.radius*0.6, this.radius*0.06, 0, 0, Math.PI*2);
+            const wet = ctx.createLinearGradient(0, this.radius*0.35, 0, this.radius*0.5);
+            wet.addColorStop(0, 'rgba(255,255,255,.4)');
+            wet.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = wet;
+            ctx.fill();
+            // моргание
+            if (this.blink > 0) {
+                ctx.fillStyle = '#06090f';
+                const close = this.radius * 1.55 * this.blink;
+                ctx.fillRect(-this.radius*1.3, -this.radius, this.radius*2.6, close);
+                ctx.fillRect(-this.radius*1.3, this.radius-close, this.radius*2.6, close);
+            }
+            ctx.restore();
         }
-
-        /* outer ring */
-
-        ctx.beginPath();
-
-        ctx.arc(
-            this.irisX,
-            this.irisY,
-            irisR,
-            0,
-            Math.PI*2
-        );
-
-        ctx.lineWidth = 5;
-
-        ctx.strokeStyle = 'rgba(0,0,0,.45)';
-
-        ctx.stroke();
-
-        /* =========================
-           PUPIL
-        ========================= */
-
-        ctx.beginPath();
-
-        ctx.arc(
-            this.irisX,
-            this.irisY,
-            irisR*0.24,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fillStyle = '#000';
-
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'rgba(0,0,0,.9)';
-
-        ctx.fill();
-
-        ctx.shadowBlur = 0;
-
-        /* =========================
-           CORNEA REFLECTION
-        ========================= */
-
-        const gloss =
-        ctx.createRadialGradient(
-            this.irisX-irisR*0.2,
-            this.irisY-irisR*0.25,
-            2,
-            this.irisX,
-            this.irisY,
-            irisR
-        );
-
-        gloss.addColorStop(0,'rgba(255,255,255,.85)');
-        gloss.addColorStop(.25,'rgba(255,255,255,.22)');
-        gloss.addColorStop(1,'rgba(255,255,255,0)');
-
-        ctx.beginPath();
-
-        ctx.arc(
-            this.irisX,
-            this.irisY,
-            irisR,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fillStyle = gloss;
-        ctx.fill();
-
-        /* small bright reflection */
-
-        ctx.beginPath();
-
-        ctx.arc(
-            this.irisX - irisR*0.25,
-            this.irisY - irisR*0.25,
-            irisR*0.08,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fillStyle='rgba(255,255,255,.95)';
-        ctx.fill();
-
-        /* =========================
-           SHADOWS
-        ========================= */
-
-        const shadow =
-        ctx.createLinearGradient(
-            0,
-            -this.radius,
-            0,
-            this.radius
-        );
-
-        shadow.addColorStop(0,'rgba(0,0,0,.55)');
-        shadow.addColorStop(.4,'rgba(0,0,0,0)');
-        shadow.addColorStop(1,'rgba(0,0,0,.15)');
-
-        ctx.fillStyle = shadow;
-
-        ctx.fillRect(
-            -this.radius,
-            -this.radius,
-            this.radius*2,
-            this.radius*2
-        );
-
-        /* =========================
-           WET LOWER EDGE
-        ========================= */
-
-        ctx.beginPath();
-
-        ctx.ellipse(
-            0,
-            this.radius*0.42,
-            this.radius*0.6,
-            this.radius*0.06,
-            0,
-            0,
-            Math.PI*2
-        );
-
-        const wet =
-        ctx.createLinearGradient(
-            0,
-            this.radius*0.35,
-            0,
-            this.radius*0.5
-        );
-
-        wet.addColorStop(0,'rgba(255,255,255,.4)');
-        wet.addColorStop(1,'rgba(255,255,255,0)');
-
-        ctx.fillStyle = wet;
-        ctx.fill();
-
-        /* =========================
-           EYELIDS
-        ========================= */
-
-        if(this.blink > 0){
-
-            ctx.fillStyle = '#06090f';
-
-            const close =
-            this.radius*1.55*this.blink;
-
-            ctx.fillRect(
-                -this.radius*1.3,
-                -this.radius,
-                this.radius*2.6,
-                close
-            );
-
-            ctx.fillRect(
-                -this.radius*1.3,
-                this.radius-close,
-                this.radius*2.6,
-                close
-            );
-        }
-
-        ctx.restore();
-    }
-}
-
-/* =========================
-   CREATE EYES
-========================= */
-
-const leftEye = new Eye(
-    innerWidth/2 - 220,
-    innerHeight/2 - 50
-);
-
-const rightEye = new Eye(
-    innerWidth/2 + 220,
-    innerHeight/2 - 50
-);
-
-let mouseX = innerWidth/2;
-let mouseY = innerHeight/2;
-
-window.addEventListener('mousemove',e=>{
-
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
-
-window.addEventListener('touchmove',e=>{
-
-    if(e.touches.length){
-
-        mouseX = e.touches[0].clientX;
-        mouseY = e.touches[0].clientY;
-    }
-});
-
-/* =========================
-   BLINK SYSTEM
-========================= */
-
-function blink(){
-
-    let t = 0;
-
-    const anim = setInterval(()=>{
-
-        t += 0.12;
-
-        const v = Math.sin(t*Math.PI);
-
-        leftEye.blink = v;
-        rightEye.blink = v;
-
-        if(t >= 1){
-
-            leftEye.blink = 0;
-            rightEye.blink = 0;
-
-            clearInterval(anim);
-        }
-
-    },16);
-}
-
-setInterval(()=>{
-
-    blink();
-
-},3000 + Math.random()*2500);
-
-/* =========================
-   IDLE LOOKING
-========================= */
-
-setInterval(()=>{
-
-    mouseX =
-    innerWidth/2 +
-    (Math.random()*400 - 200);
-
-    mouseY =
-    innerHeight/2 +
-    (Math.random()*180 - 90);
-
-},2800);
-
-/* =========================
-   BUTTON
-========================= */
-
-const btn = document.getElementById('scanBtn');
-
-btn.addEventListener('click',()=>{
-
-    blink();
-
-    if(navigator.vibrate){
-        navigator.vibrate(60);
     }
 
-    const old = btn.innerText;
+    let leftEye, rightEye;
+    let mouseX, mouseY;
 
-    btn.innerText = 'TARGET LOCKED';
+    function initEyes() {
+        const centerX = w/2;
+        const centerY = h/2;
+        leftEye = new Eye(centerX - 220, centerY - 50);
+        rightEye = new Eye(centerX + 220, centerY - 50);
+        mouseX = centerX;
+        mouseY = centerY;
+    }
 
-    setTimeout(()=>{
+    function handlePointer(e) {
+        let cx, cy;
+        if (e.touches) {
+            cx = e.touches[0].clientX;
+            cy = e.touches[0].clientY;
+        } else {
+            cx = e.clientX;
+            cy = e.clientY;
+        }
+        mouseX = cx;
+        mouseY = cy;
+    }
 
-        btn.innerText = old;
+    window.addEventListener('mousemove', handlePointer);
+    window.addEventListener('touchmove', handlePointer);
+    window.addEventListener('touchstart', handlePointer);
 
-    },1000);
-});
+    function blink() {
+        let t = 0;
+        const interval = setInterval(() => {
+            t += 0.12;
+            const v = Math.sin(t * Math.PI);
+            leftEye.blink = v;
+            rightEye.blink = v;
+            if (t >= 1) {
+                leftEye.blink = 0;
+                rightEye.blink = 0;
+                clearInterval(interval);
+            }
+        }, 16);
+    }
 
-/* =========================
-   RENDER LOOP
-========================= */
+    setInterval(() => { blink(); }, 3000 + Math.random() * 2500);
+    setInterval(() => {
+        mouseX = w/2 + (Math.random() * 400 - 200);
+        mouseY = h/2 + (Math.random() * 180 - 90);
+    }, 2800);
 
-function render(){
+    function render() {
+        if (!leftEye) {
+            initEyes();
+        }
+        ctx.clearRect(0, 0, w, h);
+        leftEye.update(mouseX, mouseY);
+        rightEye.update(mouseX, mouseY);
+        leftEye.draw();
+        rightEye.draw();
+        requestAnimationFrame(render);
+    }
+    render();
 
-    ctx.clearRect(0,0,w,h);
+    // ========== UI ЛОГИКА (заглушки) ==========
+    const menuBtns = document.querySelectorAll('.menu-item');
+    const contentArea = document.getElementById('contentArea');
+    const scanBtn = document.getElementById('scanBtn');
 
-    leftEye.update(mouseX,mouseY);
-    rightEye.update(mouseX,mouseY);
+    // Демо-данные пользователя
+    let userData = {
+        balance: 12500,
+        score: 12500,
+        rank: 'Достойный гражданин',
+        messages: 342,
+        effects: 'нет'
+    };
 
-    leftEye.draw();
-    rightEye.draw();
+    function updateTopBar() {
+        document.getElementById('balanceDisplay').innerText = userData.balance.toLocaleString() + ' кр.';
+        document.getElementById('scoreValue').innerText = userData.score;
+        document.getElementById('rankValue').innerText = userData.rank;
+        document.getElementById('msgCount').innerText = userData.messages;
+        document.getElementById('effectsList').innerText = userData.effects;
+    }
 
-    requestAnimationFrame(render);
-}
+    function refreshProfile() {
+        // имитация загрузки (позже здесь будет API)
+        userData.balance = Math.floor(Math.random() * 500 + 12000);
+        userData.score = userData.balance;
+        updateTopBar();
+    }
 
-render();
+    // Обработка смены вкладок
+    function loadTab(tabId) {
+        let html = '';
+        switch(tabId) {
+            case 'home':
+                html = `<h2>🏠 Главная</h2>
+                        <div class="demo-card">
+                            <div>✅ Социальный рейтинг: <strong id="scoreValueHome">${userData.score}</strong></div>
+                            <div>⭐ Ранг: <strong>${userData.rank}</strong></div>
+                            <div>📈 Сообщений: <strong>${userData.messages}</strong></div>
+                            <button class="demo-button-sm" id="refreshProfileBtnHome">Обновить</button>
+                        </div>
+                        <div class="demo-card">
+                            <div>⚡ Эффекты: ${userData.effects}</div>
+                        </div>`;
+                break;
+            case 'shop':
+                html = `<h2>🛒 Магазин партии</h2>
+                        <div class="demo-card">🥫 Продуктовый набор — 100 кр. <button class="demo-button-sm" style="margin-top:0;">Купить</button></div>
+                        <div class="demo-card">📡 Интернет — 50 кр. <button class="demo-button-sm">Купить</button></div>
+                        <div class="demo-card">🍺 Пиво — 25 кр. <button class="demo-button-sm">Купить</button></div>`;
+                break;
+            case 'bank':
+                html = `<h2>🏦 К-Банк</h2>
+                        <div class="demo-card">💰 Кредиты: первый до 1000, второй 2000</div>
+                        <div class="demo-card">📈 Инвестиции (Облигации 4%)</div>
+                        <button class="demo-button-sm">Взять кредит</button>`;
+                break;
+            case 'darknet':
+                html = `<h2>🕶️ Даркнет (SUX Market)</h2>
+                        <div class="demo-card">👝 Теневой кошелёк: 0 кр.</div>
+                        <div class="demo-card">🍄 Лукошко грибов — 300 кр. (×1.35 дохода 2ч)</div>
+                        <div class="demo-card">🧂 Крабедрон — 50 кр.</div>`;
+                break;
+            case 'court':
+                html = `<h2>⚖️ Суд Крабовой Демократии</h2>
+                        <div class="demo-card">📄 Подать иск (раз в день)</div>
+                        <div class="demo-card">⚖️ Обжаловать приговор</div>
+                        <button class="demo-button-sm">Новый иск</button>`;
+                break;
+            case 'housing':
+                html = `<h2>🏙️ Краб-Йорк</h2>
+                        <div class="demo-card">Карта районов: Крабхэттен, Краблин, Куинз...</div>
+                        <div class="demo-card">🏠 Студия от 3 млн кр., аренда от 700/день</div>
+                        <button class="demo-button-sm">Выбрать жильё</button>`;
+                break;
+            default: html = '<h2>Ошибка</h2>';
+        }
+        contentArea.innerHTML = html;
+        if (tabId === 'home') {
+            const btn = document.getElementById('refreshProfileBtnHome');
+            if (btn) btn.addEventListener('click', refreshProfile);
+        }
+    }
 
+    menuBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            menuBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const tab = btn.dataset.tab;
+            loadTab(tab);
+        });
+    });
+
+    scanBtn.addEventListener('click', () => {
+        blink();
+        if (navigator.vibrate) navigator.vibrate(50);
+        scanBtn.innerText = '🔒 LOCKED';
+        setTimeout(() => { scanBtn.innerText = '👁️ SCAN'; }, 800);
+        // Здесь позже будет триггер слежки
+    });
+
+    // инициализация UI
+    updateTopBar();
+    loadTab('home');
+    document.getElementById('refreshProfileBtn')?.addEventListener('click', refreshProfile);
+    // подстройка глаз при ресайзе окна
+    window.addEventListener('resize', () => {
+        setTimeout(() => {
+            const centerX = window.innerWidth/2;
+            const centerY = window.innerHeight/2;
+            if (leftEye && rightEye) {
+                leftEye.x = centerX - 220;
+                leftEye.y = centerY - 50;
+                rightEye.x = centerX + 220;
+                rightEye.y = centerY - 50;
+            }
+        }, 50);
+    });
 </script>
 </body>
 </html>
-```
