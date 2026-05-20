@@ -20,52 +20,57 @@
             background: #03060c;
         }
 
-        /* Многослойный тёмный градиент фона */
+        /* ========== МНОГОУРОВНЕВЫЙ ТЁМНЫЙ ГРАДИЕНТ ДЛЯ ФОНА (постоянный) ========== */
         .bg-gradient {
             position: fixed;
             inset: 0;
             background: radial-gradient(circle at 20% 30%, #0a1428, #03071a);
             z-index: 0;
         }
+        /* Дополнительные слои для глубины (переливы) */
         .bg-layer1 {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 70% 50%, rgba(0, 80, 120, 0.12), transparent 60%);
+            background: radial-gradient(circle at 70% 50%, rgba(0, 80, 120, 0.15), transparent 60%);
             pointer-events: none;
             z-index: 0;
         }
         .bg-layer2 {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 30% 80%, rgba(0, 150, 180, 0.06), transparent 70%);
+            background: radial-gradient(circle at 30% 80%, rgba(0, 150, 180, 0.08), transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
         .bg-layer3 {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 90% 20%, rgba(50, 100, 150, 0.08), transparent 60%);
+            background: radial-gradient(circle at 90% 20%, rgba(50, 100, 150, 0.1), transparent 60%);
             pointer-events: none;
             z-index: 0;
         }
+
+        /* Лёгкая текстура (почти незаметная) */
         .noise {
             position: fixed;
             inset: 0;
             background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjgiIG51bU9jdGF2ZXM9IjMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZikiIG9wYWNpdHk9IjAuMDMiLz48L3N2Zz4=');
             background-repeat: repeat;
-            opacity: 0.12;
+            opacity: 0.15;
             pointer-events: none;
             z-index: 0;
         }
+
+        /* Vignette для затемнения краёв */
         .vignette {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.65) 100%);
+            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.6) 100%);
             pointer-events: none;
             z-index: 1;
         }
 
-        /* Splash screen */
+        /* ========== ЗАГРУЗОЧНЫЙ ЭКРАН (тёмный градиент) ========== */
         .splash {
             position: fixed;
             inset: 0;
@@ -81,6 +86,7 @@
             opacity: 0;
             pointer-events: none;
         }
+        /* Градиент внутри сплеша (многоуровневый, но приглушённый) */
         .splash-bg {
             position: absolute;
             inset: 0;
@@ -91,13 +97,13 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 70% 60%, rgba(0, 120, 150, 0.1), transparent 60%);
+            background: radial-gradient(circle at 70% 60%, rgba(0, 120, 150, 0.12), transparent 60%);
         }
         .splash-bg::after {
             content: "";
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 20% 80%, rgba(0, 180, 200, 0.06), transparent 70%);
+            background: radial-gradient(circle at 20% 80%, rgba(0, 180, 200, 0.08), transparent 70%);
         }
         .splash-logo {
             font-size: 86px;
@@ -126,7 +132,7 @@
             100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 20px #3a6eff; }
         }
 
-        /* Верхняя панель */
+        /* ========== ОСНОВНОЙ UI ========== */
         .top-bar {
             position: fixed;
             top: 16px;
@@ -171,48 +177,22 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* Карусель (Swipe-контейнер) */
-        .carousel-container {
+        /* ========== ОБЛАСТЬ КОНТЕНТА ========== */
+        .content {
             position: fixed;
             top: 90px;
             left: 16px;
             right: 16px;
             bottom: 100px;
-            overflow: hidden;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(18px);
             border-radius: 36px;
-            z-index: 10;
-        }
-        .carousel-track {
-            display: flex;
-            height: 100%;
-            will-change: transform;
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            cursor: grab;
-        }
-        .carousel-track:active {
-            cursor: grabbing;
-        }
-        .carousel-slide {
-            flex: 0 0 100%;
-            overflow-y: auto;
+            border: 1px solid rgba(100, 150, 255, 0.2);
             padding: 20px;
+            overflow-y: auto;
+            z-index: 10;
             scrollbar-width: thin;
-            height: 100%;
-            box-sizing: border-box;
         }
-        /* Стилизация скроллбара */
-        .carousel-slide::-webkit-scrollbar {
-            width: 4px;
-        }
-        .carousel-slide::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
-            border-radius: 4px;
-        }
-        .carousel-slide::-webkit-scrollbar-thumb {
-            background: rgba(100,150,255,0.4);
-            border-radius: 4px;
-        }
-
         .card {
             background: rgba(20, 30, 50, 0.6);
             border-radius: 28px;
@@ -244,7 +224,7 @@
             background: #1e3aad;
         }
 
-        /* Нижнее меню */
+        /* ========== НИЖНЕЕ МЕНЮ (5 вкладок) ========== */
         .bottom {
             position: fixed;
             bottom: 18px;
@@ -271,26 +251,21 @@
             padding: 10px 0;
             border-radius: 40px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
             font-weight: 500;
-            backdrop-filter: blur(4px);
         }
         .tab span {
             font-size: 13px;
             display: none;
         }
-        /* Стеклянный активный таб */
         .tab.active {
-            background: rgba(75, 110, 240, 0.25);
-            backdrop-filter: blur(12px);
-            color: #ffffff;
-            text-shadow: 0 0 8px rgba(100, 150, 255, 0.5);
-            border: 1px solid rgba(100, 150, 255, 0.4);
-            box-shadow: 0 0 12px rgba(75, 110, 240, 0.2);
+            background: rgba(75, 110, 240, 0.3);
+            color: #b4c8ff;
+            text-shadow: 0 0 6px rgba(100, 150, 255, 0.3);
         }
         @media (min-width: 500px) {
             .tab span { display: inline; }
@@ -300,7 +275,7 @@
 </head>
 <body>
 
-<!-- Фон -->
+<!-- Постоянный фон (тёмный многослойный градиент) -->
 <div class="bg-gradient"></div>
 <div class="bg-layer1"></div>
 <div class="bg-layer2"></div>
@@ -308,7 +283,7 @@
 <div class="noise"></div>
 <div class="vignette"></div>
 
-<!-- Splash -->
+<!-- Загрузочный экран -->
 <div class="splash" id="splash">
     <div class="splash-bg"></div>
     <div class="splash-logo">SUX</div>
@@ -324,17 +299,13 @@
     <div class="balance" id="balanceDisplay">12 500 кр.</div>
 </div>
 
-<!-- Карусель вкладок -->
-<div class="carousel-container">
-    <div class="carousel-track" id="carouselTrack">
-        <!-- Вкладки будут добавлены через JS -->
-    </div>
-</div>
+<!-- Контент -->
+<div class="content" id="content"></div>
 
-<!-- Нижнее меню -->
+<!-- Нижнее меню (без главной) -->
 <div class="bottom">
     <div class="menu">
-        <button class="tab" data-tab="profile">👤<span>Профиль</span></button>
+        <button class="tab active" data-tab="profile">👤<span>Профиль</span></button>
         <button class="tab" data-tab="bank">🏦<span>Банк</span></button>
         <button class="tab" data-tab="darknet">🕶️<span>Даркнет</span></button>
         <button class="tab" data-tab="court">⚖️<span>Суд</span></button>
@@ -343,216 +314,65 @@
 </div>
 
 <script>
-    // Список вкладок в порядке
-    const tabsList = ['profile', 'bank', 'darknet', 'court', 'housing'];
-    let currentIndex = 0;
-    let startX = 0, currentX = 0, isDragging = false;
-    let track = document.getElementById('carouselTrack');
-    let container = document.querySelector('.carousel-container');
-    let slideWidth = 0;
-    let resizeObserver = null;
-
-    // Данные баланса
-    let currentBalance = 12500;
+    // ========== UI ЛОГИКА ==========
+    const tabs = document.querySelectorAll('.tab');
+    const contentDiv = document.getElementById('content');
+    const splash = document.getElementById('splash');
     const balanceSpan = document.getElementById('balanceDisplay');
+
+    let currentBalance = 12500;
     function updateBalanceUI() {
         balanceSpan.innerText = currentBalance.toLocaleString() + ' кр.';
     }
 
-    // Функция рендера контента для слайда
-    function renderSlideContent(tabName, balanceValue) {
-        if (tabName === 'profile') {
-            return `
-                <div class="card">
-                    <h2>👤 ПРОФИЛЬ</h2>
-                    <div>Социальный рейтинг: <strong>${balanceValue}</strong></div>
-                    <div>Ранг: Достойный гражданин</div>
-                    <div>Сообщений: 342</div>
-                    <div>Эффекты: нет</div>
-                    <button class="refresh-profile-btn">Обновить</button>
-                </div>
-            `;
-        } else if (tabName === 'bank') {
-            return `<div class="card"><h2>🏦 К-БАНК</h2><div>Кредиты: до 2000 кр.</div><div>Инвестиции: 4-15%</div><button>Взять кредит</button></div>`;
-        } else if (tabName === 'darknet') {
-            return `<div class="card"><h2>🕶️ ДАРКНЕТ</h2><div>Теневой кошелёк: 0 кр.</div><div>Грибы • Крабедрон</div><button>Перейти</button></div>`;
-        } else if (tabName === 'court') {
-            return `<div class="card"><h2>⚖️ СУД</h2><div>Активных исков: 0</div><button>Подать иск</button></div>`;
-        } else if (tabName === 'housing') {
-            return `<div class="card"><h2>🏙️ КРАБ-ЙОРК</h2><div>Крабхэттен • Студия от 3 млн</div><button>Выбрать жильё</button></div>`;
+    function renderContent(tab) {
+        let html = '';
+        if(tab === 'profile') {
+            html = `<div class="card">
+                        <h2>👤 ПРОФИЛЬ</h2>
+                        <div>Социальный рейтинг: <strong>${currentBalance}</strong></div>
+                        <div>Ранг: Достойный гражданин</div>
+                        <div>Сообщений: 342</div>
+                        <div>Эффекты: нет</div>
+                        <button id="refreshBtn">Обновить</button>
+                    </div>`;
+        } else if(tab === 'bank') {
+            html = `<div class="card"><h2>🏦 К-БАНК</h2><div>Кредиты: до 2000 кр.</div><div>Инвестиции: 4-15%</div><button>Взять кредит</button></div>`;
+        } else if(tab === 'darknet') {
+            html = `<div class="card"><h2>🕶️ ДАРКНЕТ</h2><div>Теневой кошелёк: 0 кр.</div><div>Грибы • Крабедрон</div><button>Перейти</button></div>`;
+        } else if(tab === 'court') {
+            html = `<div class="card"><h2>⚖️ СУД</h2><div>Активных исков: 0</div><button>Подать иск</button></div>`;
+        } else if(tab === 'housing') {
+            html = `<div class="card"><h2>🏙️ КРАБ-ЙОРК</h2><div>Крабхэттен • Студия от 3 млн</div><button>Выбрать жильё</button></div>`;
         }
-        return '';
-    }
-
-    // Построить карусель
-    function buildCarousel() {
-        track.innerHTML = '';
-        for (let i = 0; i < tabsList.length; i++) {
-            const slide = document.createElement('div');
-            slide.className = 'carousel-slide';
-            slide.setAttribute('data-tab', tabsList[i]);
-            slide.innerHTML = renderSlideContent(tabsList[i], currentBalance);
-            track.appendChild(slide);
-        }
-        // Обновить ширину и позицию
-        updateSlideWidth();
-        setTransform(currentIndex);
-        // Назначить обработчики кнопок внутри профиля после рендера
-        attachProfileButtonEvents();
-    }
-
-    function updateSlideWidth() {
-        if (!container) return;
-        slideWidth = container.clientWidth;
-        track.style.width = `${slideWidth * tabsList.length}px`;
-        for (let i = 0; i < track.children.length; i++) {
-            track.children[i].style.width = `${slideWidth}px`;
-        }
-    }
-
-    function setTransform(index, animate = true) {
-        if (!track) return;
-        const newX = -index * slideWidth;
-        track.style.transition = animate ? 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1)' : 'none';
-        track.style.transform = `translateX(${newX}px)`;
-        // Обновить активный класс в нижнем меню
-        const buttons = document.querySelectorAll('.tab');
-        buttons.forEach((btn, idx) => {
-            if (idx === index) btn.classList.add('active');
-            else btn.classList.remove('active');
-        });
-    }
-
-    function goToTab(index, animate = true) {
-        if (index < 0) index = 0;
-        if (index >= tabsList.length) index = tabsList.length - 1;
-        if (currentIndex === index) return;
-        currentIndex = index;
-        setTransform(currentIndex, animate);
-        // Также обновляем содержимое слайда, если нужно перерисовать данные (например, баланс изменился)
-        // Но проще перерисовать все слайды? Для производительности перерисуем только текущий и соседние? Но проще пересобрать карусель с новым балансом.
-        // Для динамического обновления профиля при нажатии кнопки мы используем отдельную функцию.
-    }
-
-    // Обработка событий мыши/тача для свайпа
-    function attachDragEvents() {
-        let startXPos = 0;
-        let startTransform = 0;
-        let isDraggingNow = false;
-        let dragStartTime = 0;
-
-        function onStart(e) {
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            startXPos = clientX;
-            startTransform = currentIndex * slideWidth;
-            isDraggingNow = true;
-            dragStartTime = Date.now();
-            track.style.transition = 'none';
-            if (e.cancelable) e.preventDefault();
-        }
-
-        function onMove(e) {
-            if (!isDraggingNow) return;
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const deltaX = clientX - startXPos;
-            let newTransform = startTransform - deltaX;
-            // Ограничиваем, чтобы не выезжать за пределы
-            const maxTransform = (tabsList.length - 1) * slideWidth;
-            if (newTransform < 0) newTransform = 0;
-            if (newTransform > maxTransform) newTransform = maxTransform;
-            track.style.transform = `translateX(-${newTransform}px)`;
-            if (e.cancelable) e.preventDefault();
-        }
-
-        function onEnd(e) {
-            if (!isDraggingNow) return;
-            isDraggingNow = false;
-            const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-            const deltaX = clientX - startXPos;
-            const duration = Date.now() - dragStartTime;
-            let newIndex = currentIndex;
-            const threshold = slideWidth * 0.2;
-            if (Math.abs(deltaX) > threshold || (Math.abs(deltaX) > 15 && duration < 200)) {
-                if (deltaX > 0) {
-                    newIndex = Math.max(0, currentIndex - 1);
-                } else {
-                    newIndex = Math.min(tabsList.length - 1, currentIndex + 1);
-                }
-            }
-            goToTab(newIndex, true);
-        }
-
-        track.addEventListener('mousedown', onStart);
-        window.addEventListener('mousemove', onMove);
-        window.addEventListener('mouseup', onEnd);
-        track.addEventListener('touchstart', onStart, { passive: false });
-        window.addEventListener('touchmove', onMove, { passive: false });
-        window.addEventListener('touchend', onEnd);
-    }
-
-    // Обновление размера при ресайзе
-    function handleResize() {
-        updateSlideWidth();
-        setTransform(currentIndex, false);
-    }
-
-    // Кнопки меню
-    function attachMenuButtons() {
-        const buttons = document.querySelectorAll('.tab');
-        buttons.forEach((btn, idx) => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                goToTab(idx, true);
-            });
-        });
-    }
-
-    // Обновление контента профиля при изменении баланса
-    function refreshProfileContent() {
-        const profileSlide = track.querySelector('.carousel-slide[data-tab="profile"]');
-        if (profileSlide) {
-            profileSlide.innerHTML = renderSlideContent('profile', currentBalance);
-            attachProfileButtonEvents();
-        }
-    }
-
-    function attachProfileButtonEvents() {
-        const refreshBtn = document.querySelector('.refresh-profile-btn');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => {
+        contentDiv.innerHTML = html;
+        if(tab === 'profile') {
+            document.getElementById('refreshBtn')?.addEventListener('click', () => {
                 currentBalance += Math.floor(Math.random() * 500);
                 updateBalanceUI();
-                refreshProfileContent();
+                renderContent('profile');
             });
         }
-        // Обработчики для других кнопок (заглушки)
-        const allButtons = document.querySelectorAll('.card button:not(.refresh-profile-btn)');
-        allButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                alert('Демо-функция. Будет подключена позже.');
-            });
+    }
+
+    function setActiveTab(tab) {
+        tabs.forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.dataset.tab === tab) btn.classList.add('active');
         });
+        renderContent(tab);
     }
 
-    // Инициализация
-    function init() {
-        buildCarousel();
-        attachDragEvents();
-        attachMenuButtons();
-        window.addEventListener('resize', handleResize);
-        updateBalanceUI();
-        // Стартовый индекс 0 (профиль)
-        goToTab(0, false);
-    }
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
+    });
 
-    // Загрузочный экран
-    const splashEl = document.getElementById('splash');
+    // Splash на 5 секунд, затем скрываем и показываем первую вкладку (Профиль)
     setTimeout(() => {
-        splashEl.classList.add('hide');
-        setTimeout(() => {
-            splashEl.style.display = 'none';
-        }, 800);
-        init();
+        splash.classList.add('hide');
+        setTimeout(() => { splash.style.display = 'none'; }, 800);
+        setActiveTab('profile');   // Стартовая вкладка после загрузки
+        updateBalanceUI();
     }, 5000);
 </script>
 </body>
