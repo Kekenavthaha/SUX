@@ -19,76 +19,52 @@
             color: #eef4ff;
         }
 
-        /* ========== АНИМИРОВАННЫЙ ГРАДИЕНТНЫЙ ФОН ========== */
-        .animated-bg {
+        /* ========== ОСНОВНОЙ АНИМИРОВАННЫЙ ГРАДИЕНТ (фон приложения) ========== */
+        .app-bg {
             position: fixed;
             inset: 0;
-            background: linear-gradient(125deg, #0f1a2f, #1b2c4a, #14223a, #0e1830);
-            background-size: 300% 300%;
-            animation: gradientFlow 18s ease infinite alternate;
+            background: radial-gradient(circle at 20% 30%, #0a1a2f, #071221);
             z-index: 0;
         }
 
-        @keyframes gradientFlow {
-            0% {
-                background-position: 0% 50%;
-                background: radial-gradient(circle at 30% 20%, #0a1128, #16213e);
-            }
-            25% {
-                background: radial-gradient(circle at 70% 40%, #132a4a, #0d1b33);
-            }
-            50% {
-                background: radial-gradient(circle at 40% 70%, #1c3050, #0f1a2f);
-            }
-            75% {
-                background: radial-gradient(circle at 80% 60%, #162b48, #0b1428);
-            }
-            100% {
-                background: radial-gradient(circle at 20% 80%, #0a1a30, #111d38);
-            }
-        }
-
-        /* можно также плавно менять радиальный градиент, но для плавности используем только позиционирование */
-        /* упростим: просто линейный градиент с движением */
         .gradient-layer {
             position: fixed;
             inset: 0;
-            background: linear-gradient(135deg, #0e1a2a, #192f4a, #0c1a30, #1e3a5a);
-            background-size: 400% 400%;
-            animation: smoothGradient 22s ease infinite alternate;
-            z-index: 0;
-            opacity: 0.9;
+            background: linear-gradient(125deg, #0a2a4a, #0e3455, #1a4a6e, #0f2a48);
+            background-size: 300% 300%;
+            animation: gradientMove 22s ease infinite alternate;
+            opacity: 0.7;
+            z-index: 1;
         }
 
-        @keyframes smoothGradient {
+        @keyframes gradientMove {
             0% { background-position: 0% 0%; }
             50% { background-position: 100% 100%; }
             100% { background-position: 0% 0%; }
         }
 
-        /* дополнительное свечение (опционально) */
+        /* Дополнительное сияние */
         .glow {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(80, 120, 255, 0.12), transparent 70%);
+            background: radial-gradient(circle at 50% 50%, rgba(40, 120, 200, 0.15), transparent 70%);
             pointer-events: none;
-            z-index: 1;
+            z-index: 2;
         }
 
-        /* Vignette для мягкого затемнения краёв */
         .vignette {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.35) 100%);
+            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.5) 100%);
             pointer-events: none;
-            z-index: 1;
+            z-index: 2;
         }
 
-        /* ========== SPLASH (5 сек) ========== */
+        /* ========== SPLASH (5 секунд, многоуровневый градиент) ========== */
         .splash {
             position: fixed;
             inset: 0;
-            background: #0a0f1c;
+            background: radial-gradient(circle at 30% 20%, #0b1f33, #04121f);
             z-index: 200;
             display: flex;
             flex-direction: column;
@@ -96,65 +72,54 @@
             justify-content: center;
             transition: opacity 0.8s ease;
         }
+        .splash .gradient-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, #0d2b4a, #13456a, #0a2848, #1a5a85);
+            background-size: 400% 400%;
+            animation: splashGradient 18s ease infinite alternate;
+            opacity: 0.9;
+        }
+        @keyframes splashGradient {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        .splash .glow-layer {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(30, 150, 220, 0.3), transparent 70%);
+            pointer-events: none;
+        }
         .splash.hide {
             opacity: 0;
             pointer-events: none;
         }
         .splash-logo {
+            position: relative;
+            z-index: 5;
             font-size: 86px;
             font-weight: 700;
             font-family: monospace;
             letter-spacing: 12px;
-            background: linear-gradient(135deg, #bcd0ff, #6a8eff);
+            background: linear-gradient(135deg, #b0e0ff, #6a9eff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-shadow: 0 0 30px rgba(80, 150, 255, 0.3);
             animation: softPulse 1.4s infinite alternate;
         }
         .splash-title {
+            position: relative;
+            z-index: 5;
             margin-top: 20px;
             font-size: 15px;
             letter-spacing: 3px;
-            color: #8aa9ff;
+            color: #8ab3ff;
         }
         @keyframes softPulse {
-            0% { opacity: 0.5; transform: scale(0.98); text-shadow: 0 0 5px #5a7eff; }
-            100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 20px #5a7eff; }
-        }
-
-        /* ========== ЛОГОТИП И СЛОГАН (только на главной) ========== */
-        .logo {
-            position: fixed;
-            bottom: 12%;
-            width: 100%;
-            text-align: center;
-            font-size: clamp(42px, 10vw, 82px);
-            font-weight: 700;
-            font-family: monospace;
-            letter-spacing: 8px;
-            background: linear-gradient(135deg, #eef4ff, #bdd4ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.2);
-            z-index: 5;
-            transition: opacity 0.25s;
-        }
-        .slogan {
-            position: fixed;
-            width: 100%;
-            bottom: 6%;
-            text-align: center;
-            color: #8aa9ff;
-            letter-spacing: 2px;
-            font-size: 12px;
-            font-weight: 300;
-            z-index: 5;
-            transition: opacity 0.25s;
-        }
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
+            0% { opacity: 0.6; transform: scale(0.98); text-shadow: 0 0 5px #3a7eff; }
+            100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 25px #3a7eff; }
         }
 
         /* ========== ВЕРХНЯЯ ПАНЕЛЬ ========== */
@@ -163,16 +128,15 @@
             top: 16px;
             left: 16px;
             right: 16px;
-            background: rgba(18, 25, 45, 0.6);
+            background: rgba(10, 20, 35, 0.6);
             backdrop-filter: blur(24px);
             border-radius: 60px;
-            border: 1px solid rgba(140, 170, 255, 0.3);
+            border: 1px solid rgba(100, 160, 255, 0.25);
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
-            transition: opacity 0.25s;
+            z-index: 100;
             box-shadow: 0 6px 18px rgba(0,0,0,0.2);
         }
         .balance {
@@ -193,7 +157,7 @@
         .avatar {
             width: 34px;
             height: 34px;
-            background: linear-gradient(145deg, #4b6ef0, #2b4ad0);
+            background: linear-gradient(145deg, #3a6ae0, #1f3c9e);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -201,37 +165,38 @@
             font-size: 18px;
         }
 
-        /* ========== ОБЛАСТЬ КОНТЕНТА ========== */
+        /* ========== ОСНОВНОЙ КОНТЕНТ ========== */
         .content {
             position: fixed;
             top: 90px;
             left: 16px;
             right: 16px;
-            bottom: 100px;
-            background: rgba(0, 0, 0, 0.35);
+            bottom: 90px;
+            background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(18px);
             border-radius: 36px;
-            border: 1px solid rgba(140, 170, 255, 0.2);
+            border: 1px solid rgba(100, 160, 255, 0.2);
             padding: 20px;
             overflow-y: auto;
-            z-index: 10;
-            transition: opacity 0.25s;
+            z-index: 100;
+            scrollbar-width: thin;
         }
         .card {
-            background: rgba(30, 40, 65, 0.5);
+            background: rgba(20, 35, 55, 0.5);
             border-radius: 28px;
             padding: 20px;
             margin-bottom: 16px;
-            border: 1px solid rgba(140, 170, 255, 0.2);
+            border: 1px solid rgba(100, 160, 255, 0.2);
             backdrop-filter: blur(4px);
         }
         .card h2 {
             font-size: 20px;
             margin-bottom: 12px;
             color: #cbdffc;
+            font-weight: 500;
         }
         .card button {
-            background: #3b5bdb;
+            background: #2e5ad0;
             border: none;
             padding: 12px 16px;
             border-radius: 48px;
@@ -244,21 +209,21 @@
         }
         .card button:active {
             transform: scale(0.97);
-            background: #2a46b0;
+            background: #1f42a0;
         }
 
-        /* ========== НИЖНЕЕ МЕНЮ ========== */
+        /* ========== НИЖНЕЕ МЕНЮ (БЕЗ ГЛАВНОЙ) ========== */
         .bottom {
             position: fixed;
             bottom: 18px;
             left: 16px;
             right: 16px;
-            background: rgba(18, 25, 45, 0.75);
+            background: rgba(10, 20, 35, 0.75);
             backdrop-filter: blur(28px);
             border-radius: 48px;
             padding: 8px 12px;
-            border: 1px solid rgba(140, 170, 255, 0.35);
-            z-index: 10;
+            border: 1px solid rgba(100, 160, 255, 0.35);
+            z-index: 100;
         }
         .menu {
             display: flex;
@@ -269,9 +234,9 @@
             flex: 1;
             background: transparent;
             border: none;
-            color: rgba(220, 240, 255, 0.6);
+            color: rgba(180, 210, 255, 0.7);
             font-size: 20px;
-            padding: 10px 0;
+            padding: 8px 0;
             border-radius: 40px;
             cursor: pointer;
             transition: all 0.15s;
@@ -286,8 +251,8 @@
             display: none;
         }
         .tab.active {
-            background: rgba(75, 110, 240, 0.25);
-            color: #b4c8ff;
+            background: rgba(50, 110, 230, 0.3);
+            color: #bbd4ff;
         }
         @media (min-width: 500px) {
             .tab span { display: inline; }
@@ -297,23 +262,22 @@
 </head>
 <body>
 
-<!-- Анимированный градиентный фон (высокое качество) -->
+<!-- Фон приложения (постоянный, многослойный) -->
+<div class="app-bg"></div>
 <div class="gradient-layer"></div>
 <div class="glow"></div>
 <div class="vignette"></div>
 
 <!-- Splash -->
 <div class="splash" id="splash">
+    <div class="gradient-bg"></div>
+    <div class="glow-layer"></div>
     <div class="splash-logo">SUX</div>
     <div class="splash-title">ЗАРЯЖАЮ ЭФИР</div>
 </div>
 
-<!-- Логотип (виден только на главной) -->
-<div class="logo" id="logo">SUX</div>
-<div class="slogan" id="slogan">Присутствие • Поток • Гармония</div>
-
-<!-- Верхняя панель (скрыта на главной) -->
-<div class="top-bar hidden" id="topBar">
+<!-- Верхняя панель (видна после splash) -->
+<div class="top-bar" id="topBar">
     <div class="user">
         <div class="avatar">🦀</div>
         <span>Краб Гражданин</span>
@@ -321,14 +285,13 @@
     <div class="balance" id="balanceDisplay">12 500 кр.</div>
 </div>
 
-<!-- Область контента (скрыта на главной) -->
-<div class="content hidden" id="content"></div>
+<!-- Основной контент -->
+<div class="content" id="content"></div>
 
-<!-- Нижнее меню -->
+<!-- Нижнее меню (без home) -->
 <div class="bottom">
     <div class="menu">
-        <button class="tab active" data-tab="home">🏠<span>Главная</span></button>
-        <button class="tab" data-tab="profile">👤<span>Профиль</span></button>
+        <button class="tab active" data-tab="profile">👤<span>Профиль</span></button>
         <button class="tab" data-tab="bank">🏦<span>Банк</span></button>
         <button class="tab" data-tab="darknet">🕶️<span>Даркнет</span></button>
         <button class="tab" data-tab="court">⚖️<span>Суд</span></button>
@@ -337,11 +300,8 @@
 </div>
 
 <script>
-    // ========== UI ЛОГИКА ==========
+    // ========== UI ЛОГИКА (нет главной страницы) ==========
     const tabs = document.querySelectorAll('.tab');
-    const logo = document.getElementById('logo');
-    const slogan = document.getElementById('slogan');
-    const topBar = document.getElementById('topBar');
     const contentDiv = document.getElementById('content');
     const splash = document.getElementById('splash');
     const balanceSpan = document.getElementById('balanceDisplay');
@@ -373,7 +333,8 @@
         }
         contentDiv.innerHTML = html;
         if(tab === 'profile') {
-            document.getElementById('refreshBtn')?.addEventListener('click', () => {
+            const btn = document.getElementById('refreshBtn');
+            if(btn) btn.addEventListener('click', () => {
                 currentBalance += Math.floor(Math.random() * 500);
                 updateBalanceUI();
                 renderContent('profile');
@@ -386,30 +347,21 @@
             btn.classList.remove('active');
             if(btn.dataset.tab === tab) btn.classList.add('active');
         });
-        if(tab === 'home') {
-            logo.classList.remove('hidden');
-            slogan.classList.remove('hidden');
-            topBar.classList.add('hidden');
-            contentDiv.classList.add('hidden');
-        } else {
-            logo.classList.add('hidden');
-            slogan.classList.add('hidden');
-            topBar.classList.remove('hidden');
-            contentDiv.classList.remove('hidden');
-            renderContent(tab);
-        }
+        renderContent(tab);
     }
 
     tabs.forEach(btn => {
         btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
     });
 
+    // Стартуем с вкладки "profile"
+    setActiveTab('profile');
+    updateBalanceUI();
+
     // Splash на 5 секунд
     setTimeout(() => {
         splash.classList.add('hide');
         setTimeout(() => { splash.style.display = 'none'; }, 800);
-        setActiveTab('home');
-        updateBalanceUI();
     }, 5000);
 </script>
 </body>
