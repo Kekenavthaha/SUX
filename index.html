@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SUX — следит всегда</title>
+    <title>SUX — ваш безопасный мессенджер</title>
     <style>
         * {
             margin: 0;
@@ -15,125 +15,132 @@
 
         body {
             overflow: hidden;
-            background: #05070c;
-            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
-            color: #fff;
+            background: #0a0f1c;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #eef4ff;
         }
 
-        /* ========== Фоновые слои ========== */
+        /* ========== ФОН (глубокий тёмно-синий с мягким градиентом) ========== */
         .bg {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.12), transparent 40%),
-                        radial-gradient(circle at bottom right, rgba(207, 60, 60, 0.08), transparent 45%),
-                        linear-gradient(135deg, #05070c 0%, #0a0f1a 50%, #070b10 100%);
-            animation: bgFlow 18s ease infinite alternate;
+            background: radial-gradient(circle at 20% 30%, #0f172a, #030614);
+            animation: slowBreath 12s infinite alternate;
         }
-        @keyframes bgFlow {
-            0% { filter: hue-rotate(0deg) brightness(1); transform: scale(1); }
-            100% { filter: hue-rotate(8deg) brightness(1.08); transform: scale(1.02); }
+        @keyframes slowBreath {
+            0% { opacity: 0.9; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.02); }
         }
 
+        /* Лёгкая сетка (почти незаметная) */
         .grid {
             position: fixed;
             inset: 0;
-            background-image: linear-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(212, 175, 55, 0.08) 1px, transparent 1px);
-            background-size: 42px 42px;
-            opacity: 0.6;
+            background-image: linear-gradient(rgba(100, 150, 255, 0.04) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(100, 150, 255, 0.04) 1px, transparent 1px);
+            background-size: 48px 48px;
             pointer-events: none;
         }
 
+        /* Едва заметные сканы */
         .scanlines {
             position: fixed;
             inset: 0;
             pointer-events: none;
-            background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 2px, transparent 4px);
-            mix-blend-mode: soft-light;
+            background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 1px, transparent 2px, transparent 4px);
             opacity: 0.3;
         }
 
+        /* Vignette для глубины */
         .vignette {
             position: fixed;
             inset: 0;
             pointer-events: none;
-            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.6) 100%);
+            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.4) 100%);
         }
 
-        /* ========== SPLASH SCREEN ========== */
+        /* ========== SPLASH SCREEN (5 сек) ========== */
         .splash {
             position: fixed;
             inset: 0;
-            background: #05070c;
+            background: #0a0f1c;
             z-index: 200;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             transition: opacity 0.8s ease;
-            backdrop-filter: blur(0px);
         }
         .splash.hide {
             opacity: 0;
             pointer-events: none;
         }
         .splash-logo {
-            font-size: 96px;
-            font-weight: 900;
+            font-size: 86px;
+            font-weight: 800;
             font-family: monospace;
-            letter-spacing: 16px;
-            color: rgba(255, 70, 70, 0.9);
-            text-shadow: 0 0 30px rgba(255,0,0,0.5);
-            animation: pulse 1.2s infinite alternate;
+            letter-spacing: 12px;
+            background: linear-gradient(135deg, #94b0ff, #6c8cff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: softPulse 1.4s infinite alternate;
         }
         .splash-title {
-            margin-top: 24px;
-            font-size: 18px;
-            letter-spacing: 4px;
-            color: rgba(212,175,55,0.7);
+            margin-top: 20px;
+            font-size: 15px;
+            letter-spacing: 3px;
+            color: #7f9cf5;
+            font-weight: 300;
         }
-        @keyframes pulse {
-            0% { opacity: 0.6; transform: scale(0.98); text-shadow: 0 0 10px red; }
-            100% { opacity: 1; transform: scale(1.02); text-shadow: 0 0 35px #ff4444; }
+        @keyframes softPulse {
+            0% { opacity: 0.6; transform: scale(0.98); text-shadow: 0 0 5px #5a7eff; }
+            100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 18px #5a7eff; }
         }
 
-        /* ========== КИНО-ГЛАЗА (canvas) ========== */
-        canvas {
+        /* ========== ВИЗУАЛИЗАТОР (вместо глаз) ========== */
+        .visualizer-container {
             position: fixed;
             inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4;
             pointer-events: none;
-            display: block;
         }
-        canvas.hidden-canvas {
-            display: none;
+        canvas#vizualizer {
+            width: 100%;
+            height: 60%;
+            max-width: 700px;
+            filter: drop-shadow(0 0 20px rgba(80, 120, 255, 0.3));
         }
 
         /* ========== ЛОГОТИП И СЛОГАН (только на главной) ========== */
         .logo {
             position: fixed;
-            bottom: 14%;
+            bottom: 12%;
             width: 100%;
             text-align: center;
-            font-size: clamp(48px, 12vw, 96px);
-            font-weight: 900;
+            font-size: clamp(42px, 10vw, 82px);
+            font-weight: 700;
             font-family: monospace;
             letter-spacing: 8px;
-            color: rgba(255, 70, 70, 0.85);
-            text-shadow: 0 0 12px rgba(255,0,0,0.5), 0 0 32px rgba(255,0,0,0.3);
+            background: linear-gradient(135deg, #eef4ff, #bdd4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 5;
             transition: opacity 0.25s;
         }
         .slogan {
             position: fixed;
             width: 100%;
-            bottom: 8%;
+            bottom: 6%;
             text-align: center;
-            color: rgba(212,175,55,0.6);
-            letter-spacing: 3px;
-            font-size: 11px;
+            color: #8aa9ff;
+            letter-spacing: 2px;
+            font-size: 12px;
             font-weight: 300;
             z-index: 5;
             transition: opacity 0.25s;
@@ -143,49 +150,50 @@
             pointer-events: none;
         }
 
-        /* ========== ВЕРХНЯЯ ПАНЕЛЬ (баланс) ========== */
+        /* ========== ВЕРХНЯЯ ПАНЕЛЬ ========== */
         .top-bar {
             position: fixed;
             top: 16px;
             left: 16px;
             right: 16px;
-            background: rgba(10, 15, 25, 0.65);
-            backdrop-filter: blur(20px);
+            background: rgba(18, 25, 45, 0.65);
+            backdrop-filter: blur(24px);
             border-radius: 60px;
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            padding: 12px 20px;
+            border: 1px solid rgba(140, 170, 255, 0.3);
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 10;
             transition: opacity 0.25s;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
         }
         .balance {
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.3);
             border-radius: 40px;
-            padding: 6px 18px;
-            font-weight: bold;
-            font-size: 18px;
-            color: #ffd966;
-            border: 1px solid rgba(255,217,102,0.3);
+            padding: 5px 16px;
+            font-weight: 600;
+            font-size: 17px;
+            color: #ffde9e;
+            border: 1px solid rgba(255,220,100,0.3);
         }
         .user {
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 14px;
+            font-weight: 500;
         }
         .avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(145deg, #b33, #8a2020);
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(145deg, #4b6ef0, #2b4ad0);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            box-shadow: 0 0 8px rgba(255,80,80,0.5);
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         /* ========== ОБЛАСТЬ КОНТЕНТА ========== */
@@ -195,10 +203,10 @@
             left: 16px;
             right: 16px;
             bottom: 100px;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(16px);
-            border-radius: 32px;
-            border: 1px solid rgba(212, 175, 55, 0.25);
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(18px);
+            border-radius: 36px;
+            border: 1px solid rgba(140, 170, 255, 0.2);
             padding: 20px;
             overflow-y: auto;
             z-index: 10;
@@ -206,33 +214,35 @@
             scrollbar-width: thin;
         }
         .card {
-            background: rgba(30, 30, 50, 0.55);
-            border-radius: 24px;
-            padding: 18px;
+            background: rgba(30, 40, 65, 0.5);
+            border-radius: 28px;
+            padding: 20px;
             margin-bottom: 16px;
-            border: 1px solid rgba(212,175,55,0.2);
+            border: 1px solid rgba(140, 170, 255, 0.2);
             backdrop-filter: blur(4px);
-            transition: transform 0.1s;
         }
         .card h2 {
             font-size: 20px;
             margin-bottom: 12px;
-            color: #ffaa88;
+            color: #cbdffc;
+            font-weight: 500;
         }
         .card button {
-            background: #cf3c3c;
+            background: #3b5bdb;
             border: none;
-            padding: 10px 16px;
-            border-radius: 40px;
+            padding: 12px 16px;
+            border-radius: 48px;
             color: white;
-            font-weight: bold;
-            margin-top: 12px;
+            font-weight: 600;
+            margin-top: 14px;
             width: 100%;
             cursor: pointer;
             transition: 0.1s;
+            font-size: 15px;
         }
         .card button:active {
             transform: scale(0.97);
+            background: #2a46b0;
         }
 
         /* ========== НИЖНЕЕ МЕНЮ ========== */
@@ -241,11 +251,11 @@
             bottom: 18px;
             left: 16px;
             right: 16px;
-            background: rgba(10, 15, 25, 0.75);
-            backdrop-filter: blur(24px);
+            background: rgba(18, 25, 45, 0.75);
+            backdrop-filter: blur(28px);
             border-radius: 48px;
             padding: 8px 12px;
-            border: 1px solid rgba(212, 175, 55, 0.4);
+            border: 1px solid rgba(140, 170, 255, 0.35);
             z-index: 10;
         }
         .menu {
@@ -257,16 +267,16 @@
             flex: 1;
             background: transparent;
             border: none;
-            color: rgba(255,255,255,0.6);
+            color: rgba(220, 240, 255, 0.6);
             font-size: 20px;
             padding: 10px 0;
             border-radius: 40px;
             cursor: pointer;
-            transition: all 0.1s;
+            transition: all 0.15s;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             font-weight: 500;
         }
         .tab span {
@@ -274,9 +284,9 @@
             display: none;
         }
         .tab.active {
-            background: rgba(207, 60, 60, 0.25);
-            color: #ff6b6b;
-            text-shadow: 0 0 6px rgba(255,0,0,0.5);
+            background: rgba(75, 110, 240, 0.25);
+            color: #b4c8ff;
+            text-shadow: 0 0 8px rgba(100, 150, 255, 0.3);
         }
         @media (min-width: 500px) {
             .tab span { display: inline; }
@@ -286,22 +296,25 @@
 </head>
 <body>
 
-<!-- Фоновые эффекты -->
+<!-- Фоновые слои -->
 <div class="bg"></div>
 <div class="grid"></div>
 <div class="scanlines"></div>
 <div class="vignette"></div>
 
-<!-- SPLASH SCREEN (5 секунд) -->
+<!-- SPLASH (5 сек) -->
 <div class="splash" id="splash">
     <div class="splash-logo">SUX</div>
-    <div class="splash-title">ИДЕНТИФИКАЦИЯ СЕТИ</div>
+    <div class="splash-title">СВЯЗЬ БЕЗ ГРАНИЦ</div>
 </div>
 
-<canvas id="eyeCanvas"></canvas>
+<!-- ВИЗУАЛИЗАТОР (на главной) -->
+<div class="visualizer-container">
+    <canvas id="vizualizer" width="800" height="400"></canvas>
+</div>
 
 <div class="logo" id="logo">SUX</div>
-<div class="slogan" id="slogan">ВИЖУ • СЛЫШУ • ЗАПОМИНАЮ</div>
+<div class="slogan" id="slogan">Слушай • Общайся • Доверяй</div>
 
 <div class="top-bar hidden" id="topBar">
     <div class="user">
@@ -325,189 +338,104 @@
 </div>
 
 <script>
-    // ======================== КИНО-ГЛАЗА (только на главной) ========================
-    const canvas = document.getElementById('eyeCanvas');
-    const ctx = canvas.getContext('2d');
-    let w, h;
+    // ========== ВИЗУАЛИЗАТОР (плавные волны / мягкие бары) ==========
+    const canvasViz = document.getElementById('vizualizer');
+    const ctxViz = canvasViz.getContext('2d');
+    let width, height;
+    let bars = [];
+    const barCount = 48;
+    let animationFrameViz;
 
-    function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
+    function resizeViz() {
+        const container = canvasViz.parentElement;
+        const maxWidth = Math.min(window.innerWidth, 700);
+        canvasViz.style.width = `${maxWidth}px`;
+        canvasViz.style.height = `auto`;
+        canvasViz.width = 800;
+        canvasViz.height = 400;
+        width = canvasViz.width;
+        height = canvasViz.height;
+        // инициализация баров
+        bars = Array(barCount).fill(0).map(() => ({
+            target: 0.2 + Math.random() * 0.3,
+            current: 0.2 + Math.random() * 0.3
+        }));
     }
-    resize();
-    window.addEventListener('resize', resize);
+    resizeViz();
+    window.addEventListener('resize', resizeViz);
 
-    class Eye {
-        constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.baseRadius = Math.min(w, h) * 0.12;
-            this.radius = this.baseRadius;
-            this.irisX = 0; this.irisY = 0;
-            this.targetX = 0; this.targetY = 0;
-            this.blink = 0;
-            this.micro = 0;
-        }
-        update(mx, my) {
-            this.radius = this.baseRadius;
-            const dx = mx - this.x;
-            const dy = my - this.y;
-            const angle = Math.atan2(dy, dx);
-            const maxDist = this.radius * 0.22;
-            const dist = Math.min(maxDist, Math.hypot(dx, dy) * 0.035);
-            this.targetX = Math.cos(angle) * dist;
-            this.targetY = Math.sin(angle) * dist;
-            this.micro += 0.04;
-            const jx = Math.sin(this.micro * 3.2) * 0.5;
-            const jy = Math.cos(this.micro * 2.8) * 0.5;
-            this.irisX += ((this.targetX + jx) - this.irisX) * 0.12;
-            this.irisY += ((this.targetY + jy) - this.irisY) * 0.12;
-        }
-        draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            // форма глаза
-            ctx.beginPath();
-            ctx.moveTo(-this.radius, 0);
-            ctx.quadraticCurveTo(0, -this.radius * 0.72, this.radius, 0);
-            ctx.quadraticCurveTo(0, this.radius * 0.72, -this.radius, 0);
-            ctx.closePath();
-            ctx.clip();
-            // склера
-            const sclera = ctx.createRadialGradient(0, -this.radius*0.2, 5, 0, 0, this.radius);
-            sclera.addColorStop(0, '#ffffff');
-            sclera.addColorStop(0.45, '#f5f5f5');
-            sclera.addColorStop(0.8, '#cfcfcf');
-            sclera.addColorStop(1, '#a0a0a0');
-            ctx.fillStyle = sclera;
-            ctx.fillRect(-this.radius, -this.radius, this.radius*2, this.radius*2);
-            // прожилки
-            for(let i=0;i<22;i++) {
-                ctx.beginPath();
-                const vx = (Math.random() - 0.5)*this.radius*1.4;
-                const vy = (Math.random() - 0.5)*this.radius*1.1;
-                ctx.moveTo(vx, vy);
-                ctx.quadraticCurveTo(vx+Math.random()*18, vy+Math.random()*18, vx+Math.random()*35, vy+Math.random()*18);
-                ctx.strokeStyle = `rgba(180,70,70,0.05)`;
-                ctx.lineWidth = 1.2;
-                ctx.stroke();
+    function updateVisualizer() {
+        // плавно меняем цели (имитация музыки, но более размеренная)
+        for (let i = 0; i < barCount; i++) {
+            // случайные колебания с плавностью
+            const r = Math.random();
+            if (r < 0.05) {
+                bars[i].target = 0.15 + Math.random() * 0.7;
             }
-            // радужка
-            const irisR = this.radius * 0.42;
-            const irisGrad = ctx.createRadialGradient(this.irisX, this.irisY, 5, this.irisX, this.irisY, irisR);
-            irisGrad.addColorStop(0, '#f0ffff');
-            irisGrad.addColorStop(0.15, '#a2f0ff');
-            irisGrad.addColorStop(0.35, '#48c8ff');
-            irisGrad.addColorStop(0.65, '#146da1');
-            irisGrad.addColorStop(0.9, '#07253d');
-            irisGrad.addColorStop(1, '#000000');
-            ctx.beginPath();
-            ctx.arc(this.irisX, this.irisY, irisR, 0, Math.PI*2);
-            ctx.fillStyle = irisGrad;
-            ctx.fill();
-            // нити радужки
-            for(let i=0;i<90;i++) {
-                const a = (Math.PI*2/90)*i;
-                const len = irisR * (0.65 + Math.random()*0.35);
-                ctx.beginPath();
-                ctx.moveTo(this.irisX, this.irisY);
-                ctx.lineTo(this.irisX + Math.cos(a)*len, this.irisY + Math.sin(a)*len);
-                ctx.strokeStyle = `rgba(255,255,255,0.05)`;
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-            // зрачок
-            ctx.beginPath();
-            ctx.arc(this.irisX, this.irisY, irisR*0.23, 0, Math.PI*2);
-            ctx.fillStyle = '#000';
-            ctx.shadowBlur = 20; ctx.shadowColor = 'black';
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            // блики
-            const gloss = ctx.createRadialGradient(this.irisX-irisR*0.25, this.irisY-irisR*0.25, 3, this.irisX, this.irisY, irisR);
-            gloss.addColorStop(0, 'rgba(255,255,255,0.95)');
-            gloss.addColorStop(0.3, 'rgba(255,255,255,0.2)');
-            gloss.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.beginPath();
-            ctx.arc(this.irisX, this.irisY, irisR, 0, Math.PI*2);
-            ctx.fillStyle = gloss;
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(this.irisX - irisR*0.2, this.irisY - irisR*0.2, irisR*0.09, 0, Math.PI*2);
-            ctx.fillStyle = 'rgba(255,255,245,0.95)';
-            ctx.fill();
-            // тень верхнего века
-            const shadow = ctx.createLinearGradient(0, -this.radius, 0, this.radius);
-            shadow.addColorStop(0, 'rgba(0,0,0,0.55)');
-            shadow.addColorStop(0.4, 'rgba(0,0,0,0)');
-            ctx.fillStyle = shadow;
-            ctx.fillRect(-this.radius, -this.radius, this.radius*2, this.radius*2);
-            // влажный нижний край
-            ctx.beginPath();
-            ctx.ellipse(0, this.radius*0.45, this.radius*0.65, this.radius*0.08, 0, 0, Math.PI*2);
-            const wet = ctx.createLinearGradient(0, this.radius*0.35, 0, this.radius*0.55);
-            wet.addColorStop(0, 'rgba(255,255,255,0.45)');
-            wet.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.fillStyle = wet;
-            ctx.fill();
-            // моргание
-            if(this.blink > 0) {
-                ctx.fillStyle = '#06090f';
-                const close = this.radius * 1.6 * this.blink;
-                ctx.fillRect(-this.radius*1.3, -this.radius, this.radius*2.6, close);
-                ctx.fillRect(-this.radius*1.3, this.radius-close, this.radius*2.6, close);
-            }
-            ctx.restore();
+            bars[i].current += (bars[i].target - bars[i].current) * 0.08;
         }
     }
 
-    let leftEye, rightEye;
-    let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
-
-    function initEyes() {
-        const centerX = window.innerWidth/2;
-        const centerY = window.innerHeight/2 - 40;
-        leftEye = new Eye(centerX - 160, centerY);
-        rightEye = new Eye(centerX + 160, centerY);
-    }
-    initEyes();
-
-    // моргание
-    function blink() {
-        let t = 0;
-        const interval = setInterval(() => {
-            t += 0.12;
-            const v = Math.sin(t * Math.PI);
-            if(leftEye) leftEye.blink = v;
-            if(rightEye) rightEye.blink = v;
-            if(t >= 1) {
-                if(leftEye) leftEye.blink = 0;
-                if(rightEye) rightEye.blink = 0;
-                clearInterval(interval);
-            }
-        }, 16);
-    }
-    setInterval(() => blink(), 3500 + Math.random() * 2500);
-
-    // слежение
-    window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-    window.addEventListener('touchmove', (e) => { if(e.touches[0]) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; } });
-    window.addEventListener('touchstart', (e) => { if(e.touches[0]) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; } });
-
-    // рендер
-    function render() {
-        ctx.clearRect(0, 0, w, h);
-        if(leftEye && rightEye) {
-            leftEye.update(mouseX, mouseY);
-            rightEye.update(mouseX, mouseY);
-            leftEye.draw();
-            rightEye.draw();
+    function drawVisualizer() {
+        if (!ctxViz) return;
+        ctxViz.clearRect(0, 0, width, height);
+        
+        const barWidth = width / barCount;
+        const centerY = height / 2;
+        
+        for (let i = 0; i < barCount; i++) {
+            const h = bars[i].current * (height * 0.35);
+            const x = i * barWidth;
+            const yTop = centerY - h;
+            const yBottom = centerY;
+            
+            // градиент для баров — мягкий, бирюзово-синий
+            const grad = ctxViz.createLinearGradient(x, yTop, x, yBottom);
+            grad.addColorStop(0, '#7aa2f7');
+            grad.addColorStop(1, '#3b82f6');
+            ctxViz.fillStyle = grad;
+            ctxViz.fillRect(x + 1, yTop, barWidth - 2, h);
+            
+            // отражение вниз (зеркально)
+            const gradDown = ctxViz.createLinearGradient(x, centerY, x, centerY + h);
+            gradDown.addColorStop(0, '#3b82f6');
+            gradDown.addColorStop(1, '#1e3a8a');
+            ctxViz.fillStyle = gradDown;
+            ctxViz.fillRect(x + 1, centerY, barWidth - 2, h);
+            
+            // мягкое свечение
+            ctxViz.shadowBlur = 6;
+            ctxViz.shadowColor = '#5a8eff';
         }
-        requestAnimationFrame(render);
+        ctxViz.shadowBlur = 0;
+        
+        // центральная линия
+        ctxViz.beginPath();
+        ctxViz.moveTo(0, centerY);
+        ctxViz.lineTo(width, centerY);
+        ctxViz.strokeStyle = 'rgba(100, 150, 255, 0.35)';
+        ctxViz.lineWidth = 1.5;
+        ctxViz.stroke();
+        
+        // плавающие точки (звёздочки)
+        for (let i = 0; i < 30; i++) {
+            if (Math.random() < 0.05) {
+                ctxViz.fillStyle = `rgba(180, 210, 255, ${0.2 + Math.random() * 0.3})`;
+                ctxViz.beginPath();
+                ctxViz.arc(Math.random() * width, Math.random() * height, 1.5, 0, Math.PI * 2);
+                ctxViz.fill();
+            }
+        }
     }
-    render();
+    
+    function animateViz() {
+        updateVisualizer();
+        drawVisualizer();
+        requestAnimationFrame(animateViz);
+    }
+    animateViz();
 
-    // ======================== UI ЛОГИКА ========================
+    // ========== UI ЛОГИКА (без глаз, с визуализатором на главной) ==========
     const tabs = document.querySelectorAll('.tab');
     const logo = document.getElementById('logo');
     const slogan = document.getElementById('slogan');
@@ -515,13 +443,13 @@
     const contentDiv = document.getElementById('content');
     const splash = document.getElementById('splash');
     const balanceSpan = document.getElementById('balanceDisplay');
-    const canvasEl = document.getElementById('eyeCanvas');
-
+    const vizContainer = document.querySelector('.visualizer-container');
+    
     let currentBalance = 12500;
     function updateBalanceUI() {
         balanceSpan.innerText = currentBalance.toLocaleString() + ' кр.';
     }
-
+    
     function renderContent(tab) {
         let html = '';
         if(tab === 'profile') {
@@ -551,22 +479,22 @@
             });
         }
     }
-
+    
     function setActiveTab(tab) {
         tabs.forEach(btn => {
             btn.classList.remove('active');
             if(btn.dataset.tab === tab) btn.classList.add('active');
         });
         if(tab === 'home') {
-            // главная: показываем глаза, лого, скрываем верхнюю панель и контент
-            canvasEl.classList.remove('hidden-canvas');
+            // главная: показываем визуализатор, лого, слоган; скрываем верхнюю панель и контент
+            vizContainer.style.display = 'flex';
             logo.classList.remove('hidden');
             slogan.classList.remove('hidden');
             topBar.classList.add('hidden');
             contentDiv.classList.add('hidden');
         } else {
-            // другие вкладки: скрываем глаза, лого, показываем панель и контент
-            canvasEl.classList.add('hidden-canvas');
+            // другие вкладки: скрываем визуализатор, лого; показываем панель и контент
+            vizContainer.style.display = 'none';
             logo.classList.add('hidden');
             slogan.classList.add('hidden');
             topBar.classList.remove('hidden');
@@ -574,30 +502,18 @@
             renderContent(tab);
         }
     }
-
+    
     tabs.forEach(btn => {
         btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
     });
-
-    // Загрузочный экран: 5 секунд, затем скрыть splash и включить главную
+    
+    // Splash на 5 секунд
     setTimeout(() => {
         splash.classList.add('hide');
         setTimeout(() => { splash.style.display = 'none'; }, 800);
-        setActiveTab('home');   // старт с главной (глаза видны)
+        setActiveTab('home');
         updateBalanceUI();
-    }, 5000);  // ← 5 секунд
-
-    // при ресайзе обновляем позиции глаз
-    window.addEventListener('resize', () => {
-        if(leftEye && rightEye) {
-            const centerX = window.innerWidth/2;
-            const centerY = window.innerHeight/2 - 40;
-            leftEye.x = centerX - 160;
-            leftEye.y = centerY;
-            rightEye.x = centerX + 160;
-            rightEye.y = centerY;
-        }
-    });
+    }, 5000);
 </script>
 </body>
 </html>
