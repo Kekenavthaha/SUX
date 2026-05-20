@@ -1,280 +1,332 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SUX — эфирная связь</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+<meta charset="UTF-8">
 
-        body {
-            overflow: hidden;
-            background: #0a0f1c;
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            color: #eef4ff;
-        }
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
 
-        /* ========== ФОН (глубокий космический) ========== */
-        .bg {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 30% 20%, #0e152a, #02040c);
-            animation: cosmicBreath 14s infinite alternate ease-in-out;
-        }
-        @keyframes cosmicBreath {
-            0% { opacity: 0.9; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.02); }
-        }
+<title>SUX — Ether Link</title>
 
-        /* Лёгкая сетка и звёздная пыль */
-        .grid {
-            position: fixed;
-            inset: 0;
-            background-image: linear-gradient(rgba(100, 150, 255, 0.03) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(100, 150, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-        }
+<style>
 
-        .vignette {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.5) 100%);
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+}
 
-        /* ========== SPLASH (5 сек) ========== */
-        .splash {
-            position: fixed;
-            inset: 0;
-            background: #0a0f1c;
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease;
-        }
-        .splash.hide {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .splash-logo {
-            font-size: 86px;
-            font-weight: 700;
-            font-family: monospace;
-            letter-spacing: 12px;
-            background: linear-gradient(135deg, #bcd0ff, #6a8eff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: softPulse 1.4s infinite alternate;
-        }
-        .splash-title {
-            margin-top: 20px;
-            font-size: 15px;
-            letter-spacing: 3px;
-            color: #8aa9ff;
-        }
-        @keyframes softPulse {
-            0% { opacity: 0.5; transform: scale(0.98); text-shadow: 0 0 5px #5a7eff; }
-            100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 20px #5a7eff; }
-        }
+body{
+    overflow:hidden;
+    background:#060914;
+    font-family:Segoe UI,sans-serif;
+    color:white;
+}
 
-        /* ========== THREE.JS КОНТЕЙНЕР ========== */
-        #three-container {
-            position: fixed;
-            inset: 0;
-            z-index: 3;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        canvas.webgl {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+/* =====================================================
+   BACKGROUND
+===================================================== */
 
-        /* ========== ЛОГОТИП И СЛОГАН (на главной) ========== */
-        .logo {
-            position: fixed;
-            bottom: 12%;
-            width: 100%;
-            text-align: center;
-            font-size: clamp(42px, 10vw, 82px);
-            font-weight: 700;
-            font-family: monospace;
-            letter-spacing: 8px;
-            background: linear-gradient(135deg, #eef4ff, #bdd4ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.2);
-            z-index: 5;
-            transition: opacity 0.25s;
-        }
-        .slogan {
-            position: fixed;
-            width: 100%;
-            bottom: 6%;
-            text-align: center;
-            color: #8aa9ff;
-            letter-spacing: 2px;
-            font-size: 12px;
-            font-weight: 300;
-            z-index: 5;
-            transition: opacity 0.25s;
-        }
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
+.bg{
+    position:fixed;
+    inset:0;
 
-        /* ========== ВЕРХНЯЯ ПАНЕЛЬ ========== */
-        .top-bar {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            right: 16px;
-            background: rgba(18, 25, 45, 0.6);
-            backdrop-filter: blur(24px);
-            border-radius: 60px;
-            border: 1px solid rgba(140, 170, 255, 0.3);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-            transition: opacity 0.25s;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-        }
-        .balance {
-            background: rgba(0,0,0,0.3);
-            border-radius: 40px;
-            padding: 5px 16px;
-            font-weight: 600;
-            font-size: 17px;
-            color: #ffde9e;
-            border: 1px solid rgba(255,220,100,0.3);
-        }
-        .user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-        }
-        .avatar {
-            width: 34px;
-            height: 34px;
-            background: linear-gradient(145deg, #4b6ef0, #2b4ad0);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
+    background:
+    radial-gradient(circle at top left,
+    rgba(90,140,255,.18),
+    transparent 35%),
 
-        /* ========== ОБЛАСТЬ КОНТЕНТА ========== */
-        .content {
-            position: fixed;
-            top: 90px;
-            left: 16px;
-            right: 16px;
-            bottom: 100px;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(18px);
-            border-radius: 36px;
-            border: 1px solid rgba(140, 170, 255, 0.2);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 10;
-            transition: opacity 0.25s;
-        }
-        .card {
-            background: rgba(30, 40, 65, 0.5);
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(140, 170, 255, 0.2);
-            backdrop-filter: blur(4px);
-        }
-        .card h2 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            color: #cbdffc;
-        }
-        .card button {
-            background: #3b5bdb;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 48px;
-            color: white;
-            font-weight: 600;
-            margin-top: 14px;
-            width: 100%;
-            cursor: pointer;
-            transition: 0.1s;
-        }
-        .card button:active {
-            transform: scale(0.97);
-            background: #2a46b0;
-        }
+    radial-gradient(circle at bottom right,
+    rgba(160,90,255,.12),
+    transparent 40%),
 
-        /* ========== НИЖНЕЕ МЕНЮ ========== */
-        .bottom {
-            position: fixed;
-            bottom: 18px;
-            left: 16px;
-            right: 16px;
-            background: rgba(18, 25, 45, 0.75);
-            backdrop-filter: blur(28px);
-            border-radius: 48px;
-            padding: 8px 12px;
-            border: 1px solid rgba(140, 170, 255, 0.35);
-            z-index: 10;
-        }
-        .menu {
-            display: flex;
-            justify-content: space-around;
-            gap: 4px;
-        }
-        .tab {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: rgba(220, 240, 255, 0.6);
-            font-size: 20px;
-            padding: 10px 0;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.15s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-        .tab span {
-            font-size: 13px;
-            display: none;
-        }
-        .tab.active {
-            background: rgba(75, 110, 240, 0.25);
-            color: #b4c8ff;
-        }
-        @media (min-width: 500px) {
-            .tab span { display: inline; }
-            .tab { font-size: 16px; gap: 8px; }
-        }
-    </style>
+    linear-gradient(
+    135deg,
+    #050814,
+    #091120,
+    #060b15);
+
+    animation:bgFlow 18s ease infinite alternate;
+}
+
+@keyframes bgFlow{
+
+    from{
+        transform:scale(1);
+        filter:hue-rotate(0deg);
+    }
+
+    to{
+        transform:scale(1.04);
+        filter:hue-rotate(20deg);
+    }
+}
+
+.grid{
+    position:fixed;
+    inset:0;
+
+    background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+
+    background-size:48px 48px;
+
+    opacity:.35;
+}
+
+.vignette{
+    position:fixed;
+    inset:0;
+
+    background:
+    radial-gradient(circle,
+    transparent 50%,
+    rgba(0,0,0,.6) 100%);
+}
+
+/* =====================================================
+   THREE
+===================================================== */
+
+#three-container{
+    position:fixed;
+    inset:0;
+
+    z-index:3;
+
+    pointer-events:none;
+}
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.logo{
+    position:fixed;
+
+    width:100%;
+    bottom:13%;
+
+    text-align:center;
+
+    font-size:92px;
+    font-weight:900;
+
+    font-family:monospace;
+
+    letter-spacing:14px;
+
+    background:
+    linear-gradient(
+    135deg,
+    #eef6ff,
+    #9dbdff);
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    color:transparent;
+
+    text-shadow:
+    0 0 25px rgba(100,160,255,.15);
+
+    z-index:5;
+
+    transition:.25s;
+}
+
+.slogan{
+    position:fixed;
+
+    width:100%;
+    bottom:8%;
+
+    text-align:center;
+
+    font-size:12px;
+
+    letter-spacing:4px;
+
+    color:rgba(200,220,255,.55);
+
+    z-index:5;
+
+    transition:.25s;
+}
+
+.hidden{
+    opacity:0;
+    pointer-events:none;
+}
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.top-bar{
+    position:fixed;
+
+    top:16px;
+    left:16px;
+    right:16px;
+
+    padding:14px 20px;
+
+    border-radius:999px;
+
+    background:
+    rgba(15,20,35,.55);
+
+    border:
+    1px solid rgba(140,170,255,.22);
+
+    backdrop-filter:blur(22px);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    z-index:10;
+
+    transition:.25s;
+}
+
+.user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.avatar{
+    width:34px;
+    height:34px;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(
+    135deg,
+    #5f87ff,
+    #7f5fff);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.balance{
+    color:#ffe08c;
+    font-weight:700;
+}
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.content{
+    position:fixed;
+
+    top:90px;
+    left:16px;
+    right:16px;
+    bottom:100px;
+
+    background:
+    rgba(0,0,0,.35);
+
+    border-radius:34px;
+
+    border:
+    1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    padding:24px;
+
+    overflow:auto;
+
+    z-index:10;
+
+    transition:.25s;
+}
+
+.card{
+    background:
+    rgba(255,255,255,.05);
+
+    border-radius:26px;
+
+    padding:20px;
+
+    margin-bottom:14px;
+
+    border:
+    1px solid rgba(255,255,255,.06);
+}
+
+/* =====================================================
+   BOTTOM
+===================================================== */
+
+.bottom{
+    position:fixed;
+
+    left:16px;
+    right:16px;
+    bottom:18px;
+
+    padding:10px;
+
+    border-radius:36px;
+
+    background:
+    rgba(12,18,30,.72);
+
+    backdrop-filter:blur(24px);
+
+    border:
+    1px solid rgba(120,160,255,.2);
+
+    z-index:10;
+}
+
+.menu{
+    display:flex;
+    gap:8px;
+}
+
+.tab{
+    flex:1;
+
+    border:none;
+
+    background:transparent;
+
+    color:rgba(255,255,255,.55);
+
+    padding:12px;
+
+    border-radius:24px;
+
+    cursor:pointer;
+
+    transition:.15s;
+}
+
+.tab.active{
+    background:
+    rgba(120,160,255,.14);
+
+    color:#b6ceff;
+}
+
+</style>
 </head>
 <body>
 
@@ -282,334 +334,642 @@
 <div class="grid"></div>
 <div class="vignette"></div>
 
-<div class="splash" id="splash">
-    <div class="splash-logo">SUX</div>
-    <div class="splash-title">ЗАРЯЖАЮ ЭФИР</div>
-</div>
-
 <div id="three-container"></div>
 
-<div class="logo" id="logo">SUX</div>
-<div class="slogan" id="slogan">Присутствие • Поток • Гармония</div>
-
-<div class="top-bar hidden" id="topBar">
-    <div class="user">
-        <div class="avatar">🦀</div>
-        <span>Краб Гражданин</span>
-    </div>
-    <div class="balance" id="balanceDisplay">12 500 кр.</div>
+<div class="logo" id="logo">
+SUX
 </div>
 
-<div class="content hidden" id="content"></div>
+<div class="slogan" id="slogan">
+PRESENCE • FLOW • HARMONY
+</div>
+
+<div class="top-bar hidden"
+id="topBar">
+
+    <div class="user">
+
+        <div class="avatar">
+        🦀
+        </div>
+
+        <div>
+        Краб Гражданин
+        </div>
+
+    </div>
+
+    <div class="balance">
+    12 500 кр.
+    </div>
+
+</div>
+
+<div class="content hidden"
+id="content">
+
+    <div class="card">
+        <h2>ЭФИРНАЯ СЕТЬ</h2>
+        <br>
+        <div>
+        Подключение стабильно.
+        </div>
+    </div>
+
+</div>
 
 <div class="bottom">
+
     <div class="menu">
-        <button class="tab active" data-tab="home">🏠<span>Главная</span></button>
-        <button class="tab" data-tab="profile">👤<span>Профиль</span></button>
-        <button class="tab" data-tab="bank">🏦<span>Банк</span></button>
-        <button class="tab" data-tab="darknet">🕶️<span>Даркнет</span></button>
-        <button class="tab" data-tab="court">⚖️<span>Суд</span></button>
-        <button class="tab" data-tab="housing">🏙️<span>Жильё</span></button>
+
+        <button class="tab active"
+        data-tab="home">
+        🏠
+        </button>
+
+        <button class="tab"
+        data-tab="profile">
+        👤
+        </button>
+
+        <button class="tab"
+        data-tab="bank">
+        🏦
+        </button>
+
+        <button class="tab"
+        data-tab="darknet">
+        🕶️
+        </button>
+
+        <button class="tab"
+        data-tab="court">
+        ⚖️
+        </button>
+
+        <button class="tab"
+        data-tab="housing">
+        🏙️
+        </button>
+
     </div>
+
 </div>
 
-<!-- Three.js библиотеки -->
+<!-- =====================================================
+     THREE JS
+===================================================== -->
+
 <script type="importmap">
-    {
-        "imports": {
-            "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-        }
+{
+    "imports": {
+        "three":
+        "https://unpkg.com/three@0.128.0/build/three.module.js"
     }
+}
 </script>
 
 <script type="module">
-    import * as THREE from 'three';
 
-    // === НАСТРОЙКА СЦЕНЫ ===
-    const container = document.getElementById('three-container');
-    const scene = new THREE.Scene();
-    scene.background = null; // прозрачный, чтобы фон был из CSS
-    scene.fog = new THREE.FogExp2(0x0a0f1c, 0.008);
+import * as THREE from 'three';
 
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    camera.position.set(0, 0, 3.5);
-    camera.lookAt(0, 0, 0);
+/* =====================================================
+   SCENE
+===================================================== */
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor(0x000000, 0);
-    container.appendChild(renderer.domElement);
+const container =
+document.getElementById(
+'three-container'
+);
 
-    // === СОЗДАНИЕ ПЛАЗМОИДА (Io-подобная сфера с искажениями) ===
-    // Используем шейдерный материал для пульсации и свечения, плюс частицы
-    
-    // 1. Основная сфера с текстурой шума и искажением вертексов
-    const geometry = new THREE.SphereGeometry(1.2, 128, 128);
-    
-    // Кастомный шейдер для свечения и эффекта "живого" существа
-    const vertexShader = `
-        varying vec2 vUv;
-        varying vec3 vPosition;
+const scene =
+new THREE.Scene();
+
+const camera =
+new THREE.PerspectiveCamera(
+    45,
+    innerWidth/innerHeight,
+    0.1,
+    1000
+);
+
+camera.position.z = 4;
+
+const renderer =
+new THREE.WebGLRenderer({
+
+    antialias:true,
+    alpha:true
+});
+
+renderer.setSize(
+    innerWidth,
+    innerHeight
+);
+
+renderer.setPixelRatio(
+    Math.min(devicePixelRatio,2)
+);
+
+renderer.setClearColor(
+    0x000000,
+    0
+);
+
+container.appendChild(
+    renderer.domElement
+);
+
+/* =====================================================
+   ORB GROUP
+===================================================== */
+
+const orbGroup =
+new THREE.Group();
+
+scene.add(orbGroup);
+
+/* =====================================================
+   MAIN SPHERE
+===================================================== */
+
+const geometry =
+new THREE.IcosahedronGeometry(
+    1.1,
+    32
+);
+
+const material =
+new THREE.ShaderMaterial({
+
+    uniforms:{
+        uTime:{ value:0 }
+    },
+
+    vertexShader:`
+
         uniform float uTime;
-        void main() {
-            vUv = uv;
+
+        varying vec3 vNormal;
+
+        void main(){
+
+            vNormal = normal;
+
             vec3 pos = position;
-            // искажение по нормали, синусоидальное
-            float noise = sin(pos.x * 3.0 + uTime) * cos(pos.y * 2.5 + uTime * 0.7) * sin(pos.z * 2.8 + uTime * 0.5);
-            pos += normal * noise * 0.12;
-            vPosition = pos;
-            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-            gl_PointSize = 1.0;
-            gl_Position = projectionMatrix * mvPosition;
+
+            float wave =
+            sin(pos.y * 4.0 + uTime * 1.6)
+            *
+            cos(pos.x * 3.0 - uTime);
+
+            pos +=
+            normal *
+            wave *
+            0.05;
+
+            gl_Position =
+            projectionMatrix *
+            modelViewMatrix *
+            vec4(pos,1.0);
         }
-    `;
-    
-    const fragmentShader = `
+    `,
+
+    fragmentShader:`
+
         uniform float uTime;
-        varying vec2 vUv;
-        varying vec3 vPosition;
-        void main() {
-            vec2 uv = vUv;
-            // градиент от центра к краям
-            float distToCenter = length(uv - 0.5) * 1.4;
-            float glow = 1.0 - smoothstep(0.2, 1.0, distToCenter);
-            // пульсация
-            float pulse = 0.7 + 0.4 * sin(uTime * 1.8);
-            // цвета: перламутровый, голубой, фиолетовый
-            vec3 colorA = vec3(0.4, 0.7, 1.0);  // небесный
-            vec3 colorB = vec3(0.7, 0.5, 1.0);  // сиреневый
-            vec3 colorC = vec3(0.2, 0.8, 0.9);  // бирюзовый
-            float t = sin(uv.x * 8.0 + uTime) * cos(uv.y * 7.0 - uTime * 1.2);
-            vec3 baseColor = mix(colorA, colorB, sin(uTime * 0.6) * 0.5 + 0.5);
-            baseColor = mix(baseColor, colorC, sin(uv.y * 12.0 + uTime) * 0.3);
-            // свечение
-            float alpha = glow * (0.6 + pulse * 0.4);
-            vec3 finalColor = baseColor * (0.8 + glow * 0.8);
-            gl_FragColor = vec4(finalColor, alpha);
+
+        varying vec3 vNormal;
+
+        void main(){
+
+            float fresnel =
+            pow(
+                1.0 -
+                dot(
+                    normalize(vNormal),
+                    vec3(0.0,0.0,1.0)
+                ),
+                2.2
+            );
+
+            vec3 c1 =
+            vec3(
+                0.35,
+                0.65,
+                1.0
+            );
+
+            vec3 c2 =
+            vec3(
+                0.65,
+                0.4,
+                1.0
+            );
+
+            float pulse =
+            sin(uTime * 1.5) * .5 + .5;
+
+            vec3 color =
+            mix(c1,c2,pulse);
+
+            color += fresnel * 0.45;
+
+            gl_FragColor =
+            vec4(
+                color,
+                0.95
+            );
         }
-    `;
-    
-    const shaderMaterial = new THREE.ShaderMaterial({
-        uniforms: {
-            uTime: { value: 0 }
-        },
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        side: THREE.DoubleSide
-    });
-    
-    const coreSphere = new THREE.Mesh(geometry, shaderMaterial);
-    scene.add(coreSphere);
-    
-    // 2. Внешняя оболочка из частиц (сияющий ореол)
-    const particleCount = 2800;
-    const particleGeometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount; i++) {
-        // точки на сфере радиуса 1.4-1.8
-        const radius = 1.4 + Math.random() * 0.4;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        const x = radius * Math.sin(phi) * Math.cos(theta);
-        const y = radius * Math.sin(phi) * Math.sin(theta);
-        const z = radius * Math.cos(phi);
-        positions[i*3] = x;
-        positions[i*3+1] = y;
-        positions[i*3+2] = z;
+    `,
+
+    transparent:true,
+    blending:
+    THREE.AdditiveBlending
+});
+
+const orb =
+new THREE.Mesh(
+    geometry,
+    material
+);
+
+orbGroup.add(orb);
+
+/* =====================================================
+   GLOW
+===================================================== */
+
+const glowGeometry =
+new THREE.SphereGeometry(
+    1.6,
+    64,
+    64
+);
+
+const glowMaterial =
+new THREE.ShaderMaterial({
+
+    vertexShader:`
+
+        varying vec3 vNormal;
+
+        void main(){
+
+            vNormal =
+            normalize(
+                normalMatrix *
+                normal
+            );
+
+            gl_Position =
+            projectionMatrix *
+            modelViewMatrix *
+            vec4(position,1.0);
+        }
+    `,
+
+    fragmentShader:`
+
+        varying vec3 vNormal;
+
+        void main(){
+
+            float intensity =
+            pow(
+                0.8 -
+                dot(
+                    vNormal,
+                    vec3(0,0,1)
+                ),
+                3.0
+            );
+
+            gl_FragColor =
+            vec4(
+                0.45,
+                0.65,
+                1.0,
+                intensity * 0.25
+            );
+        }
+    `,
+
+    side:THREE.BackSide,
+    transparent:true,
+    blending:
+    THREE.AdditiveBlending
+});
+
+const glow =
+new THREE.Mesh(
+    glowGeometry,
+    glowMaterial
+);
+
+orbGroup.add(glow);
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+const particlesCount = 4500;
+
+const particlesGeometry =
+new THREE.BufferGeometry();
+
+const positions =
+new Float32Array(
+    particlesCount * 3
+);
+
+for(let i=0;i<particlesCount;i++){
+
+    const radius =
+    1.5 + Math.random()*1.2;
+
+    const theta =
+    Math.random()*Math.PI*2;
+
+    const phi =
+    Math.acos(
+        (Math.random()*2)-1
+    );
+
+    positions[i*3] =
+    radius *
+    Math.sin(phi) *
+    Math.cos(theta);
+
+    positions[i*3+1] =
+    radius *
+    Math.sin(phi) *
+    Math.sin(theta);
+
+    positions[i*3+2] =
+    radius *
+    Math.cos(phi);
+}
+
+particlesGeometry.setAttribute(
+
+    'position',
+
+    new THREE.BufferAttribute(
+        positions,
+        3
+    )
+);
+
+const particlesMaterial =
+new THREE.PointsMaterial({
+
+    color:0xaaccff,
+    size:0.018,
+    transparent:true,
+    opacity:0.6,
+
+    blending:
+    THREE.AdditiveBlending,
+
+    depthWrite:false
+});
+
+const particles =
+new THREE.Points(
+
+    particlesGeometry,
+    particlesMaterial
+);
+
+orbGroup.add(particles);
+
+/* =====================================================
+   LIGHTS
+===================================================== */
+
+const ambient =
+new THREE.AmbientLight(
+    0xffffff,
+    0.25
+);
+
+scene.add(ambient);
+
+const light =
+new THREE.PointLight(
+    0x88bbff,
+    2,
+    10
+);
+
+light.position.set(
+    2,
+    2,
+    3
+);
+
+scene.add(light);
+
+/* =====================================================
+   MOUSE
+===================================================== */
+
+let mouseX = 0;
+let mouseY = 0;
+
+addEventListener(
+    'mousemove',
+    e=>{
+
+        mouseX =
+        (e.clientX /
+        innerWidth - .5);
+
+        mouseY =
+        (e.clientY /
+        innerHeight - .5);
     }
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    
-    const particleMaterial = new THREE.PointsMaterial({
-        color: 0x88aaff,
-        size: 0.025,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        opacity: 0.6
-    });
-    const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
-    scene.add(particleSystem);
-    
-    // 3. Дополнительные вращающиеся лучи (тонкие торы)
-    const ringGeo = new THREE.TorusGeometry(1.25, 0.03, 64, 300);
-    const ringMat = new THREE.MeshStandardMaterial({
-        color: 0x6d8eff,
-        emissive: 0x2a4ad0,
-        emissiveIntensity: 0.5,
-        transparent: true,
-        opacity: 0.35,
-        side: THREE.DoubleSide
-    });
-    const ring1 = new THREE.Mesh(ringGeo, ringMat);
-    const ring2 = new THREE.Mesh(ringGeo, ringMat);
-    const ring3 = new THREE.Mesh(ringGeo, ringMat);
-    ring1.rotation.x = Math.PI / 2;
-    ring2.rotation.z = Math.PI / 3;
-    ring3.rotation.x = Math.PI / 1.5;
-    scene.add(ring1);
-    scene.add(ring2);
-    scene.add(ring3);
-    
-    // 4. Мерцающие частицы вокруг (атмосфера)
-    const dustCount = 1800;
-    const dustGeo = new THREE.BufferGeometry();
-    const dustPositions = new Float32Array(dustCount * 3);
-    for (let i = 0; i < dustCount; i++) {
-        const r = 1.7 + Math.random() * 0.8;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        dustPositions[i*3] = r * Math.sin(phi) * Math.cos(theta);
-        dustPositions[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
-        dustPositions[i*3+2] = r * Math.cos(phi);
-    }
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-    const dustMat = new THREE.PointsMaterial({
-        color: 0xaaccff,
-        size: 0.012,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        opacity: 0.4
-    });
-    const dustSystem = new THREE.Points(dustGeo, dustMat);
-    scene.add(dustSystem);
-    
-    // 5. Источник света для колец
-    const ambientLight = new THREE.AmbientLight(0x222222);
-    scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x4488ff, 0.8, 8);
-    pointLight.position.set(1, 2, 2);
-    scene.add(pointLight);
-    const backLight = new THREE.PointLight(0xff88aa, 0.4);
-    backLight.position.set(-1, -1, -2);
-    scene.add(backLight);
-    
-    // Анимация
-    let clock = new THREE.Clock();
-    
-    function animate() {
-        const elapsedTime = clock.getElapsedTime();
-        
-        // обновляем шейдер
-        shaderMaterial.uniforms.uTime.value = elapsedTime;
-        
-        // вращаем кольца
-        ring1.rotation.z += 0.003;
-        ring1.rotation.y += 0.002;
-        ring2.rotation.x += 0.004;
-        ring2.rotation.z += 0.003;
-        ring3.rotation.y += 0.005;
-        ring3.rotation.x += 0.002;
-        
-        // плавное изменение цвета частиц
-        const hue = (Math.sin(elapsedTime * 0.3) * 0.1 + 0.6);
-        particleMaterial.color.setHSL(hue, 0.8, 0.65);
-        dustMat.color.setHSL(hue + 0.05, 0.7, 0.6);
-        
-        // мягкая пульсация масштаба всей группы (легкая)
-        const scale = 1 + Math.sin(elapsedTime * 1.2) * 0.02;
-        coreSphere.scale.set(scale, scale, scale);
-        particleSystem.scale.set(scale, scale, scale);
-        dustSystem.scale.set(scale, scale, scale);
-        ring1.scale.setScalar(scale);
-        ring2.scale.setScalar(scale);
-        ring3.scale.setScalar(scale);
-        
-        // вращение камеры? нет, статично
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-    }
-    
-    animate();
-    
-    // Адаптация под размер окна
-    window.addEventListener('resize', onWindowResize, false);
-    function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
+);
+
+/* =====================================================
+   ANIMATE
+===================================================== */
+
+const clock =
+new THREE.Clock();
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    const t =
+    clock.getElapsedTime();
+
+    material.uniforms
+    .uTime.value = t;
+
+    const breathe =
+    1 +
+    Math.sin(t * 1.8)
+    * 0.03;
+
+    orbGroup.scale.set(
+        breathe,
+        breathe,
+        breathe
+    );
+
+    orb.rotation.y +=
+    0.0012;
+
+    particles.rotation.y -=
+    0.0004;
+
+    orbGroup.rotation.y +=
+    ((mouseX * 0.25)
+    -
+    orbGroup.rotation.y)
+    * 0.03;
+
+    orbGroup.rotation.x +=
+    ((-mouseY * 0.2)
+    -
+    orbGroup.rotation.x)
+    * 0.03;
+
+    orbGroup.position.y =
+    Math.sin(t * 1.2)
+    * 0.08;
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+animate();
+
+/* =====================================================
+   RESIZE
+===================================================== */
+
+addEventListener(
+    'resize',
+    ()=>{
+
+        camera.aspect =
+        innerWidth /
+        innerHeight;
+
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
     }
-    
-    // === УПРАВЛЕНИЕ UI ===
-    const tabs = document.querySelectorAll('.tab');
-    const logo = document.getElementById('logo');
-    const slogan = document.getElementById('slogan');
-    const topBar = document.getElementById('topBar');
-    const contentDiv = document.getElementById('content');
-    const splash = document.getElementById('splash');
-    const balanceSpan = document.getElementById('balanceDisplay');
-    const threeContainer = document.getElementById('three-container');
-    
-    let currentBalance = 12500;
-    function updateBalanceUI() {
-        balanceSpan.innerText = currentBalance.toLocaleString() + ' кр.';
-    }
-    
-    function renderContent(tab) {
-        let html = '';
-        if(tab === 'profile') {
-            html = `<div class="card">
-                        <h2>👤 ПРОФИЛЬ</h2>
-                        <div>Социальный рейтинг: <strong>${currentBalance}</strong></div>
-                        <div>Ранг: Достойный гражданин</div>
-                        <div>Сообщений: 342</div>
-                        <div>Эффекты: нет</div>
-                        <button id="refreshBtn">Обновить</button>
-                    </div>`;
-        } else if(tab === 'bank') {
-            html = `<div class="card"><h2>🏦 К-БАНК</h2><div>Кредиты: до 2000 кр.</div><div>Инвестиции: 4-15%</div><button>Взять кредит</button></div>`;
-        } else if(tab === 'darknet') {
-            html = `<div class="card"><h2>🕶️ ДАРКНЕТ</h2><div>Теневой кошелёк: 0 кр.</div><div>Грибы • Крабедрон</div><button>Перейти</button></div>`;
-        } else if(tab === 'court') {
-            html = `<div class="card"><h2>⚖️ СУД</h2><div>Активных исков: 0</div><button>Подать иск</button></div>`;
-        } else if(tab === 'housing') {
-            html = `<div class="card"><h2>🏙️ КРАБ-ЙОРК</h2><div>Крабхэттен • Студия от 3 млн</div><button>Выбрать жильё</button></div>`;
+);
+
+/* =====================================================
+   UI
+===================================================== */
+
+const tabs =
+document.querySelectorAll('.tab');
+
+const logo =
+document.getElementById('logo');
+
+const slogan =
+document.getElementById('slogan');
+
+const topBar =
+document.getElementById('topBar');
+
+const content =
+document.getElementById('content');
+
+function setTab(tab){
+
+    tabs.forEach(btn=>{
+
+        btn.classList.remove(
+            'active'
+        );
+
+        if(
+            btn.dataset.tab
+            === tab
+        ){
+
+            btn.classList.add(
+                'active'
+            );
         }
-        contentDiv.innerHTML = html;
-        if(tab === 'profile') {
-            document.getElementById('refreshBtn')?.addEventListener('click', () => {
-                currentBalance += Math.floor(Math.random() * 500);
-                updateBalanceUI();
-                renderContent('profile');
-            });
-        }
-    }
-    
-    function setActiveTab(tab) {
-        tabs.forEach(btn => {
-            btn.classList.remove('active');
-            if(btn.dataset.tab === tab) btn.classList.add('active');
-        });
-        if(tab === 'home') {
-            threeContainer.style.opacity = '1';
-            threeContainer.style.visibility = 'visible';
-            logo.classList.remove('hidden');
-            slogan.classList.remove('hidden');
-            topBar.classList.add('hidden');
-            contentDiv.classList.add('hidden');
-        } else {
-            threeContainer.style.opacity = '0';
-            threeContainer.style.visibility = 'hidden';
-            logo.classList.add('hidden');
-            slogan.classList.add('hidden');
-            topBar.classList.remove('hidden');
-            contentDiv.classList.remove('hidden');
-            renderContent(tab);
-        }
-    }
-    
-    tabs.forEach(btn => {
-        btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
     });
-    
-    // Splash 5 секунд
-    setTimeout(() => {
-        splash.classList.add('hide');
-        setTimeout(() => { splash.style.display = 'none'; }, 800);
-        setActiveTab('home');
-        updateBalanceUI();
-    }, 5000);
+
+    if(tab === 'home'){
+
+        container.style.opacity =
+        '1';
+
+        logo.classList.remove(
+            'hidden'
+        );
+
+        slogan.classList.remove(
+            'hidden'
+        );
+
+        topBar.classList.add(
+            'hidden'
+        );
+
+        content.classList.add(
+            'hidden'
+        );
+
+    }else{
+
+        container.style.opacity =
+        '.15';
+
+        logo.classList.add(
+            'hidden'
+        );
+
+        slogan.classList.add(
+            'hidden'
+        );
+
+        topBar.classList.remove(
+            'hidden'
+        );
+
+        content.classList.remove(
+            'hidden'
+        );
+    }
+}
+
+tabs.forEach(btn=>{
+
+    btn.addEventListener(
+        'click',
+        ()=>{
+
+            setTab(
+                btn.dataset.tab
+            );
+        }
+    );
+});
+
+setTab('home');
+
 </script>
 </body>
 </html>
