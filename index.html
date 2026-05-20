@@ -16,7 +16,7 @@
         body {
             overflow: hidden;
             background: #05070c;
-            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
             color: #fff;
         }
 
@@ -70,7 +70,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.8s ease;
             backdrop-filter: blur(0px);
         }
         .splash.hide {
@@ -105,6 +105,10 @@
             height: 100%;
             z-index: 50;
             pointer-events: none;
+            display: block;
+        }
+        canvas.hidden-canvas {
+            display: none;
         }
 
         /* ========== ЛОГОТИП И СЛОГАН (только на главной) ========== */
@@ -288,7 +292,7 @@
 <div class="scanlines"></div>
 <div class="vignette"></div>
 
-<!-- SPLASH SCREEN -->
+<!-- SPLASH SCREEN (5 секунд) -->
 <div class="splash" id="splash">
     <div class="splash-logo">SUX</div>
     <div class="splash-title">ИДЕНТИФИКАЦИЯ СЕТИ</div>
@@ -321,7 +325,7 @@
 </div>
 
 <script>
-    // ======================== КИНО-ГЛАЗА ========================
+    // ======================== КИНО-ГЛАЗА (только на главной) ========================
     const canvas = document.getElementById('eyeCanvas');
     const ctx = canvas.getContext('2d');
     let w, h;
@@ -333,7 +337,6 @@
     resize();
     window.addEventListener('resize', resize);
 
-    // Класс глаза (реалистичный)
     class Eye {
         constructor(x, y) {
             this.x = x;
@@ -344,10 +347,9 @@
             this.targetX = 0; this.targetY = 0;
             this.blink = 0;
             this.micro = 0;
-            this.scale = 1;
         }
-        update(mx, my, scaleFactor = 1) {
-            this.radius = this.baseRadius * scaleFactor;
+        update(mx, my) {
+            this.radius = this.baseRadius;
             const dx = mx - this.x;
             const dy = my - this.y;
             const angle = Math.atan2(dy, dx);
@@ -468,29 +470,9 @@
         leftEye = new Eye(centerX - 160, centerY);
         rightEye = new Eye(centerX + 160, centerY);
     }
+    initEyes();
 
-    // Состояние позиции глаз (для анимации переключения)
-    let eyeState = {
-        x: window.innerWidth/2, y: window.innerHeight/2 - 40,
-        scale: 1, spacing: 160,
-        targetX: window.innerWidth/2, targetY: window.innerHeight/2 - 40,
-        targetScale: 1, targetSpacing: 160
-    };
-
-    function updateEyeLayout() {
-        eyeState.x += (eyeState.targetX - eyeState.x) * 0.1;
-        eyeState.y += (eyeState.targetY - eyeState.y) * 0.1;
-        eyeState.scale += (eyeState.targetScale - eyeState.scale) * 0.1;
-        eyeState.spacing += (eyeState.targetSpacing - eyeState.spacing) * 0.1;
-        if(leftEye) {
-            leftEye.x = eyeState.x - eyeState.spacing;
-            rightEye.x = eyeState.x + eyeState.spacing;
-            leftEye.y = eyeState.y;
-            rightEye.y = eyeState.y;
-        }
-    }
-
-    // Моргание
+    // моргание
     function blink() {
         let t = 0;
         const interval = setInterval(() => {
@@ -507,20 +489,20 @@
     }
     setInterval(() => blink(), 3500 + Math.random() * 2500);
 
-    // Слежение за курсором
+    // слежение
     window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
     window.addEventListener('touchmove', (e) => { if(e.touches[0]) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; } });
     window.addEventListener('touchstart', (e) => { if(e.touches[0]) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; } });
 
-    // Рендер
+    // рендер
     function render() {
-        if(!leftEye) { initEyes(); }
         ctx.clearRect(0, 0, w, h);
-        updateEyeLayout();
-        leftEye.update(mouseX, mouseY, eyeState.scale);
-        rightEye.update(mouseX, mouseY, eyeState.scale);
-        leftEye.draw();
-        rightEye.draw();
+        if(leftEye && rightEye) {
+            leftEye.update(mouseX, mouseY);
+            rightEye.update(mouseX, mouseY);
+            leftEye.draw();
+            rightEye.draw();
+        }
         requestAnimationFrame(render);
     }
     render();
@@ -533,6 +515,7 @@
     const contentDiv = document.getElementById('content');
     const splash = document.getElementById('splash');
     const balanceSpan = document.getElementById('balanceDisplay');
+    const canvasEl = document.getElementById('eyeCanvas');
 
     let currentBalance = 12500;
     function updateBalanceUI() {
@@ -575,25 +558,19 @@
             if(btn.dataset.tab === tab) btn.classList.add('active');
         });
         if(tab === 'home') {
+            // главная: показываем глаза, лого, скрываем верхнюю панель и контент
+            canvasEl.classList.remove('hidden-canvas');
             logo.classList.remove('hidden');
             slogan.classList.remove('hidden');
             topBar.classList.add('hidden');
             contentDiv.classList.add('hidden');
-            // большие глаза по центру
-            eyeState.targetX = window.innerWidth/2;
-            eyeState.targetY = window.innerHeight/2 - 40;
-            eyeState.targetScale = 1;
-            eyeState.targetSpacing = 160;
         } else {
+            // другие вкладки: скрываем глаза, лого, показываем панель и контент
+            canvasEl.classList.add('hidden-canvas');
             logo.classList.add('hidden');
             slogan.classList.add('hidden');
             topBar.classList.remove('hidden');
             contentDiv.classList.remove('hidden');
-            // маленькие глаза в правом нижнем углу (относительно центра экрана)
-            eyeState.targetX = window.innerWidth - 70;
-            eyeState.targetY = window.innerHeight - 70;
-            eyeState.targetScale = 0.28;
-            eyeState.targetSpacing = 28;
             renderContent(tab);
         }
     }
@@ -602,26 +579,23 @@
         btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
     });
 
-    // Загрузочный экран: через 2 секунды скрыть splash и показать основное приложение
+    // Загрузочный экран: 5 секунд, затем скрыть splash и включить главную
     setTimeout(() => {
         splash.classList.add('hide');
-        setTimeout(() => { splash.style.display = 'none'; }, 600);
-        setActiveTab('home');   // старт с главной
+        setTimeout(() => { splash.style.display = 'none'; }, 800);
+        setActiveTab('home');   // старт с главной (глаза видны)
         updateBalanceUI();
-    }, 2200);
+    }, 5000);  // ← 5 секунд
 
-    // Адаптация при ресайзе (корректировка target-позиции)
+    // при ресайзе обновляем позиции глаз
     window.addEventListener('resize', () => {
-        if(document.querySelector('.tab.active')?.dataset.tab === 'home') {
-            eyeState.targetX = window.innerWidth/2;
-            eyeState.targetY = window.innerHeight/2 - 40;
-            eyeState.targetSpacing = 160;
-            eyeState.targetScale = 1;
-        } else {
-            eyeState.targetX = window.innerWidth - 70;
-            eyeState.targetY = window.innerHeight - 70;
-            eyeState.targetSpacing = 28;
-            eyeState.targetScale = 0.28;
+        if(leftEye && rightEye) {
+            const centerX = window.innerWidth/2;
+            const centerY = window.innerHeight/2 - 40;
+            leftEye.x = centerX - 160;
+            leftEye.y = centerY;
+            rightEye.x = centerX + 160;
+            rightEye.y = centerY;
         }
     });
 </script>
