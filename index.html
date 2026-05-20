@@ -1,444 +1,725 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SUX — эфирная связь</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 
-        body {
-            overflow: hidden;
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            color: #eef4ff;
-            background: #03060c;
-        }
+<title>SUX — эфирная связь</title>
 
-        /* Многослойный тёмный градиент фона */
-        .bg-gradient {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 20% 30%, #0a1428, #03071a);
-            z-index: 0;
-        }
-        .bg-layer1 {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 70% 50%, rgba(0, 80, 120, 0.12), transparent 60%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .bg-layer2 {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 30% 80%, rgba(0, 150, 180, 0.06), transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .bg-layer3 {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 90% 20%, rgba(50, 100, 150, 0.08), transparent 60%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .noise {
-            position: fixed;
-            inset: 0;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjgiIG51bU9jdGF2ZXM9IjMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZikiIG9wYWNpdHk9IjAuMDMiLz48L3N2Zz4=');
-            background-repeat: repeat;
-            opacity: 0.12;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .vignette {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.65) 100%);
-            pointer-events: none;
-            z-index: 1;
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+}
 
-        /* Splash screen (тёмный, многослойный) */
-        .splash {
-            position: fixed;
-            inset: 0;
-            background: #03060c;
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease;
-        }
-        .splash.hide {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .splash-bg {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 40%, #0a1a30, #010a18);
-            z-index: -1;
-        }
-        .splash-bg::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 70% 60%, rgba(0, 120, 150, 0.1), transparent 60%);
-        }
-        .splash-bg::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 20% 80%, rgba(0, 180, 200, 0.06), transparent 70%);
-        }
-        .splash-logo {
-            font-size: 86px;
-            font-weight: 700;
-            font-family: monospace;
-            letter-spacing: 12px;
-            background: linear-gradient(135deg, #8aaeff, #4a6ee0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: softPulse 1.4s infinite alternate;
-            position: relative;
-            z-index: 2;
-        }
-        .splash-title {
-            margin-top: 20px;
-            font-size: 15px;
-            letter-spacing: 3px;
-            color: #6a8eff;
-            font-weight: 300;
-            position: relative;
-            z-index: 2;
-        }
-        @keyframes softPulse {
-            0% { opacity: 0.6; transform: scale(0.98); text-shadow: 0 0 5px #3a6eff; }
-            100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 20px #3a6eff; }
-        }
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:'Inter','Segoe UI',sans-serif;
+    background:#02040a;
+    color:white;
+}
 
-        /* Верхняя панель */
-        .top-bar {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            right: 16px;
-            background: rgba(10, 18, 30, 0.7);
-            backdrop-filter: blur(24px);
-            border-radius: 60px;
-            border: 1px solid rgba(100, 150, 255, 0.2);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-        }
-        .balance {
-            background: rgba(0,0,0,0.4);
-            border-radius: 40px;
-            padding: 5px 16px;
-            font-weight: 600;
-            font-size: 17px;
-            color: #ffde9e;
-            border: 1px solid rgba(255,220,100,0.2);
-        }
-        .user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .avatar {
-            width: 34px;
-            height: 34px;
-            background: linear-gradient(145deg, #4b6ef0, #2b4ad0);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
+/* ===== ФОН ===== */
 
-        /* Область контента (для свайпа) */
-        .content {
-            position: fixed;
-            top: 90px;
-            left: 16px;
-            right: 16px;
-            bottom: 100px;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(18px);
-            border-radius: 36px;
-            border: 1px solid rgba(100, 150, 255, 0.2);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 10;
-            scrollbar-width: thin;
-        }
-        .card {
-            background: rgba(20, 30, 50, 0.6);
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(100, 150, 255, 0.2);
-            backdrop-filter: blur(4px);
-        }
-        .card h2 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            color: #cbdffc;
-            font-weight: 500;
-        }
-        .card button {
-            background: #2b4ad0;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 48px;
-            color: white;
-            font-weight: 600;
-            margin-top: 14px;
-            width: 100%;
-            cursor: pointer;
-            transition: 0.1s;
-        }
-        .card button:active {
-            transform: scale(0.97);
-            background: #1e3aad;
-        }
+.bg-gradient{
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at 20% 30%, #101f3f 0%, transparent 35%),
+    radial-gradient(circle at 80% 20%, #0b3150 0%, transparent 30%),
+    radial-gradient(circle at 50% 100%, #081628 0%, transparent 40%),
+    #02040a;
+    z-index:0;
+}
 
-        /* Нижнее меню (стеклянное) */
-        .bottom {
-            position: fixed;
-            bottom: 18px;
-            left: 16px;
-            right: 16px;
-            background: rgba(10, 18, 30, 0.8);
-            backdrop-filter: blur(28px);
-            border-radius: 48px;
-            padding: 8px 12px;
-            border: 1px solid rgba(100, 150, 255, 0.25);
-            z-index: 10;
-        }
-        .menu {
-            display: flex;
-            justify-content: space-around;
-            gap: 4px;
-        }
-        .tab {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: rgba(200, 220, 255, 0.6);
-            font-size: 20px;
-            padding: 10px 0;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            backdrop-filter: blur(4px);
-        }
-        .tab span {
-            font-size: 13px;
-            display: none;
-        }
-        /* Стеклянный активный таб */
-        .tab.active {
-            background: rgba(75, 110, 240, 0.25);
-            backdrop-filter: blur(12px);
-            color: #ffffff;
-            text-shadow: 0 0 8px rgba(100, 150, 255, 0.5);
-            border: 1px solid rgba(100, 150, 255, 0.4);
-            box-shadow: 0 0 12px rgba(75, 110, 240, 0.2);
-        }
-        @media (min-width: 500px) {
-            .tab span { display: inline; }
-            .tab { font-size: 16px; gap: 8px; }
-        }
-    </style>
+.noise{
+    position:fixed;
+    inset:0;
+    opacity:.06;
+    pointer-events:none;
+    z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+}
+
+.vignette{
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle,transparent 50%,rgba(0,0,0,.7));
+    pointer-events:none;
+    z-index:1;
+}
+
+/* ===== SPLASH ===== */
+
+.splash{
+    position:fixed;
+    inset:0;
+    background:#02040a;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+    transition:1s;
+}
+
+.splash.hide{
+    opacity:0;
+    pointer-events:none;
+}
+
+.splash-logo{
+    font-size:88px;
+    font-weight:800;
+    letter-spacing:12px;
+    color:#7aa5ff;
+    text-shadow:
+    0 0 15px rgba(80,120,255,.5),
+    0 0 40px rgba(80,120,255,.25);
+    animation:pulse 1.5s infinite alternate;
+}
+
+.splash-title{
+    margin-top:20px;
+    letter-spacing:4px;
+    font-size:13px;
+    color:#7e95cc;
+}
+
+@keyframes pulse{
+    from{
+        transform:scale(.98);
+        opacity:.7;
+    }
+    to{
+        transform:scale(1.02);
+        opacity:1;
+    }
+}
+
+/* ===== TOP BAR ===== */
+
+.top-bar{
+    position:fixed;
+    top:14px;
+    left:14px;
+    right:14px;
+    height:64px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 18px;
+
+    background:rgba(255,255,255,.05);
+
+    backdrop-filter:blur(30px);
+    -webkit-backdrop-filter:blur(30px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:28px;
+
+    z-index:20;
+
+    box-shadow:
+    inset 0 1px rgba(255,255,255,.08),
+    0 8px 24px rgba(0,0,0,.35);
+}
+
+.user{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+    linear-gradient(145deg,
+    rgba(255,255,255,.16),
+    rgba(255,255,255,.04));
+
+    border:1px solid rgba(255,255,255,.12);
+
+    backdrop-filter:blur(20px);
+}
+
+.balance{
+    padding:8px 14px;
+    border-radius:999px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.1);
+
+    color:#ffd88d;
+
+    font-weight:600;
+
+    backdrop-filter:blur(20px);
+}
+
+/* ===== СЛАЙДЕР ВКЛАДОК ===== */
+
+.pages-wrapper{
+    position:fixed;
+
+    top:92px;
+    left:0;
+    right:0;
+    bottom:110px;
+
+    overflow:hidden;
+
+    z-index:5;
+}
+
+.pages{
+    width:500%;
+    height:100%;
+
+    display:flex;
+
+    transition:transform .42s cubic-bezier(.22,.8,.2,1);
+
+    will-change:transform;
+}
+
+.page{
+    width:100vw;
+    padding:0 16px;
+    overflow-y:auto;
+}
+
+/* ===== КАРТОЧКИ ===== */
+
+.card{
+    width:100%;
+    min-height:220px;
+
+    padding:22px;
+
+    border-radius:34px;
+
+    background:
+    linear-gradient(
+    145deg,
+    rgba(255,255,255,.09),
+    rgba(255,255,255,.03));
+
+    border:1px solid rgba(255,255,255,.09);
+
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+
+    box-shadow:
+    inset 0 1px rgba(255,255,255,.08),
+    0 20px 40px rgba(0,0,0,.35);
+
+    margin-bottom:20px;
+}
+
+.card h2{
+    margin-bottom:16px;
+    font-size:24px;
+    font-weight:700;
+}
+
+.card div{
+    margin-bottom:10px;
+    color:rgba(255,255,255,.82);
+}
+
+.card button{
+    margin-top:18px;
+    width:100%;
+    height:52px;
+
+    border:none;
+    border-radius:20px;
+
+    color:white;
+    font-size:15px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    background:
+    linear-gradient(
+    145deg,
+    rgba(120,150,255,.35),
+    rgba(90,120,255,.12));
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    transition:.18s;
+}
+
+.card button:active{
+    transform:scale(.97);
+}
+
+/* ===== НИЖНЕЕ МЕНЮ ===== */
+
+.bottom{
+    position:fixed;
+
+    left:14px;
+    right:14px;
+    bottom:16px;
+
+    height:76px;
+
+    border-radius:32px;
+
+    background:
+    linear-gradient(
+    145deg,
+    rgba(255,255,255,.08),
+    rgba(255,255,255,.03));
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(40px);
+    -webkit-backdrop-filter:blur(40px);
+
+    box-shadow:
+    inset 0 1px rgba(255,255,255,.06),
+    0 10px 40px rgba(0,0,0,.4);
+
+    z-index:50;
+}
+
+.menu{
+    width:100%;
+    height:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+
+    padding:8px;
+}
+
+/* ===== СТЕКЛЯННЫЕ КНОПКИ ===== */
+
+.tab{
+    flex:1;
+    height:58px;
+
+    border:none;
+    background:transparent;
+
+    border-radius:24px;
+
+    color:rgba(255,255,255,.45);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+
+    font-size:20px;
+
+    transition:.28s cubic-bezier(.22,.8,.2,1);
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+/* прозрачное стекло */
+.tab::before{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    background:
+    linear-gradient(
+    145deg,
+    rgba(255,255,255,.10),
+    rgba(255,255,255,.02));
+
+    opacity:0;
+
+    transition:.28s;
+
+    border-radius:inherit;
+}
+
+/* свечение */
+.tab::after{
+    content:"";
+
+    position:absolute;
+
+    width:120%;
+    height:120%;
+
+    background:
+    radial-gradient(circle,
+    rgba(120,160,255,.35),
+    transparent 70%);
+
+    opacity:0;
+
+    transition:.3s;
+}
+
+.tab span{
+    display:none;
+    font-size:13px;
+    font-weight:600;
+}
+
+.tab.active{
+    color:white;
+
+    transform:translateY(-2px);
+}
+
+.tab.active::before{
+    opacity:1;
+
+    backdrop-filter:blur(24px);
+
+    border:1px solid rgba(255,255,255,.12);
+}
+
+.tab.active::after{
+    opacity:1;
+}
+
+.tab:active{
+    transform:scale(.95);
+}
+
+@media(min-width:500px){
+
+    .tab span{
+        display:block;
+    }
+
+    .tab{
+        font-size:16px;
+    }
+}
+
+</style>
 </head>
+
 <body>
 
-<!-- Фон -->
 <div class="bg-gradient"></div>
-<div class="bg-layer1"></div>
-<div class="bg-layer2"></div>
-<div class="bg-layer3"></div>
 <div class="noise"></div>
 <div class="vignette"></div>
 
-<!-- Splash -->
+<!-- SPLASH -->
+
 <div class="splash" id="splash">
-    <div class="splash-bg"></div>
     <div class="splash-logo">SUX</div>
     <div class="splash-title">ЗАГРУЗКА ЭФИРА</div>
 </div>
 
-<!-- Верхняя панель -->
-<div class="top-bar" id="topBar">
+<!-- TOP -->
+
+<div class="top-bar">
+
     <div class="user">
         <div class="avatar">🦀</div>
         <span>Краб Гражданин</span>
     </div>
-    <div class="balance" id="balanceDisplay">12 500 кр.</div>
+
+    <div class="balance" id="balanceDisplay">
+        12 500 кр.
+    </div>
+
 </div>
 
-<!-- Контент (область для свайпа) -->
-<div class="content" id="content"></div>
+<!-- СТРАНИЦЫ -->
 
-<!-- Нижнее меню (5 вкладок) -->
-<div class="bottom">
-    <div class="menu">
-        <button class="tab active" data-tab="profile">👤<span>Профиль</span></button>
-        <button class="tab" data-tab="bank">🏦<span>Банк</span></button>
-        <button class="tab" data-tab="darknet">🕶️<span>Даркнет</span></button>
-        <button class="tab" data-tab="court">⚖️<span>Суд</span></button>
-        <button class="tab" data-tab="housing">🏙️<span>Жильё</span></button>
+<div class="pages-wrapper" id="pagesWrapper">
+
+    <div class="pages" id="pages">
+
+        <!-- PROFILE -->
+        <div class="page">
+            <div class="card">
+                <h2>👤 ПРОФИЛЬ</h2>
+
+                <div>Социальный рейтинг: <strong id="profileBalance">12500</strong></div>
+                <div>Ранг: Достойный гражданин</div>
+                <div>Сообщений: 342</div>
+                <div>Эффекты: нет</div>
+
+                <button id="refreshBtn">
+                    Обновить
+                </button>
+            </div>
+        </div>
+
+        <!-- BANK -->
+        <div class="page">
+            <div class="card">
+                <h2>🏦 К-БАНК</h2>
+
+                <div>Кредиты: до 2000 кр.</div>
+                <div>Инвестиции: 4-15%</div>
+
+                <button>
+                    Взять кредит
+                </button>
+            </div>
+        </div>
+
+        <!-- DARKNET -->
+        <div class="page">
+            <div class="card">
+                <h2>🕶️ ДАРКНЕТ</h2>
+
+                <div>Теневой кошелёк: 0 кр.</div>
+                <div>Грибы • Крабедрон</div>
+
+                <button>
+                    Перейти
+                </button>
+            </div>
+        </div>
+
+        <!-- COURT -->
+        <div class="page">
+            <div class="card">
+                <h2>⚖️ СУД</h2>
+
+                <div>Активных исков: 0</div>
+
+                <button>
+                    Подать иск
+                </button>
+            </div>
+        </div>
+
+        <!-- HOUSING -->
+        <div class="page">
+            <div class="card">
+                <h2>🏙️ КРАБ-ЙОРК</h2>
+
+                <div>Крабхэттен • Студия от 3 млн</div>
+
+                <button>
+                    Выбрать жильё
+                </button>
+            </div>
+        </div>
+
     </div>
+
+</div>
+
+<!-- НИЖНЕЕ МЕНЮ -->
+
+<div class="bottom">
+
+    <div class="menu">
+
+        <button class="tab active" data-index="0">
+            👤 <span>Профиль</span>
+        </button>
+
+        <button class="tab" data-index="1">
+            🏦 <span>Банк</span>
+        </button>
+
+        <button class="tab" data-index="2">
+            🕶️ <span>Даркнет</span>
+        </button>
+
+        <button class="tab" data-index="3">
+            ⚖️ <span>Суд</span>
+        </button>
+
+        <button class="tab" data-index="4">
+            🏙️ <span>Жильё</span>
+        </button>
+
+    </div>
+
 </div>
 
 <script>
-    // ========== СПИСОК ВКЛАДОК (порядок соответствует меню) ==========
-    const tabOrder = ['profile', 'bank', 'darknet', 'court', 'housing'];
-    let currentTabIndex = 0; // profile
 
-    // DOM элементы
-    const tabs = document.querySelectorAll('.tab');
-    const contentDiv = document.getElementById('content');
-    const splash = document.getElementById('splash');
-    const balanceSpan = document.getElementById('balanceDisplay');
+const pages = document.getElementById("pages");
+const tabs = document.querySelectorAll(".tab");
 
-    // Данные пользователя (демо)
-    let currentBalance = 12500;
-    function updateBalanceUI() {
-        balanceSpan.innerText = currentBalance.toLocaleString() + ' кр.';
-    }
+const balanceDisplay = document.getElementById("balanceDisplay");
+const profileBalance = document.getElementById("profileBalance");
 
-    // Рендер контента по имени вкладки
-    function renderContent(tab) {
-        let html = '';
-        if (tab === 'profile') {
-            html = `<div class="card">
-                        <h2>👤 ПРОФИЛЬ</h2>
-                        <div>Социальный рейтинг: <strong>${currentBalance}</strong></div>
-                        <div>Ранг: Достойный гражданин</div>
-                        <div>Сообщений: 342</div>
-                        <div>Эффекты: нет</div>
-                        <button id="refreshBtn">Обновить</button>
-                    </div>`;
-        } else if (tab === 'bank') {
-            html = `<div class="card"><h2>🏦 К-БАНК</h2><div>Кредиты: до 2000 кр.</div><div>Инвестиции: 4-15%</div><button>Взять кредит</button></div>`;
-        } else if (tab === 'darknet') {
-            html = `<div class="card"><h2>🕶️ ДАРКНЕТ</h2><div>Теневой кошелёк: 0 кр.</div><div>Грибы • Крабедрон</div><button>Перейти</button></div>`;
-        } else if (tab === 'court') {
-            html = `<div class="card"><h2>⚖️ СУД</h2><div>Активных исков: 0</div><button>Подать иск</button></div>`;
-        } else if (tab === 'housing') {
-            html = `<div class="card"><h2>🏙️ КРАБ-ЙОРК</h2><div>Крабхэттен • Студия от 3 млн</div><button>Выбрать жильё</button></div>`;
-        }
-        contentDiv.innerHTML = html;
-        if (tab === 'profile') {
-            const refreshBtn = document.getElementById('refreshBtn');
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', () => {
-                    currentBalance += Math.floor(Math.random() * 500);
-                    updateBalanceUI();
-                    renderContent('profile'); // перерисовываем профиль с новым балансом
-                });
-            }
-        }
-    }
+let currentIndex = 0;
+let currentBalance = 12500;
 
-    // Переключение вкладки по индексу
-    function setActiveTabByIndex(index) {
-        if (index < 0) index = tabOrder.length - 1;
-        if (index >= tabOrder.length) index = 0;
-        currentTabIndex = index;
-        const activeTabName = tabOrder[currentTabIndex];
-        // Обновить классы активных кнопок
-        tabs.forEach(btn => {
-            const btnTab = btn.dataset.tab;
-            if (btnTab === activeTabName) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-        renderContent(activeTabName);
-    }
+/* ===== ОБНОВЛЕНИЕ БАЛАНСА ===== */
 
-    // Обработчики кликов по кнопкам меню
-    tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tabName = btn.dataset.tab;
-            const newIndex = tabOrder.indexOf(tabName);
-            if (newIndex !== -1) {
-                setActiveTabByIndex(newIndex);
-            }
-        });
+function updateBalance(){
+
+    balanceDisplay.innerText =
+    currentBalance.toLocaleString() + " кр.";
+
+    profileBalance.innerText =
+    currentBalance.toLocaleString();
+}
+
+/* ===== ПЕРЕКЛЮЧЕНИЕ ВКЛАДКИ ===== */
+
+function setPage(index){
+
+    if(index < 0) index = 0;
+    if(index > 4) index = 4;
+
+    currentIndex = index;
+
+    pages.style.transform =
+    `translateX(-${index * 100}vw)`;
+
+    tabs.forEach(tab=>{
+        tab.classList.remove("active");
     });
 
-    // ========== SWIPE ДЛЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК ==========
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
+    tabs[index].classList.add("active");
+}
 
-    contentDiv.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-    }, { passive: false });
+/* ===== КНОПКИ ===== */
 
-    contentDiv.addEventListener('touchmove', (e) => {
-        // Предотвращаем переключение при вертикальном скролле
-        const deltaX = Math.abs(e.changedTouches[0].screenX - touchStartX);
-        const deltaY = Math.abs(e.changedTouches[0].screenY - touchStartY);
-        if (deltaX > deltaY && deltaX > 30) {
-            e.preventDefault(); // блокируем вертикальный скролл при горизонтальном свайпе
-        }
-    }, { passive: false });
+tabs.forEach(tab=>{
 
-    contentDiv.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        touchEndY = e.changedTouches[0].screenY;
-        const deltaX = touchEndX - touchStartX;
-        const deltaY = Math.abs(touchEndY - touchStartY);
-        // Если смещение по горизонтали больше 40px и превышает вертикальное
-        if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > deltaY) {
-            if (deltaX > 0) {
-                // свайп вправо -> предыдущая вкладка
-                setActiveTabByIndex(currentTabIndex - 1);
-            } else {
-                // свайп влево -> следующая вкладка
-                setActiveTabByIndex(currentTabIndex + 1);
-            }
-        }
+    tab.addEventListener("click", ()=>{
+
+        const index =
+        parseInt(tab.dataset.index);
+
+        setPage(index);
     });
+});
 
-    // ========== ЗАГРУЗКА ПРИЛОЖЕНИЯ ==========
-    setTimeout(() => {
-        splash.classList.add('hide');
-        setTimeout(() => {
-            splash.style.display = 'none';
-        }, 800);
-        // Стартовая вкладка — профиль (индекс 0)
-        setActiveTabByIndex(0);
-        updateBalanceUI();
-    }, 5000);
+/* ===== SWIPE КАК В TELEGRAM ===== */
+
+let startX = 0;
+let currentTranslate = 0;
+let prevTranslate = 0;
+
+let isDragging = false;
+
+const wrapper =
+document.getElementById("pagesWrapper");
+
+wrapper.addEventListener("touchstart", touchStart, {passive:true});
+wrapper.addEventListener("touchmove", touchMove, {passive:true});
+wrapper.addEventListener("touchend", touchEnd);
+
+function touchStart(e){
+
+    startX = e.touches[0].clientX;
+
+    isDragging = true;
+
+    pages.style.transition = "none";
+
+    prevTranslate =
+    -currentIndex * window.innerWidth;
+}
+
+function touchMove(e){
+
+    if(!isDragging) return;
+
+    const currentX =
+    e.touches[0].clientX;
+
+    const diff =
+    currentX - startX;
+
+    currentTranslate =
+    prevTranslate + diff;
+
+    pages.style.transform =
+    `translateX(${currentTranslate}px)`;
+}
+
+function touchEnd(e){
+
+    isDragging = false;
+
+    const movedBy =
+    currentTranslate - prevTranslate;
+
+    pages.style.transition =
+    "transform .42s cubic-bezier(.22,.8,.2,1)";
+
+    /* свайп */
+    if(movedBy < -80 && currentIndex < 4){
+
+        currentIndex += 1;
+
+    }else if(movedBy > 80 && currentIndex > 0){
+
+        currentIndex -= 1;
+    }
+
+    setPage(currentIndex);
+}
+
+/* ===== REFRESH ===== */
+
+document
+.getElementById("refreshBtn")
+.addEventListener("click", ()=>{
+
+    currentBalance +=
+    Math.floor(Math.random() * 500);
+
+    updateBalance();
+});
+
+/* ===== SPLASH ===== */
+
+const splash =
+document.getElementById("splash");
+
+setTimeout(()=>{
+
+    splash.classList.add("hide");
+
+    setTimeout(()=>{
+
+        splash.style.display = "none";
+
+    },1000);
+
+},2500);
+
+/* ===== INIT ===== */
+
+updateBalance();
+setPage(0);
+
 </script>
+
 </body>
 </html>
