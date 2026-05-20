@@ -17,54 +17,64 @@
             overflow: hidden;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             color: #eef4ff;
+            background: #03060c;
         }
 
-        /* ========== ОСНОВНОЙ АНИМИРОВАННЫЙ ГРАДИЕНТ (фон приложения) ========== */
-        .app-bg {
+        /* ========== МНОГОУРОВНЕВЫЙ ТЁМНЫЙ ГРАДИЕНТ ДЛЯ ФОНА (постоянный) ========== */
+        .bg-gradient {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 20% 30%, #0a1a2f, #071221);
+            background: radial-gradient(circle at 20% 30%, #0a1428, #03071a);
+            z-index: 0;
+        }
+        /* Дополнительные слои для глубины (переливы) */
+        .bg-layer1 {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 70% 50%, rgba(0, 80, 120, 0.15), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-layer2 {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 30% 80%, rgba(0, 150, 180, 0.08), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-layer3 {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 90% 20%, rgba(50, 100, 150, 0.1), transparent 60%);
+            pointer-events: none;
             z-index: 0;
         }
 
-        .gradient-layer {
+        /* Лёгкая текстура (почти незаметная) */
+        .noise {
             position: fixed;
             inset: 0;
-            background: linear-gradient(125deg, #0a2a4a, #0e3455, #1a4a6e, #0f2a48);
-            background-size: 300% 300%;
-            animation: gradientMove 22s ease infinite alternate;
-            opacity: 0.7;
-            z-index: 1;
-        }
-
-        @keyframes gradientMove {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 100%; }
-            100% { background-position: 0% 0%; }
-        }
-
-        /* Дополнительное сияние */
-        .glow {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(40, 120, 200, 0.15), transparent 70%);
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjgiIG51bU9jdGF2ZXM9IjMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZikiIG9wYWNpdHk9IjAuMDMiLz48L3N2Zz4=');
+            background-repeat: repeat;
+            opacity: 0.15;
             pointer-events: none;
-            z-index: 2;
+            z-index: 0;
         }
 
+        /* Vignette для затемнения краёв */
         .vignette {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.5) 100%);
+            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.6) 100%);
             pointer-events: none;
-            z-index: 2;
+            z-index: 1;
         }
 
-        /* ========== SPLASH (5 секунд, многоуровневый градиент) ========== */
+        /* ========== ЗАГРУЗОЧНЫЙ ЭКРАН (тёмный градиент) ========== */
         .splash {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 30% 20%, #0b1f33, #04121f);
+            background: #03060c;
             z-index: 200;
             display: flex;
             flex-direction: column;
@@ -72,121 +82,123 @@
             justify-content: center;
             transition: opacity 0.8s ease;
         }
-        .splash .gradient-bg {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(145deg, #0d2b4a, #13456a, #0a2848, #1a5a85);
-            background-size: 400% 400%;
-            animation: splashGradient 18s ease infinite alternate;
-            opacity: 0.9;
-        }
-        @keyframes splashGradient {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 100%; }
-            100% { background-position: 0% 0%; }
-        }
-        .splash .glow-layer {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(30, 150, 220, 0.3), transparent 70%);
-            pointer-events: none;
-        }
         .splash.hide {
             opacity: 0;
             pointer-events: none;
         }
+        /* Градиент внутри сплеша (многоуровневый, но приглушённый) */
+        .splash-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 40%, #0a1a30, #010a18);
+            z-index: -1;
+        }
+        .splash-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 70% 60%, rgba(0, 120, 150, 0.12), transparent 60%);
+        }
+        .splash-bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(0, 180, 200, 0.08), transparent 70%);
+        }
         .splash-logo {
-            position: relative;
-            z-index: 5;
             font-size: 86px;
             font-weight: 700;
             font-family: monospace;
             letter-spacing: 12px;
-            background: linear-gradient(135deg, #b0e0ff, #6a9eff);
+            background: linear-gradient(135deg, #8aaeff, #4a6ee0);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 30px rgba(80, 150, 255, 0.3);
             animation: softPulse 1.4s infinite alternate;
+            position: relative;
+            z-index: 2;
         }
         .splash-title {
-            position: relative;
-            z-index: 5;
             margin-top: 20px;
             font-size: 15px;
             letter-spacing: 3px;
-            color: #8ab3ff;
+            color: #6a8eff;
+            font-weight: 300;
+            position: relative;
+            z-index: 2;
         }
         @keyframes softPulse {
-            0% { opacity: 0.6; transform: scale(0.98); text-shadow: 0 0 5px #3a7eff; }
-            100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 25px #3a7eff; }
+            0% { opacity: 0.6; transform: scale(0.98); text-shadow: 0 0 5px #3a6eff; }
+            100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 20px #3a6eff; }
         }
 
-        /* ========== ВЕРХНЯЯ ПАНЕЛЬ ========== */
+        /* ========== ОСНОВНОЙ UI ========== */
         .top-bar {
             position: fixed;
             top: 16px;
             left: 16px;
             right: 16px;
-            background: rgba(10, 20, 35, 0.6);
+            background: rgba(10, 18, 30, 0.7);
             backdrop-filter: blur(24px);
             border-radius: 60px;
-            border: 1px solid rgba(100, 160, 255, 0.25);
+            border: 1px solid rgba(100, 150, 255, 0.2);
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 100;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            z-index: 10;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
         }
         .balance {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             border-radius: 40px;
             padding: 5px 16px;
             font-weight: 600;
             font-size: 17px;
             color: #ffde9e;
-            border: 1px solid rgba(255,220,100,0.3);
+            border: 1px solid rgba(255,220,100,0.2);
         }
         .user {
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 14px;
+            font-weight: 500;
         }
         .avatar {
             width: 34px;
             height: 34px;
-            background: linear-gradient(145deg, #3a6ae0, #1f3c9e);
+            background: linear-gradient(145deg, #4b6ef0, #2b4ad0);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+        /* ========== ОБЛАСТЬ КОНТЕНТА ========== */
         .content {
             position: fixed;
             top: 90px;
             left: 16px;
             right: 16px;
-            bottom: 90px;
-            background: rgba(0, 0, 0, 0.3);
+            bottom: 100px;
+            background: rgba(0, 0, 0, 0.35);
             backdrop-filter: blur(18px);
             border-radius: 36px;
-            border: 1px solid rgba(100, 160, 255, 0.2);
+            border: 1px solid rgba(100, 150, 255, 0.2);
             padding: 20px;
             overflow-y: auto;
-            z-index: 100;
+            z-index: 10;
             scrollbar-width: thin;
         }
         .card {
-            background: rgba(20, 35, 55, 0.5);
+            background: rgba(20, 30, 50, 0.6);
             border-radius: 28px;
             padding: 20px;
             margin-bottom: 16px;
-            border: 1px solid rgba(100, 160, 255, 0.2);
+            border: 1px solid rgba(100, 150, 255, 0.2);
             backdrop-filter: blur(4px);
         }
         .card h2 {
@@ -196,7 +208,7 @@
             font-weight: 500;
         }
         .card button {
-            background: #2e5ad0;
+            background: #2b4ad0;
             border: none;
             padding: 12px 16px;
             border-radius: 48px;
@@ -209,21 +221,21 @@
         }
         .card button:active {
             transform: scale(0.97);
-            background: #1f42a0;
+            background: #1e3aad;
         }
 
-        /* ========== НИЖНЕЕ МЕНЮ (БЕЗ ГЛАВНОЙ) ========== */
+        /* ========== НИЖНЕЕ МЕНЮ (5 вкладок) ========== */
         .bottom {
             position: fixed;
             bottom: 18px;
             left: 16px;
             right: 16px;
-            background: rgba(10, 20, 35, 0.75);
+            background: rgba(10, 18, 30, 0.8);
             backdrop-filter: blur(28px);
             border-radius: 48px;
             padding: 8px 12px;
-            border: 1px solid rgba(100, 160, 255, 0.35);
-            z-index: 100;
+            border: 1px solid rgba(100, 150, 255, 0.25);
+            z-index: 10;
         }
         .menu {
             display: flex;
@@ -234,9 +246,9 @@
             flex: 1;
             background: transparent;
             border: none;
-            color: rgba(180, 210, 255, 0.7);
+            color: rgba(200, 220, 255, 0.6);
             font-size: 20px;
-            padding: 8px 0;
+            padding: 10px 0;
             border-radius: 40px;
             cursor: pointer;
             transition: all 0.15s;
@@ -251,8 +263,9 @@
             display: none;
         }
         .tab.active {
-            background: rgba(50, 110, 230, 0.3);
-            color: #bbd4ff;
+            background: rgba(75, 110, 240, 0.3);
+            color: #b4c8ff;
+            text-shadow: 0 0 6px rgba(100, 150, 255, 0.3);
         }
         @media (min-width: 500px) {
             .tab span { display: inline; }
@@ -262,21 +275,22 @@
 </head>
 <body>
 
-<!-- Фон приложения (постоянный, многослойный) -->
-<div class="app-bg"></div>
-<div class="gradient-layer"></div>
-<div class="glow"></div>
+<!-- Постоянный фон (тёмный многослойный градиент) -->
+<div class="bg-gradient"></div>
+<div class="bg-layer1"></div>
+<div class="bg-layer2"></div>
+<div class="bg-layer3"></div>
+<div class="noise"></div>
 <div class="vignette"></div>
 
-<!-- Splash -->
+<!-- Загрузочный экран -->
 <div class="splash" id="splash">
-    <div class="gradient-bg"></div>
-    <div class="glow-layer"></div>
+    <div class="splash-bg"></div>
     <div class="splash-logo">SUX</div>
-    <div class="splash-title">ЗАРЯЖАЮ ЭФИР</div>
+    <div class="splash-title">ЗАГРУЗКА ЭФИРА</div>
 </div>
 
-<!-- Верхняя панель (видна после splash) -->
+<!-- Верхняя панель -->
 <div class="top-bar" id="topBar">
     <div class="user">
         <div class="avatar">🦀</div>
@@ -285,10 +299,10 @@
     <div class="balance" id="balanceDisplay">12 500 кр.</div>
 </div>
 
-<!-- Основной контент -->
+<!-- Контент -->
 <div class="content" id="content"></div>
 
-<!-- Нижнее меню (без home) -->
+<!-- Нижнее меню (без главной) -->
 <div class="bottom">
     <div class="menu">
         <button class="tab active" data-tab="profile">👤<span>Профиль</span></button>
@@ -300,7 +314,7 @@
 </div>
 
 <script>
-    // ========== UI ЛОГИКА (нет главной страницы) ==========
+    // ========== UI ЛОГИКА ==========
     const tabs = document.querySelectorAll('.tab');
     const contentDiv = document.getElementById('content');
     const splash = document.getElementById('splash');
@@ -333,8 +347,7 @@
         }
         contentDiv.innerHTML = html;
         if(tab === 'profile') {
-            const btn = document.getElementById('refreshBtn');
-            if(btn) btn.addEventListener('click', () => {
+            document.getElementById('refreshBtn')?.addEventListener('click', () => {
                 currentBalance += Math.floor(Math.random() * 500);
                 updateBalanceUI();
                 renderContent('profile');
@@ -354,14 +367,12 @@
         btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
     });
 
-    // Стартуем с вкладки "profile"
-    setActiveTab('profile');
-    updateBalanceUI();
-
-    // Splash на 5 секунд
+    // Splash на 5 секунд, затем скрываем и показываем первую вкладку (Профиль)
     setTimeout(() => {
         splash.classList.add('hide');
         setTimeout(() => { splash.style.display = 'none'; }, 800);
+        setActiveTab('profile');   // Стартовая вкладка после загрузки
+        updateBalanceUI();
     }, 5000);
 </script>
 </body>
