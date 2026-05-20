@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SUX — плавный поток</title>
+    <title>SUX — эфирная связь</title>
     <style>
         * {
             margin: 0;
@@ -15,28 +15,73 @@
 
         body {
             overflow: hidden;
-            background: #0a0f1c;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             color: #eef4ff;
         }
 
-        /* ========== ФОН (глубокий, без сетки) ========== */
-        .bg {
+        /* ========== АНИМИРОВАННЫЙ ГРАДИЕНТНЫЙ ФОН ========== */
+        .animated-bg {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 30% 20%, #0e152a, #02040c);
-            animation: cosmicBreath 14s infinite alternate ease-in-out;
-        }
-        @keyframes cosmicBreath {
-            0% { opacity: 0.9; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.02); }
+            background: linear-gradient(125deg, #0f1a2f, #1b2c4a, #14223a, #0e1830);
+            background-size: 300% 300%;
+            animation: gradientFlow 18s ease infinite alternate;
+            z-index: 0;
         }
 
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% 50%;
+                background: radial-gradient(circle at 30% 20%, #0a1128, #16213e);
+            }
+            25% {
+                background: radial-gradient(circle at 70% 40%, #132a4a, #0d1b33);
+            }
+            50% {
+                background: radial-gradient(circle at 40% 70%, #1c3050, #0f1a2f);
+            }
+            75% {
+                background: radial-gradient(circle at 80% 60%, #162b48, #0b1428);
+            }
+            100% {
+                background: radial-gradient(circle at 20% 80%, #0a1a30, #111d38);
+            }
+        }
+
+        /* можно также плавно менять радиальный градиент, но для плавности используем только позиционирование */
+        /* упростим: просто линейный градиент с движением */
+        .gradient-layer {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0e1a2a, #192f4a, #0c1a30, #1e3a5a);
+            background-size: 400% 400%;
+            animation: smoothGradient 22s ease infinite alternate;
+            z-index: 0;
+            opacity: 0.9;
+        }
+
+        @keyframes smoothGradient {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* дополнительное свечение (опционально) */
+        .glow {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(80, 120, 255, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Vignette для мягкого затемнения краёв */
         .vignette {
             position: fixed;
             inset: 0;
+            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.35) 100%);
             pointer-events: none;
-            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.5) 100%);
+            z-index: 1;
         }
 
         /* ========== SPLASH (5 сек) ========== */
@@ -77,26 +122,7 @@
             100% { opacity: 1; transform: scale(1.01); text-shadow: 0 0 20px #5a7eff; }
         }
 
-        /* ========== КОНТЕЙНЕР ДЛЯ АНИМАЦИИ (северное сияние, плавное) ========== */
-        .aurora-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: min(280px, 70vw);
-            height: min(280px, 70vw);
-            z-index: 4;
-            pointer-events: none;
-            filter: blur(4px);
-        }
-        canvas#aurora {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            display: block;
-        }
-
-        /* ========== ЛОГОТИП И СЛОГАН ========== */
+        /* ========== ЛОГОТИП И СЛОГАН (только на главной) ========== */
         .logo {
             position: fixed;
             bottom: 12%;
@@ -271,21 +297,22 @@
 </head>
 <body>
 
-<div class="bg"></div>
+<!-- Анимированный градиентный фон (высокое качество) -->
+<div class="gradient-layer"></div>
+<div class="glow"></div>
 <div class="vignette"></div>
 
+<!-- Splash -->
 <div class="splash" id="splash">
     <div class="splash-logo">SUX</div>
     <div class="splash-title">ЗАРЯЖАЮ ЭФИР</div>
 </div>
 
-<div class="aurora-container">
-    <canvas id="aurora" width="800" height="800"></canvas>
-</div>
-
+<!-- Логотип (виден только на главной) -->
 <div class="logo" id="logo">SUX</div>
-<div class="slogan" id="slogan">Поток • Присутствие • Свет</div>
+<div class="slogan" id="slogan">Присутствие • Поток • Гармония</div>
 
+<!-- Верхняя панель (скрыта на главной) -->
 <div class="top-bar hidden" id="topBar">
     <div class="user">
         <div class="avatar">🦀</div>
@@ -294,8 +321,10 @@
     <div class="balance" id="balanceDisplay">12 500 кр.</div>
 </div>
 
+<!-- Область контента (скрыта на главной) -->
 <div class="content hidden" id="content"></div>
 
+<!-- Нижнее меню -->
 <div class="bottom">
     <div class="menu">
         <button class="tab active" data-tab="home">🏠<span>Главная</span></button>
@@ -308,112 +337,6 @@
 </div>
 
 <script>
-    // ========== ПЛАВНАЯ АНИМАЦИЯ "СЕВЕРНОЕ СИЯНИЕ" (без пикселей, без квадратов) ==========
-    const canvas = document.getElementById('aurora');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    
-    function resizeCanvas() {
-        const container = canvas.parentElement;
-        const size = container.clientWidth;
-        canvas.width = 800;
-        canvas.height = 800;
-        width = 800;
-        height = 800;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
-    let time = 0;
-    
-    function drawAurora() {
-        if (!ctx) return;
-        ctx.clearRect(0, 0, width, height);
-        
-        // рисуем плавные изогнутые ленты (абстрактное северное сияние)
-        // используем множество полупрозрачных кривых с размытием
-        
-        const centerX = width/2;
-        const centerY = height/2;
-        
-        for (let layer = 0; layer < 5; layer++) {
-            const offset = layer * 0.7;
-            const hue = (time * 0.05 + layer * 20) % 360;
-            const lightness = 45 + Math.sin(time * 0.8 + layer) * 12;
-            
-            ctx.beginPath();
-            // создаём несколько плавных волн
-            for (let t = 0; t <= 1; t += 0.02) {
-                const angle = t * Math.PI * 2;
-                // радиус пульсирует и искажается
-                const rad = 180 + Math.sin(angle * 3 + time) * 25 + Math.cos(angle * 5 - time * 0.7) * 15;
-                const x = centerX + Math.cos(angle + time * 0.3 + layer) * rad;
-                const y = centerY + Math.sin(angle * 1.2 + time * 0.5) * (rad * 0.7);
-                if (t === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-            
-            // мягкий градиент
-            const grad = ctx.createLinearGradient(centerX - 100, centerY - 100, centerX + 100, centerY + 100);
-            grad.addColorStop(0, `hsla(${hue}, 80%, ${lightness}%, 0.35)`);
-            grad.addColorStop(0.5, `hsla(${hue + 30}, 85%, ${lightness + 10}%, 0.5)`);
-            grad.addColorStop(1, `hsla(${hue + 60}, 75%, ${lightness - 5}%, 0.25)`);
-            ctx.fillStyle = grad;
-            ctx.fill();
-            
-            // дополнительное размытие через тень
-            ctx.shadowBlur = 25;
-            ctx.shadowColor = `hsla(${hue}, 80%, 60%, 0.5)`;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-        }
-        
-        // добавим переливающиеся "ленты" — кривые Безье
-        for (let i = 0; i < 8; i++) {
-            const tOff = time * 0.2 + i;
-            ctx.beginPath();
-            const startX = centerX - 150 + Math.sin(tOff) * 100;
-            const startY = centerY - 100 + Math.cos(tOff * 1.3) * 70;
-            const cp1x = centerX - 50 + Math.sin(tOff * 1.7) * 120;
-            const cp1y = centerY + 50 + Math.cos(tOff * 2.1) * 80;
-            const cp2x = centerX + 50 + Math.cos(tOff * 1.4) * 110;
-            const cp2y = centerY - 30 + Math.sin(tOff * 1.9) * 90;
-            const endX = centerX + 160 + Math.sin(tOff * 2.3) * 80;
-            const endY = centerY + 70 + Math.cos(tOff * 1.1) * 60;
-            ctx.moveTo(startX, startY);
-            ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY);
-            ctx.lineWidth = 18;
-            ctx.strokeStyle = `hsla(${200 + i * 15 + Math.sin(time) * 20}, 75%, 60%, 0.45)`;
-            ctx.stroke();
-            ctx.lineWidth = 8;
-            ctx.strokeStyle = `hsla(${180 + i * 20}, 80%, 70%, 0.6)`;
-            ctx.stroke();
-        }
-        
-        // финальные мягкие размытые пятна
-        ctx.globalCompositeOperation = 'lighter';
-        for (let p = 0; p < 12; p++) {
-            const angle = time * 0.5 + p;
-            const x = centerX + Math.sin(angle) * 140;
-            const y = centerY + Math.cos(angle * 1.4) * 110;
-            const rad = 45 + Math.sin(time * 2 + p) * 12;
-            const gradRad = ctx.createRadialGradient(x, y, 5, x, y, rad);
-            gradRad.addColorStop(0, `hsla(${160 + p * 12}, 85%, 65%, 0.4)`);
-            gradRad.addColorStop(1, `hsla(${190 + p * 8}, 75%, 50%, 0)`);
-            ctx.fillStyle = gradRad;
-            ctx.beginPath();
-            ctx.arc(x, y, rad, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        ctx.globalCompositeOperation = 'source-over';
-        
-        time += 0.03;
-        requestAnimationFrame(drawAurora);
-    }
-    
-    drawAurora();
-    
     // ========== UI ЛОГИКА ==========
     const tabs = document.querySelectorAll('.tab');
     const logo = document.getElementById('logo');
@@ -422,13 +345,12 @@
     const contentDiv = document.getElementById('content');
     const splash = document.getElementById('splash');
     const balanceSpan = document.getElementById('balanceDisplay');
-    const auroraContainer = document.querySelector('.aurora-container');
-    
+
     let currentBalance = 12500;
     function updateBalanceUI() {
         balanceSpan.innerText = currentBalance.toLocaleString() + ' кр.';
     }
-    
+
     function renderContent(tab) {
         let html = '';
         if(tab === 'profile') {
@@ -458,22 +380,18 @@
             });
         }
     }
-    
+
     function setActiveTab(tab) {
         tabs.forEach(btn => {
             btn.classList.remove('active');
             if(btn.dataset.tab === tab) btn.classList.add('active');
         });
         if(tab === 'home') {
-            auroraContainer.style.opacity = '1';
-            auroraContainer.style.visibility = 'visible';
             logo.classList.remove('hidden');
             slogan.classList.remove('hidden');
             topBar.classList.add('hidden');
             contentDiv.classList.add('hidden');
         } else {
-            auroraContainer.style.opacity = '0';
-            auroraContainer.style.visibility = 'hidden';
             logo.classList.add('hidden');
             slogan.classList.add('hidden');
             topBar.classList.remove('hidden');
@@ -481,12 +399,12 @@
             renderContent(tab);
         }
     }
-    
+
     tabs.forEach(btn => {
         btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
     });
-    
-    // Splash 5 секунд
+
+    // Splash на 5 секунд
     setTimeout(() => {
         splash.classList.add('hide');
         setTimeout(() => { splash.style.display = 'none'; }, 800);
